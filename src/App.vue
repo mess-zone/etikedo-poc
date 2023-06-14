@@ -2,6 +2,24 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import HelloWorld from "./components/HelloWorld.vue";
+
+import fs from 'fs'
+import pathModule from 'path'
+import { onMounted, ref } from "vue";
+
+const path = ref('')
+
+const electronAPI = window.electronAPI
+
+async function sendPing() {
+  const response = await electronAPI.ping()
+  console.log(response)
+}
+
+onMounted(async () => {
+  await sendPing()
+}) 
+
 </script>
 
 <template>
@@ -14,6 +32,12 @@ import HelloWorld from "./components/HelloWorld.vue";
   <p class="plugins">Plugins</p>
   <img alt="vue router logo" width="120" src="./assets/vueRouter.png" />
   <img alt="pinia logo" width="120" src="./assets/pinia.svg" />
+
+  <h1>Hello World!</h1>
+    We are using Node.js <span id="node-version">{{electronAPI['node']() }}</span>,
+    Chromium <span id="chrome-version">{{electronAPI['chrome']() }}</span>,
+    and Electron <span id="electron-version">{{electronAPI['electron']() }}</span>.
+    <button @click="sendPing()">ping</button>
 </template>
 
 <style>
