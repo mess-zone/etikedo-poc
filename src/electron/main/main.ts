@@ -51,6 +51,7 @@ function getFiles(path: string) {
                 name: file,
                 size: stats.isFile() ? formatSize(stats.size ?? 0) : null,
                 directory: stats.isDirectory(),
+                path: pathModule.join(path, file),
             }
         })
         .sort((a, b) => {
@@ -67,6 +68,7 @@ function getFiles(path: string) {
 app.whenReady().then(() => {
     ipcMain.handle('ping', () => 'pong')
     ipcMain.handle('get-root-path', () => process.cwd())
+    ipcMain.handle('get-back-path', (event, path) => pathModule.join(path,'../'))
     ipcMain.handle('get-files', (event, path) => getFiles(path))
 
     createWindow()

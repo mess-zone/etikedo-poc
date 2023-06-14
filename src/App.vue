@@ -6,7 +6,7 @@ import HelloWorld from "./components/HelloWorld.vue";
 import { onMounted, ref } from "vue";
 import { FileInfo } from "./renderer";
 
-const rootPath = ref('')
+const path = ref('')
 const files = ref<FileInfo[]>([])
 
 const electronAPI = window.electronAPI
@@ -21,16 +21,33 @@ async function getRootPath() {
   return response
 }
 
-async function getFiles() {
-  const response = await electronAPI.getFiles(rootPath.value)
-  console.log(response)
+async function getRootFiles() {
+  const response = await electronAPI.getFiles(path.value)
   return response
+}
+
+async function openFolder(fullPath: string) {
+  path.value =  fullPath
+  files.value = await electronAPI.getFiles(fullPath)
+}
+
+const handleClick = async (item: FileInfo) => {
+  console.log('clicked', item.path)
+  if(item.directory) {
+    await openFolder(item.path)
+  }
+}
+
+const handleBackClick = async () => {
+  const backPath = await electronAPI.getBackPath(path.value)
+  console.log('backPath', backPath)
+  await openFolder(backPath)
 }
 
 onMounted(async () => {
   await sendPing()
-  rootPath.value =  await getRootPath()
-  files.value =  await getFiles()
+  path.value =  await getRootPath()
+  files.value =  await getRootFiles()
 }) 
 
 </script>
@@ -51,10 +68,15 @@ onMounted(async () => {
     Chromium <span id="chrome-version">{{electronAPI['chrome']() }}</span>,
     and Electron <span id="electron-version">{{electronAPI['electron']() }}</span>.
     <button @click="sendPing()">ping</button>
-    {{ rootPath }}
-    <pre>
-      {{ files }}
-    </pre>
+    <h1>{{ path }}</h1><button @click="handleBackClick">back</button>
+    <ul>
+      <li v-for="item in files" :key="item.path" @click="handleClick(item)">
+        {{ 
+          item 
+        }}
+
+      </li>
+    </ul>
 </template>
 
 <style>
@@ -62,7 +84,7 @@ onMounted(async () => {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  /* text-align: center; */
   color: #2c3e50;
   margin-top: 60px;
 }
@@ -73,5 +95,10 @@ img {
   font-size: 20px;
   font-weight: bold;
   margin-top: 20px;
+}
+
+li {
+  border: 1px solid red;
+  padding: 20px;
 }
 </style>
