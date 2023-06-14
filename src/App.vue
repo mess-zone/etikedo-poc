@@ -1,8 +1,5 @@
 <script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import HelloWorld from "./components/HelloWorld.vue";
-
+import FilesViewer from "./components/FilesViewer.vue";
 import { computed, onMounted, ref } from "vue";
 import { FileInfo } from "./renderer";
 
@@ -29,15 +26,9 @@ async function getRootPath() {
 }
 
 async function openFolder(fullPath: string) {
+  console.log('OPEN FOLDER', fullPath)
   path.value =  fullPath
   files.value = await electronAPI.getFiles(fullPath)
-}
-
-const handleClick = async (item: FileInfo) => {
-  console.log('clicked', item.path)
-  if(item.directory) {
-    await openFolder(item.path)
-  }
 }
 
 const handleBackClick = async () => {
@@ -55,16 +46,14 @@ onMounted(async () => {
 </script>
 
 <template>
-    <h1>{{ path }}</h1><button @click="handleBackClick">back</button>
-    <input type="text" v-model="searchString">
-    <ul>
-      <li v-for="item in filteredFiles" :key="item.path" @click="handleClick(item)">
-        {{ 
-          item 
-        }}
+    <h1>{{ path }}</h1>
+    <input type="text" v-model="searchString" class="searchInput" placeholder="search on this folder...">
+    <FilesViewer
+      :files="filteredFiles"
+      @back="handleBackClick"
+      @folderclick="openFolder($event.path)"
+    ></FilesViewer>
 
-      </li>
-    </ul>
     <footer>
       We are using Node.js <span id="node-version">{{electronAPI['node']() }}</span>,
       Chromium <span id="chrome-version">{{electronAPI['chrome']() }}</span>,
@@ -73,25 +62,26 @@ onMounted(async () => {
 </template>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  /* text-align: center; */
-  color: #2c3e50;
-  margin-top: 60px;
-}
-img {
-  margin: 5px;
-}
-.plugins {
-  font-size: 20px;
-  font-weight: bold;
-  margin-top: 20px;
+
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
-li {
-  border: 1px solid red;
-  padding: 20px;
+body {
+  font-family: sans-serif;
 }
+
+.searchInput {
+  width: 100%;
+  padding: 15px 10px;
+  font-family: sans-serif;
+  font-size: 1em;
+}
+
+footer {
+  font-size: .8em;
+  padding: 10px;
+  text-align: right;
+}
+
 </style>
