@@ -19,5 +19,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   electron: () => process.versions.electron,
   ping: () => ipcRenderer.invoke('ping'),
   getRootPath: () => ipcRenderer.invoke('get-root-path'),
+  getBackPath: (path: string) => ipcRenderer.invoke('get-back-path', path),
   getFiles: (path: string) => ipcRenderer.invoke('get-files', path),
 })
