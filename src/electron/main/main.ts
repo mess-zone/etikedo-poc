@@ -4,6 +4,8 @@ import {
     BrowserWindow,
     ipcMain,
 } from 'electron';
+import fs from 'fs'
+import pathModule from 'path'
 
 const isDev = process.env.npm_lifecycle_event === "app:dev" ? true : false;
 
@@ -31,11 +33,42 @@ function createWindow() {
     // );
 }
 
+const formatSize = (size: number): string => {
+    const i = Math.floor(Math.log(size) / Math.log(1024))
+    return (
+        +(size / Math.pow(1024, i)).toFixed() + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i]
+    )
+}
+
+function getFiles(path: string) {
+    // const path = process.cwd()
+    const fileNames = fs.readdirSync(path)
+
+    return fileNames
+        .map(file => {
+            const stats = fs.statSync(pathModule.join(path, file))
+            return {
+                name: file,
+                size: stats.isFile() ? formatSize(stats.size ?? 0) : null,
+                directory: stats.isDirectory(),
+            }
+        })
+        .sort((a, b) => {
+            if(a.directory === b.directory) {
+                return a.name.localeCompare(b.name)
+            }
+            return a.directory ? -1 : 1
+        })
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
     ipcMain.handle('ping', () => 'pong')
+    ipcMain.handle('get-root-path', () => process.cwd())
+    ipcMain.handle('get-files', (event, path) => getFiles(path))
+
     createWindow()
     app.on('activate', function () {
         // On macOS it's common to re-create a window in the app when the
@@ -52,3 +85,6 @@ app.on('window-all-closed', () => {
         app.quit();
     }
 });
+
+console.log('process.cwd():', process.cwd())
+

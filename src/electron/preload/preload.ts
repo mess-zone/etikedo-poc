@@ -18,4 +18,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   chrome: () => process.versions.chrome,
   electron: () => process.versions.electron,
   ping: () => ipcRenderer.invoke('ping'),
+  getRootPath: () => ipcRenderer.invoke('get-root-path'),
+  getFiles: (path: string) => ipcRenderer.invoke('get-files', path),
 })
