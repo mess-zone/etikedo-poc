@@ -3,11 +3,11 @@
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import HelloWorld from "./components/HelloWorld.vue";
 
-import fs from 'fs'
-import pathModule from 'path'
 import { onMounted, ref } from "vue";
+import { FileInfo } from "./renderer";
 
-const path = ref('')
+const rootPath = ref('')
+const files = ref<FileInfo[]>([])
 
 const electronAPI = window.electronAPI
 
@@ -16,8 +16,21 @@ async function sendPing() {
   console.log(response)
 }
 
+async function getRootPath() {
+  const response = await electronAPI.getRootPath()
+  return response
+}
+
+async function getFiles() {
+  const response = await electronAPI.getFiles(rootPath.value)
+  console.log(response)
+  return response
+}
+
 onMounted(async () => {
   await sendPing()
+  rootPath.value =  await getRootPath()
+  files.value =  await getFiles()
 }) 
 
 </script>
@@ -38,6 +51,10 @@ onMounted(async () => {
     Chromium <span id="chrome-version">{{electronAPI['chrome']() }}</span>,
     and Electron <span id="electron-version">{{electronAPI['electron']() }}</span>.
     <button @click="sendPing()">ping</button>
+    {{ rootPath }}
+    <pre>
+      {{ files }}
+    </pre>
 </template>
 
 <style>
