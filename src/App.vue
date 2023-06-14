@@ -3,11 +3,18 @@
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import HelloWorld from "./components/HelloWorld.vue";
 
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { FileInfo } from "./renderer";
 
 const path = ref('')
 const files = ref<FileInfo[]>([])
+
+const searchString = ref('')
+const filteredFiles = computed(() => {
+  return searchString.value 
+    ? files.value.filter(s => s.name.startsWith(searchString.value)) 
+    : files.value
+})
 
 const electronAPI = window.electronAPI
 
@@ -18,11 +25,6 @@ async function sendPing() {
 
 async function getRootPath() {
   const response = await electronAPI.getRootPath()
-  return response
-}
-
-async function getRootFiles() {
-  const response = await electronAPI.getFiles(path.value)
   return response
 }
 
@@ -46,37 +48,28 @@ const handleBackClick = async () => {
 
 onMounted(async () => {
   await sendPing()
-  path.value =  await getRootPath()
-  files.value =  await getRootFiles()
+  const rootPath = await getRootPath()
+  await openFolder(rootPath) 
 }) 
 
 </script>
 
 <template>
-  <img alt="Vite logo" width="120" src="./assets/vite.svg" />
-  <img alt="Vue logo" width="120" src="./assets/logo.png" />
-  <img alt="Electron logo" width="120" src="./assets/electron.png" />
-  <img alt="TS logo" width="120" src="./assets/ts.png" />
-  <HelloWorld msg="Vite + Vue 3 + Electron + TypeScript" />
-  <br />
-  <p class="plugins">Plugins</p>
-  <img alt="vue router logo" width="120" src="./assets/vueRouter.png" />
-  <img alt="pinia logo" width="120" src="./assets/pinia.svg" />
-
-  <h1>Hello World!</h1>
-    We are using Node.js <span id="node-version">{{electronAPI['node']() }}</span>,
-    Chromium <span id="chrome-version">{{electronAPI['chrome']() }}</span>,
-    and Electron <span id="electron-version">{{electronAPI['electron']() }}</span>.
-    <button @click="sendPing()">ping</button>
     <h1>{{ path }}</h1><button @click="handleBackClick">back</button>
+    <input type="text" v-model="searchString">
     <ul>
-      <li v-for="item in files" :key="item.path" @click="handleClick(item)">
+      <li v-for="item in filteredFiles" :key="item.path" @click="handleClick(item)">
         {{ 
           item 
         }}
 
       </li>
     </ul>
+    <footer>
+      We are using Node.js <span id="node-version">{{electronAPI['node']() }}</span>,
+      Chromium <span id="chrome-version">{{electronAPI['chrome']() }}</span>,
+      and Electron <span id="electron-version">{{electronAPI['electron']() }}</span>.
+    </footer>
 </template>
 
 <style>
