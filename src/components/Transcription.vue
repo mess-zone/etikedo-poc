@@ -49,6 +49,9 @@ function handleClickAdd() {
 ul {
     list-style: none;
     padding: 0;
+    /* background-color: aquamarine; */
+    max-height: 77vh;
+    overflow-y: auto;
 }
 
 li {

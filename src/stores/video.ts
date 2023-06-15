@@ -20,6 +20,10 @@ export const useVideoStore = defineStore('video', () => {
             console.log('loadedmetadata')
             isLoadedMetadata.value = true
         })
+
+        media.value.textTracks.onchange = (event) => {
+            console.log(`'${event.type}' event fired`);
+          };
     }
 
     function getTextTracks(): TextTrack[] {
@@ -82,7 +86,7 @@ export const useVideoStore = defineStore('video', () => {
         })
 
         track.addCue(cue);
-        console.log(track.activeCues)
+        // console.log(track.activeCues)
     }
 
     return {
