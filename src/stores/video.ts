@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 export type subtitleCue = {
     isActive: boolean,
@@ -41,8 +41,48 @@ export const useVideoStore = defineStore('video', () => {
         }
     }
 
+    function getCurrentTime() {
+        return media.value.currentTime
+    }
+
     function goToTime(seconds: number) {
         media.value.currentTime = seconds
+    }
+
+    function addCue(text: string, start: number, end: number) {
+        const track = getTextTracks()[0]
+        const cue = new VTTCue(start, end, text)
+        cue.id = ''+ Math.random()
+
+        const subtitleItem = ref({
+            isActive: false,
+            cue: cue,
+        })
+
+        cue.addEventListener("enter", (event) => {
+            console.log('cue enter')
+            subtitleItem.value.isActive = true
+        });
+        cue.addEventListener("exit", (event) => {
+            console.log('cue exit')
+            subtitleItem.value.isActive = false
+        });
+
+        subtitles.value.push(subtitleItem.value)
+        subtitles.value.sort((a, b) => { 
+            if(a.cue.startTime < b.cue.startTime) {
+                // a is less than b
+                return -1
+            } else if(a.cue.startTime > b.cue.startTime) {
+                // a is greater than b
+                return 1
+            } 
+            // a must be equal to b
+            return 0
+        })
+
+        track.addCue(cue);
+        console.log(track.activeCues)
     }
 
     return {
@@ -53,6 +93,8 @@ export const useVideoStore = defineStore('video', () => {
         loadTrack,
         subtitles,
         goToTime,
+        addCue,
+        getCurrentTime,
     }
     
 })

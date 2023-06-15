@@ -1,6 +1,7 @@
 <template>
     <div class="transcription-container">
         <h2>Transcrição</h2>
+        <button @click="handleClickAdd">add</button>
         <ul>
             <li v-for="subtitle in subtitles" :class="{ 'is-active': subtitle.isActive }" @click="handleClick(subtitle)">
                 <!-- <span>{{ subtitle.cue.id }} </span> -->
@@ -31,8 +32,14 @@ function formatDuration(durationInSeconds: number): string {
 }
 
 function handleClick(item: subtitleCue) {
+    console.log('click', item)
     videoStore.goToTime(item.cue.startTime)
 }
+
+function handleClickAdd() {
+    videoStore.addCue('text', videoStore.getCurrentTime(), videoStore.getCurrentTime() + 10)
+}
+
 </script>
 <style scoped>
 .transcription-container {
