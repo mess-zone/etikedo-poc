@@ -2,8 +2,11 @@
     <div class="transcription-item" :class="{ 'is-active': subtitle.isActive }" @click="handleClick">
         <span class="timestamp">
             <button @click="decrementStart">-</button>
+            <button @click="incrementStart">+</button>
             {{ start }}/{{ end }}
-        {{ formatedStart }} - {{ formatedEnd }}
+            {{ formatedStart }} - {{ formatedEnd }}
+            <button @click="decrementEnd">-</button>
+            <button @click="incrementEnd">+</button>
         </span>
         <textarea class="text" v-model="subtitle.cue.text" @input="resizeInput"></textarea>
         <button @click="handleRemove(subtitle, $event)">remove</button>
@@ -45,8 +48,40 @@ function formatDuration(durationInSeconds: number): string {
 
 function decrementStart(e: Event) {
     // e.stopImmediatePropagation()
-    start.value -= 1
+    if(start.value < 0) {
+        // já é negativo
+    } else if(start.value >= 0 && start.value < 1) {
+        // já é entre 0 e 0.999
+    } else {
+        // já é maior que zero
+        start.value -= 1
+    
+        videoStore.updateStartTime(props.subtitle, start.value)
+        decrementEnd(e)
+    }
+}
+
+function incrementStart(e: Event) {
+    // e.stopImmediatePropagation()
+    start.value += 1
     videoStore.updateStartTime(props.subtitle, start.value)
+
+    incrementEnd(e)
+}
+
+function decrementEnd(e: Event) {
+    // e.stopImmediatePropagation()
+    end.value -= 1
+    if(end.value <= start.value) {
+        end.value = start.value + 1
+    }
+    videoStore.updateEndTime(props.subtitle, end.value)
+}
+
+function incrementEnd(e: Event) {
+    // e.stopImmediatePropagation()
+    end.value += 1
+    videoStore.updateEndTime(props.subtitle, end.value)
 }
 
 

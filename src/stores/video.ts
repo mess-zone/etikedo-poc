@@ -106,6 +106,12 @@ export const useVideoStore = defineStore('video', () => {
         subtitleCue.cue.startTime = newValue
     }
 
+    function updateEndTime(subtitleCue: subtitleCue, newValue: number) {
+        // const index = subtitles.value.indexOf(subtitleCue);
+        // subtitles.value[index].cue.startTime = newValue
+        subtitleCue.cue.endTime = newValue
+    }
+
     return {
         media,
         setMedia,
@@ -118,6 +124,7 @@ export const useVideoStore = defineStore('video', () => {
         getCurrentTime,
         removeCue,
         updateStartTime,
+        updateEndTime,
     }
     
 })
