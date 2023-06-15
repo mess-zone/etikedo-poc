@@ -8,7 +8,9 @@
                 <span class="timestamp">
                     {{ formatDuration(subtitle.cue.startTime) }} - {{ formatDuration(subtitle.cue.endTime) }}
                 </span>
-                <pre class="text" v-html="subtitle.cue.text"></pre></li>
+                <pre class="text" v-html="subtitle.cue.text"></pre>
+                <button @click="handleRemove(subtitle, $event)">remove</button>
+            </li>
         </ul>
     </div>
 </template>
@@ -38,6 +40,11 @@ function handleClick(item: subtitleCue) {
 
 function handleClickAdd() {
     videoStore.addCue('text', videoStore.getCurrentTime(), videoStore.getCurrentTime() + 10)
+}
+
+function handleRemove(item: subtitleCue, e: Event) {
+    e.stopImmediatePropagation()
+    videoStore.removeCue(item)
 }
 
 </script>

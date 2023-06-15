@@ -89,6 +89,17 @@ export const useVideoStore = defineStore('video', () => {
         // console.log(track.activeCues)
     }
 
+    function removeCue(subtitleCue: subtitleCue) {
+        const track = getTextTracks()[0]
+        track.removeCue(subtitleCue.cue);
+        console.log('remove clue', track)
+
+        const index = subtitles.value.indexOf(subtitleCue);
+        if (index > -1) {
+            subtitles.value.splice(index, 1);
+        }
+    }
+
     return {
         media,
         setMedia,
@@ -99,6 +110,7 @@ export const useVideoStore = defineStore('video', () => {
         goToTime,
         addCue,
         getCurrentTime,
+        removeCue,
     }
     
 })
