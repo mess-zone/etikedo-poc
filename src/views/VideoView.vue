@@ -5,44 +5,34 @@
             <VideoPlayer 
                 :file-url="fileUrl"
                 :track-url="trackUrl"
-                @loadedmetadata="loadedMetadata"
             />
         </div>
         <div class="col2">
-            <Transcription
-                :subtitles="subtitles"
-                @timeupdate="goToTime"
-            />
+            <Transcription />
         </div>
     </div>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import VideoPlayer from '../components/VideoPlayer.vue'
-import Transcription, { subtitleCue } from '../components/Transcription.vue'
+import Transcription from '../components/Transcription.vue'
+import { useVideoStore } from '../stores/video';
+import { storeToRefs } from 'pinia';
 
 const fileUrl = ref('D:\\gilma\\Documents\\PROJETOS\\MESS-ZONE\\etikedo-poc\\test\\videos\\video1.mp4')
 const trackUrl = ref('D:\\gilma\\Documents\\PROJETOS\\MESS-ZONE\\etikedo-poc\\test\\videos\\video1.vtt')
 
-const subtitles = ref<subtitleCue[]>([])
+const videoStore = useVideoStore()
+const { isLoadedMetadata } = storeToRefs(videoStore)
 
-function loadedMetadata(subtitleTrack: TextTrack) {
-    // @ts-ignore
-    subtitles.value = Object.values(subtitleTrack.cues).map(c => ({ isActive: false, cue: c }))
-
-    for(const subtitle of subtitles.value) {
-        subtitle.cue.addEventListener("enter", (event) => {
-            subtitle.isActive = true
-        });
-        subtitle.cue.addEventListener("exit", (event) => {
-            subtitle.isActive = false
-        });
+watch(isLoadedMetadata, () => {
+    if(isLoadedMetadata.value == true) {
+        // console.log('finalmente metadata está loaded')
+        // console.log('TEXT TRACKS', videoStore.getTextTracks())
+        videoStore.loadTrack('transcription')
     }
-}
+})
 
-function goToTime(seconds: number) {
-    console.log('go to', seconds)
-}
 </script>
 
 <style scoped>

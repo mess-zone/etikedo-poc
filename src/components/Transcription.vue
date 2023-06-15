@@ -12,15 +12,11 @@
     </div>
 </template>
 <script setup lang="ts">
-const emit = defineEmits(['timeupdate'])
+import { subtitleCue, useVideoStore } from '../stores/video';
+import { storeToRefs } from 'pinia';
 
-export type subtitleCue = {
-    isActive: boolean,
-    cue: VTTCue,
-}
-defineProps<{
-    subtitles: subtitleCue[],
-}>()
+const videoStore = useVideoStore()
+const { subtitles } = storeToRefs(videoStore)
 
 function formatDuration(durationInSeconds: number): string {
   const hours = Math.floor(durationInSeconds / 3600);
@@ -35,8 +31,7 @@ function formatDuration(durationInSeconds: number): string {
 }
 
 function handleClick(item: subtitleCue) {
-    // console.log('clicked', item.cue.startTime)
-    emit('timeupdate', item.cue.startTime)
+    videoStore.goToTime(item.cue.startTime)
 }
 </script>
 <style scoped>
@@ -56,6 +51,11 @@ li {
     margin-bottom: 10px;
     box-sizing: border-box;
     border: 3px solid transparent;
+    cursor: pointer;
+}
+
+li:hover {
+    background-color: rgba(255, 192, 203, 0.85);
 }
 
 .timestamp {

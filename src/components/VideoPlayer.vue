@@ -17,8 +17,9 @@
 </template>
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import { useVideoStore } from '../stores/video';
 
-const emit = defineEmits(['loadedmetadata'])
+const videoStore = useVideoStore()
 
 defineProps<{
     fileUrl: string,
@@ -28,13 +29,7 @@ defineProps<{
 const media = ref(null)
 
 onMounted(() => {
-    media.value.addEventListener('loadedmetadata', (e: Event) => {
-        console.log('loadedmetadata')
-        emit('loadedmetadata', (e.target as HTMLMediaElement).textTracks[0])
-    } )
-    // media.value.addEventListener('timeupdate', (e: Event) => {
-    //     console.log('timeupdate', media.value.currentTime)
-    // } )
+    videoStore.setMedia(media.value)
 })
 </script>
 
