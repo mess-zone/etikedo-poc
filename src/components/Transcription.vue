@@ -2,18 +2,22 @@
     <div class="transcription-container">
         <h2>Transcrição</h2>
         <ul>
-            <li v-for="cue in subtitles">
+            <li v-for="subtitle in subtitles" :class="{ 'is-active': subtitle.isActive }">
+                <!-- <span>{{ subtitle.cue.id }} </span> -->
                 <span class="timestamp">
-                    {{ formatDuration(cue.startTime) }} - {{ formatDuration(cue.endTime) }}
+                    {{ formatDuration(subtitle.cue.startTime) }} - {{ formatDuration(subtitle.cue.endTime) }}
                 </span>
-                <pre class="text" v-html="cue.text"></pre></li>
+                <pre class="text" v-html="subtitle.cue.text"></pre></li>
         </ul>
     </div>
 </template>
 <script setup lang="ts">
-
+export type subtitleCue = {
+    isActive: boolean,
+    cue: VTTCue,
+}
 defineProps<{
-    subtitles: VTTCue[],
+    subtitles: subtitleCue[],
 }>()
 
 function formatDuration(durationInSeconds: number): string {
@@ -44,6 +48,8 @@ li {
     padding: 10px 15px;
     border-radius: 8px;
     margin-bottom: 10px;
+    box-sizing: border-box;
+    border: 3px solid transparent;
 }
 
 .timestamp {
@@ -56,5 +62,10 @@ li {
     margin-top: 5px;
     line-height: 1.5;
     white-space: break-spaces;
+}
+
+li.is-active {
+    background-color: rgba(255, 113, 184, 0.842);
+    border-color: rgba(240, 0, 120, 0.842);
 }
 </style>

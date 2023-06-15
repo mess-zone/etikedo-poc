@@ -16,34 +16,29 @@
     </div>
 </template>
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import VideoPlayer from '../components/VideoPlayer.vue'
-import Transcription from '../components/Transcription.vue'
+import Transcription, { subtitleCue } from '../components/Transcription.vue'
 
 const fileUrl = ref('D:\\gilma\\Documents\\PROJETOS\\MESS-ZONE\\etikedo-poc\\test\\videos\\video1.mp4')
 const trackUrl = ref('D:\\gilma\\Documents\\PROJETOS\\MESS-ZONE\\etikedo-poc\\test\\videos\\video1.vtt')
 
-const subtitles = ref<VTTCue[]>([])
+const subtitles = ref<subtitleCue[]>([])
 
 function loadedMetadata(subtitleTrack: TextTrack) {
     // @ts-ignore
-    subtitles.value = Object.values(subtitleTrack.cues)
+    subtitles.value = Object.values(subtitleTrack.cues).map(c => ({ isActive: false, cue: c }))
+
+    for(const subtitle of subtitles.value) {
+        subtitle.cue.addEventListener("enter", (event) => {
+            subtitle.isActive = true
+        });
+        subtitle.cue.addEventListener("exit", (event) => {
+            subtitle.isActive = false
+        });
+    }
 }
 
-onMounted(() => {
-    // const track = media.value.textTracks[0]
-    
-    // track.addEventListener("cuechange", () => {
-    //     const cues = track.activeCues;
-    //     // console.table(cues)
-    // });
-
-    // media.value.addEventListener('loadedmetadata', () => {
-    //     console.log('loadedmetadata')
-    //     console.table(track.cues)
-    //     subtitles.value = track.cues
-    // } )
-})
 </script>
 
 <style scoped>
