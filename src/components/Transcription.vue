@@ -2,7 +2,7 @@
     <div class="transcription-container">
         <h2>Transcrição</h2>
         <ul>
-            <li v-for="subtitle in subtitles" :class="{ 'is-active': subtitle.isActive }">
+            <li v-for="subtitle in subtitles" :class="{ 'is-active': subtitle.isActive }" @click="handleClick(subtitle)">
                 <!-- <span>{{ subtitle.cue.id }} </span> -->
                 <span class="timestamp">
                     {{ formatDuration(subtitle.cue.startTime) }} - {{ formatDuration(subtitle.cue.endTime) }}
@@ -12,6 +12,8 @@
     </div>
 </template>
 <script setup lang="ts">
+const emit = defineEmits(['timeupdate'])
+
 export type subtitleCue = {
     isActive: boolean,
     cue: VTTCue,
@@ -32,6 +34,10 @@ function formatDuration(durationInSeconds: number): string {
   return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
 }
 
+function handleClick(item: subtitleCue) {
+    // console.log('clicked', item.cue.startTime)
+    emit('timeupdate', item.cue.startTime)
+}
 </script>
 <style scoped>
 .transcription-container {

@@ -32,6 +32,9 @@ onMounted(() => {
         console.log('loadedmetadata')
         emit('loadedmetadata', (e.target as HTMLMediaElement).textTracks[0])
     } )
+    // media.value.addEventListener('timeupdate', (e: Event) => {
+    //     console.log('timeupdate', media.value.currentTime)
+    // } )
 })
 </script>
 

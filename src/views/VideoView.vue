@@ -11,6 +11,7 @@
         <div class="col2">
             <Transcription
                 :subtitles="subtitles"
+                @timeupdate="goToTime"
             />
         </div>
     </div>
@@ -39,6 +40,9 @@ function loadedMetadata(subtitleTrack: TextTrack) {
     }
 }
 
+function goToTime(seconds: number) {
+    console.log('go to', seconds)
+}
 </script>
 
 <style scoped>
