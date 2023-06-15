@@ -3,7 +3,7 @@
         <h2>Transcrição</h2>
         <button @click="handleClickAdd">add</button>
         <ul>
-            <li v-for="subtitle in subtitles">
+            <li v-for="subtitle in subtitles" :key="subtitle.cue.id">
                 <TranscriptionItem  :subtitle="subtitle"/>
             </li>
         </ul>

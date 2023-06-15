@@ -2,7 +2,8 @@
     <div class="transcription-item" :class="{ 'is-active': subtitle.isActive }" @click="handleClick(subtitle)">
         <!-- <span>{{ subtitle.cue.id }} </span> -->
         <span class="timestamp">
-        {{ formatDuration(subtitle.cue.startTime) }} - {{ formatDuration(subtitle.cue.endTime) }}
+            {{ start }}/{{ end }}
+        {{ formatedStart }} - {{ formatedEnd }}
         </span>
         <textarea class="text" v-model="subtitle.cue.text" @input="resizeInput"></textarea>
         <button @click="handleRemove(subtitle, $event)">remove</button>
@@ -10,15 +11,25 @@
 </template>
 
 <script setup lang="ts">
+import { computed, ref } from 'vue';
 import { subtitleCue, useVideoStore } from '../stores/video';
-import { storeToRefs } from 'pinia';
 
-defineProps<{
+const props = defineProps<{
     subtitle: subtitleCue
 }>()
 
 const videoStore = useVideoStore()
-const { subtitles } = storeToRefs(videoStore)
+
+const start = ref(props.subtitle.cue.startTime)
+const end = ref(props.subtitle.cue.endTime)
+
+const formatedStart = computed(()=> {
+    return formatDuration(start.value)
+})
+
+const formatedEnd = computed(()=> {
+    return formatDuration(end.value)
+})
 
 function formatDuration(durationInSeconds: number): string {
   const hours = Math.floor(durationInSeconds / 3600);
