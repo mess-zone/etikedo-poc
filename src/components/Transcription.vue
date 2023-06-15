@@ -8,7 +8,7 @@
                 <span class="timestamp">
                     {{ formatDuration(subtitle.cue.startTime) }} - {{ formatDuration(subtitle.cue.endTime) }}
                 </span>
-                <pre class="text" v-html="subtitle.cue.text"></pre>
+                <textarea class="text" v-model="subtitle.cue.text" @input="resizeInput"></textarea>
                 <button @click="handleRemove(subtitle, $event)">remove</button>
             </li>
         </ul>
@@ -31,6 +31,15 @@ function formatDuration(durationInSeconds: number): string {
   const formattedSeconds = seconds.toString().padStart(2, '0');
 
   return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+}
+
+function resizeInput(e: Event) {
+    console.log('resize input', e)
+    e.target
+    // @ts-ignore
+    e.target.style.height = "18px";
+    // @ts-ignore
+    e.target.style.height = e.target.scrollHeight + "px";
 }
 
 function handleClick(item: subtitleCue) {
@@ -85,6 +94,11 @@ li:hover {
     margin-top: 5px;
     line-height: 1.5;
     white-space: break-spaces;
+    display: block;
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    min-height: 18px;
 }
 
 li.is-active {
