@@ -26,15 +26,19 @@
 </template>
 <script setup lang="ts">
 import { FileInfo } from '../renderer';
+import { useRouter } from 'vue-router'
 const emit = defineEmits(['folderclick', 'back'])
-
 defineProps<{
     files: FileInfo[]
 }>()
 
+const router = useRouter()
+
 function onFileClick(file: FileInfo) {
     if(file.directory) {
         emit('folderclick', file)
+    } else {
+        router.push({ name: 'Video' })
     }
 }
 </script>
