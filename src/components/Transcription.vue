@@ -4,7 +4,7 @@
         <button @click="handleClickAdd">add</button>
         <ul>
             <li v-for="subtitle in subtitles" :key="subtitle.cue.id">
-                <TranscriptionItem  :subtitle="subtitle"/>
+                <TranscriptionItem :subtitle="subtitle" />
             </li>
         </ul>
     </div>

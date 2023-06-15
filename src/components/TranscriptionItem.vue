@@ -1,7 +1,7 @@
 <template>
-    <div class="transcription-item" :class="{ 'is-active': subtitle.isActive }" @click="handleClick(subtitle)">
-        <!-- <span>{{ subtitle.cue.id }} </span> -->
+    <div class="transcription-item" :class="{ 'is-active': subtitle.isActive }" @click="handleClick">
         <span class="timestamp">
+            <button @click="decrementStart">-</button>
             {{ start }}/{{ end }}
         {{ formatedStart }} - {{ formatedEnd }}
         </span>
@@ -43,6 +43,12 @@ function formatDuration(durationInSeconds: number): string {
   return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
 }
 
+function decrementStart(e: Event) {
+    // e.stopImmediatePropagation()
+    start.value -= 1
+    videoStore.updateStartTime(props.subtitle, start.value)
+}
+
 
 function resizeInput(e: Event) {
     console.log('resize input', e)
@@ -53,9 +59,9 @@ function resizeInput(e: Event) {
     e.target.style.height = e.target.scrollHeight + "px";
 }
 
-function handleClick(item: subtitleCue) {
-    console.log('click', item)
-    videoStore.goToTime(item.cue.startTime)
+function handleClick() {
+    console.log('click', props.subtitle)
+    videoStore.goToTime(props.subtitle.cue.startTime)
 }
 
 function handleRemove(item: subtitleCue, e: Event) {
