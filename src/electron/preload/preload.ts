@@ -23,4 +23,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getFiles: (path: string) => ipcRenderer.invoke('get-files', path),
   
   createFile: (path: string, data: any) => ipcRenderer.invoke('create-file', path, data),
+  openFileDialog: (config: any) => ipcRenderer.invoke('file-dialog', config),
 })

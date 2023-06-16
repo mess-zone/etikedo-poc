@@ -1,5 +1,6 @@
 <template>
     <div class="transcription-container">
+        <button @click="handleImportTrackFile">import</button>
         <h2>Transcrição</h2>
         <button @click="handleClickAdd">add</button>
         <ul>
@@ -21,6 +22,26 @@ function handleClickAdd() {
     videoStore.addCue('text', videoStore.getCurrentTime(), videoStore.getCurrentTime() + 10)
 }
 
+const electronAPI = window.electronAPI
+
+async function openFileDialog() {
+    const dialogConfig = {
+        title: 'Select a transcription file',
+        buttonLabel: 'Importar',
+        properties: ['openFile'],
+        filters: [
+            { name: 'VTT', extensions: ['vtt'] },
+        ]
+    };
+
+    const result = await electronAPI.openFileDialog(dialogConfig)
+    console.log('o resultado foi:', result)
+
+}
+
+async function handleImportTrackFile() {
+    await openFileDialog()
+}
 
 
 </script>

@@ -60,7 +60,6 @@ export const useVideoStore = defineStore('video', () => {
 
     function loadTrack(trackId: string) {
         const track = getTextTracks().find(track => track.id == trackId)
-        console.table(track.cues)
         subtitles.value = Object.values(track.cues).map(c => ({ isActive: false, cue: c as VTTCue }))
 
         for(const subtitle of subtitles.value) {

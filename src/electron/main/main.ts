@@ -3,6 +3,7 @@ import {
     app,
     BrowserWindow,
     ipcMain,
+    dialog,
 } from 'electron';
 import fs from 'fs'
 import pathModule from 'path'
@@ -112,6 +113,10 @@ app.whenReady().then(() => {
     ipcMain.handle('get-back-path', (event, path) => pathModule.join(path,'../'))
     ipcMain.handle('get-files', (event, path) => getFiles(path))
     ipcMain.handle('create-file', (event, path, data) => createFile(path, data))
+
+    ipcMain.handle('file-dialog', (event, params) => {     
+       return dialog.showOpenDialogSync(params);
+    });
 
     createWindow()
     app.on('activate', function () {

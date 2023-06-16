@@ -14,6 +14,7 @@ export interface IElectronAPI {
     getBackPath: (path: string) => Promise<string>,
     getFiles: (path: string) => Promise<FileInfo[]>,
     createFile: (path: string, data: any) => Promise<void>,
+    openFileDialog: (config: any) => Promise<string[]>,
 }
 
 declare global {
