@@ -34,8 +34,9 @@ onMounted(() => {
 
 .video-container video {
     inset: 0;
+    max-height: 100%;
     max-width: 100%;
-    aspect-ratio: 16/9;
+    /* aspect-ratio: 16/9; */
 }
 
 </style>

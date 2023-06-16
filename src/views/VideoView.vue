@@ -9,6 +9,7 @@
             <VideoPlayer 
                 :file-url="selectedFileUrl"
             />
+
             <div id="audio-wave-container"></div>
         </div>
         <div class="col2">
@@ -46,6 +47,14 @@ onMounted(() => {
         progressColor: 'rgb(100, 0, 100)',
         // Pass the video element in the `media` param
         media: document.querySelector('video'),
+        fillParent: false,
+        hideScrollbar: false,
+        minPxPerSec: 30,
+        barHeight: 1.8,
+    })
+
+    ws.on('ready', () => {
+        console.log('wavesurfer ready')
     })
 
 })
@@ -70,6 +79,7 @@ onUnmounted(() => {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    max-width: 70%;
 }
 
 .col2 {
