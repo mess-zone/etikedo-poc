@@ -9,6 +9,7 @@
             <VideoPlayer 
                 :file-url="selectedFileUrl"
             />
+            <div id="audio-wave-container"></div>
         </div>
         <div class="col2">
             <Transcription />
@@ -16,11 +17,12 @@
     </div>
 </template>
 <script setup lang="ts">
-import { onUnmounted } from 'vue';
+import { onMounted, onUnmounted } from 'vue';
 import VideoPlayer from '../components/VideoPlayer.vue'
 import Transcription from '../components/Transcription.vue'
 import { useVideoStore } from '../stores/video';
 import { storeToRefs } from 'pinia';
+import WaveSurfer from 'wavesurfer.js'
 
 // TODO hardcoded
 // const trackUrl = ref('D:\\gilma\\Documents\\PROJETOS\\MESS-ZONE\\etikedo-poc\\test\\videos\\video1.vtt')
@@ -35,9 +37,18 @@ const { selectedFileUrl } = storeToRefs(videoStore)
 // })
 
 
-// onMounted(() => {
-//     console.log(selectedFileUrl)
-// })
+onMounted(() => {
+
+    // Initialize wavesurfer.js
+    const ws = WaveSurfer.create({
+        container: document.querySelector('#audio-wave-container') as HTMLElement,
+        waveColor: 'rgb(200, 0, 200)',
+        progressColor: 'rgb(100, 0, 100)',
+        // Pass the video element in the `media` param
+        media: document.querySelector('video'),
+    })
+
+})
 
 onUnmounted(() => {
     // console.log('video unmonted')
@@ -55,8 +66,10 @@ onUnmounted(() => {
 }
 
 .col1 {
-    background-color: gray;
+    background-color: #ebe7e7;
     display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
 }
 
 .col2 {
