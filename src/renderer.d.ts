@@ -15,7 +15,7 @@ export interface IElectronAPI {
     getFiles: (path: string) => Promise<FileInfo[]>,
     createFile: (path: string, data: any) => Promise<void>,
     openFileDialog: (config: any) => Promise<string[]>,
-    openSaveDialog: (config: any) => Promise<string[]>,
+    openSaveDialog: (config: any) => Promise<string>,
 }
 
 declare global {
