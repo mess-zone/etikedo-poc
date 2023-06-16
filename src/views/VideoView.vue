@@ -17,7 +17,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
 import VideoPlayer from '../components/VideoPlayer.vue'
 import Transcription from '../components/Transcription.vue'
 import { useVideoStore } from '../stores/video';
@@ -51,6 +51,11 @@ async function handleSave() {
 // onMounted(() => {
 //     console.log(selectedFileUrl)
 // })
+
+onUnmounted(() => {
+    console.log('video unmonted')
+    videoStore.$reset()
+})
 
 </script>
 

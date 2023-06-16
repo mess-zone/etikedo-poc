@@ -7,6 +7,7 @@ export type subtitleCue = {
 }
 
 const selectedFileUrl = ref('')
+const selectedTranscriptionFileUrl = ref('')
 
 const media = ref(null)
 const isLoadedMetadata = ref(false)
@@ -14,6 +15,16 @@ const isLoadedMetadata = ref(false)
 const subtitles = ref<subtitleCue[]>([])
 
 export const useVideoStore = defineStore('video', () => {
+
+    function $reset() {
+        selectedFileUrl.value = ''
+        selectedTranscriptionFileUrl.value = ''
+
+        media.value = null
+        isLoadedMetadata.value = false
+        
+        subtitles.value = []
+    }
 
     function setMedia(videoMedia: HTMLMediaElement) {
         media.value = videoMedia
@@ -147,7 +158,9 @@ export const useVideoStore = defineStore('video', () => {
     }
 
     return {
+        $reset,
         selectedFileUrl,
+        selectedTranscriptionFileUrl,
         media,
         setMedia,
         isLoadedMetadata,
