@@ -2,7 +2,6 @@
     <h2>
         <router-link to="/">fechar</router-link> 
         {{selectedFileUrl}}
-        <button @click="handleSave">save</button>
     </h2>
     
     <div class="container">
@@ -17,7 +16,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { onUnmounted } from 'vue';
 import VideoPlayer from '../components/VideoPlayer.vue'
 import Transcription from '../components/Transcription.vue'
 import { useVideoStore } from '../stores/video';
@@ -27,7 +26,7 @@ import { storeToRefs } from 'pinia';
 // const trackUrl = ref('D:\\gilma\\Documents\\PROJETOS\\MESS-ZONE\\etikedo-poc\\test\\videos\\video1.vtt')
 
 const videoStore = useVideoStore()
-const { isLoadedMetadata, selectedFileUrl } = storeToRefs(videoStore)
+const { selectedFileUrl } = storeToRefs(videoStore)
 
 // watch(isLoadedMetadata, () => {
 //     if(isLoadedMetadata.value == true) {
@@ -35,25 +34,13 @@ const { isLoadedMetadata, selectedFileUrl } = storeToRefs(videoStore)
 //     }
 // })
 
-const electronAPI = window.electronAPI
-
-async function createFile(path: string, data: any) {
-  const response = await electronAPI.createFile(path, data)
-  console.log(response)
-}
-
-async function handleSave() {
-    console.log('save')
-    const data = videoStore.exportTrack('transcription')
-    await createFile('D:\\gilma\\Documents\\PROJETOS\\MESS-ZONE\\etikedo-poc\\test\\videos\\teste.vtt', data)
-}
 
 // onMounted(() => {
 //     console.log(selectedFileUrl)
 // })
 
 onUnmounted(() => {
-    console.log('video unmonted')
+    // console.log('video unmonted')
     videoStore.$reset()
 })
 

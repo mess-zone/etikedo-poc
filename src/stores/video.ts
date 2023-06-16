@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { stringifyQuery } from 'vue-router'
 
 export type subtitleCue = {
     isActive: boolean,
@@ -32,7 +33,7 @@ export const useVideoStore = defineStore('video', () => {
         media.value.addEventListener('loadedmetadata', (e: Event) => {
             // console.log('loadedmetadata')
             isLoadedMetadata.value = true
-        })
+        }, { once: true })
 
         // media.value.textTracks.onchange = (event) => {
         //     console.log(`'${event.type}' event fired`);
@@ -43,6 +44,23 @@ export const useVideoStore = defineStore('video', () => {
         return Object.values(media.value.textTracks)
     }
 
+    function createEmptyTrack(trackId: string) {
+        const track: HTMLTrackElement = media.value.addTextTrack("subtitles", trackId, "pt-BR");
+        
+        media.value.textTracks.addEventListener("addtrack", (e) => {
+            // console.log('added track', e.track)
+            e.track.mode = 'showing'
+            // media.value.textTracks[0].mode = "showing"; // thanks Firefox
+            // loadTrack(trackId)
+        }, { once: true });
+
+
+        // track.addEventListener("load", function() {
+        //     console.log('track loaded')
+        //     // loadTrack(trackId)
+        // });
+    }
+
     function importTextTrack(trackId: string, path: string) {
 
         media.value.textTracks.addEventListener("addtrack", (e) => {
@@ -50,27 +68,27 @@ export const useVideoStore = defineStore('video', () => {
             e.track.mode = 'showing'
             // media.value.textTracks[0].mode = "showing"; // thanks Firefox
             // loadTrack(trackId)
-        });
+        }, { once: true });
 
         const track = document.createElement("track");
         // track.default = true
         track.kind = "subtitles";
-        track.id = trackId
+        // track.id = trackId
         track.label = trackId;
         track.srclang = "pt-BR";
         track.src = path
         track.addEventListener("load", function() {
-            console.log('track loaded')
+            // console.log('track loaded')
             loadTrack(trackId)
             // // @ts-ignore
             // track.mode = "showing";
             // media.value.textTracks[0].mode = "showing"; // thanks Firefox
-        });
+        }, { once: true });
         media.value.appendChild(track);
     }
 
     function loadTrack(trackId: string) {
-        const track = getTextTracks().find(track => track.id == trackId)
+        const track = getTextTracks().find(track => track.label == trackId)
         subtitles.value = Object.values(track.cues).map(c => ({ isActive: false, cue: c as VTTCue }))
 
         for(const subtitle of subtitles.value) {
@@ -84,7 +102,7 @@ export const useVideoStore = defineStore('video', () => {
     }
 
     function exportTrack(trackId: string) {
-        const track = getTextTracks().find(track => track.id == trackId)
+        const track = getTextTracks().find(track => track.label == trackId)
         return Object.values(track.cues)
                     .map(c => c as VTTCue)
                     .map(c => ({ id: c.id, startTime: c.startTime, endTime: c.endTime, text: c.text }))
@@ -165,6 +183,7 @@ export const useVideoStore = defineStore('video', () => {
         setMedia,
         isLoadedMetadata,
         getTextTracks,
+        createEmptyTrack,
         importTextTrack,
         loadTrack,
         exportTrack,
