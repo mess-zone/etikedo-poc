@@ -33,17 +33,22 @@ const formatedEnd = computed(()=> {
     return formatDuration(end.value)
 })
 
+// TODO duplicated function
 function formatDuration(durationInSeconds: number): string {
-  const hours = Math.floor(durationInSeconds / 3600);
-  const minutes = Math.floor((durationInSeconds % 3600) / 60);
-  const seconds = Math.floor(durationInSeconds % 60);
-
-  const formattedHours = hours.toString().padStart(2, '0');
-  const formattedMinutes = minutes.toString().padStart(2, '0');
-  const formattedSeconds = seconds.toString().padStart(2, '0');
-
-  return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+    const hours = Math.floor(durationInSeconds / 3600);
+    const minutes = Math.floor((durationInSeconds % 3600) / 60);
+    const seconds = Math.floor(durationInSeconds % 60);
+    const milliseconds = Math.floor((durationInSeconds % 1) * 1000);
+  
+    const formattedHours = hours.toString().padStart(2, '0');
+    const formattedMinutes = minutes.toString().padStart(2, '0');
+    const formattedSeconds = seconds.toString().padStart(2, '0');
+    const formattedMilliseconds = milliseconds.toString().padStart(3, '0');
+  
+    return `${formattedHours}:${formattedMinutes}:${formattedSeconds}.${formattedMilliseconds}`;
 }
+
+const UNIT = 0.5
 
 function decrementStart(e: Event) {
     // e.stopImmediatePropagation()
@@ -53,7 +58,7 @@ function decrementStart(e: Event) {
         // já é entre 0 e 0.999
     } else {
         // já é maior que zero
-        start.value -= 1
+        start.value -= UNIT
     
         videoStore.updateStartTime(props.subtitle, start.value)
         decrementEnd(e)
@@ -62,7 +67,7 @@ function decrementStart(e: Event) {
 
 function incrementStart(e: Event) {
     // e.stopImmediatePropagation()
-    start.value += 1
+    start.value += UNIT
     videoStore.updateStartTime(props.subtitle, start.value)
 
     incrementEnd(e)
@@ -70,16 +75,16 @@ function incrementStart(e: Event) {
 
 function decrementEnd(e: Event) {
     // e.stopImmediatePropagation()
-    end.value -= 1
+    end.value -= UNIT
     if(end.value <= start.value) {
-        end.value = start.value + 1
+        end.value = start.value + UNIT
     }
     videoStore.updateEndTime(props.subtitle, end.value)
 }
 
 function incrementEnd(e: Event) {
     // e.stopImmediatePropagation()
-    end.value += 1
+    end.value += UNIT
     videoStore.updateEndTime(props.subtitle, end.value)
 }
 
