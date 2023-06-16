@@ -24,16 +24,16 @@ import { useVideoStore } from '../stores/video';
 import { storeToRefs } from 'pinia';
 
 // TODO hardcoded
-const trackUrl = ref('D:\\gilma\\Documents\\PROJETOS\\MESS-ZONE\\etikedo-poc\\test\\videos\\video1.vtt')
+// const trackUrl = ref('D:\\gilma\\Documents\\PROJETOS\\MESS-ZONE\\etikedo-poc\\test\\videos\\video1.vtt')
 
 const videoStore = useVideoStore()
 const { isLoadedMetadata, selectedFileUrl } = storeToRefs(videoStore)
 
-watch(isLoadedMetadata, () => {
-    if(isLoadedMetadata.value == true) {
-        videoStore.importTextTrack('transcription', trackUrl.value)
-    }
-})
+// watch(isLoadedMetadata, () => {
+//     if(isLoadedMetadata.value == true) {
+//         videoStore.importTextTrack('transcription', trackUrl.value)
+//     }
+// })
 
 const electronAPI = window.electronAPI
 

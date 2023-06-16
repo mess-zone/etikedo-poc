@@ -34,13 +34,20 @@ async function openFileDialog() {
         ]
     };
 
+     
     const result = await electronAPI.openFileDialog(dialogConfig)
-    console.log('o resultado foi:', result)
+    return result
 
 }
 
 async function handleImportTrackFile() {
-    await openFileDialog()
+    const paths = await openFileDialog()
+    if(paths) {
+        console.log('arquivo selecionado', paths[0])
+        videoStore.importTextTrack('transcription', paths[0])
+    } else {
+        console.log('dialogo cancelado')
+    }
 }
 
 
