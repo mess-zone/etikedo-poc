@@ -92,8 +92,6 @@ function incrementEnd(e: Event) {
 
 
 function resizeInput(target: HTMLTextAreaElement) {
-    console.log('resize input', target)
- 
     // @ts-ignore
     target.style.height = "18px";
     // @ts-ignore
