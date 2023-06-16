@@ -87,17 +87,21 @@ function formatDuration(durationInSeconds: number): string {
     return `${formattedHours}:${formattedMinutes}:${formattedSeconds}.${formattedMilliseconds}`;
 }
 
+const escapeNewLines = (str: string) => {
+    console.log('replace ', str, str.replace(/\n/g, "\\n"))
+    return str.replace(/\n/g, "\\n")
+}
+
 function createFile(path: string, data: any) {
     console.log('creating file....')
 
     let content = 'WEBVTT'
 
-    // TODO text cannot have new empty lines
     // TODO order array by start date before convert to string
     content += data.map((cue: any) => 
         `\n\n${cue.id}` +
         `\n${formatDuration(cue.startTime)} --> ${formatDuration(cue.endTime)}` +
-        `\n${cue.text}` 
+        `\n${escapeNewLines(cue.text).trim()}` 
     ).join('')
 
     saveFile(path, content)

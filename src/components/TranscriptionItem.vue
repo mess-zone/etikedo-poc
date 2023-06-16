@@ -7,14 +7,16 @@
             <button @click="decrementEnd">-</button>
             <button @click="incrementEnd">+</button>
         </span>
-        <textarea class="text" v-model="subtitle.cue.text" @input="resizeInput"></textarea>
+        <textarea ref="textInput" class="text" v-model="subtitle.cue.text" @input="resizeInput($event.target)"></textarea>
         <button @click="handleRemove(subtitle, $event)">remove</button>
     </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { subtitleCue, useVideoStore } from '../stores/video';
+
+const textInput = ref(null)
 
 const props = defineProps<{
     subtitle: subtitleCue
@@ -89,13 +91,13 @@ function incrementEnd(e: Event) {
 }
 
 
-function resizeInput(e: Event) {
-    // console.log('resize input', e)
-    e.target
+function resizeInput(target: HTMLTextAreaElement) {
+    console.log('resize input', target)
+ 
     // @ts-ignore
-    e.target.style.height = "18px";
+    target.style.height = "18px";
     // @ts-ignore
-    e.target.style.height = e.target.scrollHeight + "px";
+    target.style.height = target.scrollHeight + "px";
 }
 
 function handleClick() {
@@ -107,6 +109,10 @@ function handleRemove(item: subtitleCue, e: Event) {
     e.stopImmediatePropagation()
     videoStore.removeCue(item)
 }
+
+onMounted(() => {
+    resizeInput(textInput.value)
+})
 
 </script>
 

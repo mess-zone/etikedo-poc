@@ -87,11 +87,16 @@ export const useVideoStore = defineStore('video', () => {
         media.value.appendChild(track);
     }
 
+    const unescapeNewLine = (str: string) => str.replace(/\\n/g, '\n')
+
     function loadTrack(trackId: string) {
         const track = getTextTracks().find(track => track.label == trackId)
-        subtitles.value = Object.values(track.cues).map(c => ({ isActive: false, cue: c as VTTCue }))
+        subtitles.value = Object.values(track.cues)
+            .map(c => ({ isActive: false, cue: c as VTTCue }))
 
         for(const subtitle of subtitles.value) {
+            subtitle.cue.text = unescapeNewLine(subtitle.cue.text).trim()
+
             subtitle.cue.addEventListener("enter", (event) => {
                 subtitle.isActive = true
             });
