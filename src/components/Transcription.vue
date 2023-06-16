@@ -2,6 +2,7 @@
     <div class="transcription-container">
         <h2>Transcrição</h2>
         <button @click="handleImportTrackFile" v-if="!isTranscritionTrackLoaded">import</button>
+        <button @click="handleNewTrackFile" v-if="!isTranscritionTrackLoaded">new</button>
         <button @click="handleClickAdd" v-else>add</button>
         <ul>
             <li v-for="subtitle in subtitles" :key="subtitle.cue.id">
@@ -49,6 +50,34 @@ async function handleImportTrackFile() {
         console.log('arquivo selecionado', paths[0])
         videoStore.importTextTrack('transcription', paths[0])
         isTranscritionTrackLoaded.value = true
+    } else {
+        console.log('dialogo cancelado')
+    }
+}
+
+async function openSaveDialog() {
+    const dialogConfig = {
+        title: 'Select a directory to save transcription',
+        buttonLabel: 'Salvar como',
+        defaultPath: 'transcription.vtt',
+        filters: [
+            { name: 'VTT', extensions: ['vtt'] },
+        ]
+    };
+
+     
+    const result = await electronAPI.openSaveDialog(dialogConfig)
+    return result
+
+}
+
+async function handleNewTrackFile() {
+    console.log('new file')
+    const paths = await openSaveDialog()
+    if(paths) {
+        console.log('caminho selecionado', paths)
+        // videoStore.importTextTrack('transcription', paths[0])
+        // isTranscritionTrackLoaded.value = true
     } else {
         console.log('dialogo cancelado')
     }

@@ -118,6 +118,10 @@ app.whenReady().then(() => {
        return dialog.showOpenDialogSync(params);
     });
 
+    ipcMain.handle('file-save-dialog', (event, params) => {     
+       return dialog.showSaveDialogSync(params);
+    });
+
     createWindow()
     app.on('activate', function () {
         // On macOS it's common to re-create a window in the app when the
