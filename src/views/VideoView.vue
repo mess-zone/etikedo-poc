@@ -27,8 +27,6 @@ const { isLoadedMetadata } = storeToRefs(videoStore)
 
 watch(isLoadedMetadata, () => {
     if(isLoadedMetadata.value == true) {
-        // console.log('finalmente metadata está loaded')
-        // console.log('TEXT TRACKS', videoStore.getTextTracks())
         videoStore.loadTrack('transcription')
     }
 })

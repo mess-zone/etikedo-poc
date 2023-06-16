@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 
 export type subtitleCue = {
     isActive: boolean,
@@ -17,13 +17,13 @@ export const useVideoStore = defineStore('video', () => {
         media.value = videoMedia
 
         media.value.addEventListener('loadedmetadata', (e: Event) => {
-            console.log('loadedmetadata')
+            // console.log('loadedmetadata')
             isLoadedMetadata.value = true
         })
 
-        media.value.textTracks.onchange = (event) => {
-            console.log(`'${event.type}' event fired`);
-          };
+        // media.value.textTracks.onchange = (event) => {
+        //     console.log(`'${event.type}' event fired`);
+        // };
     }
 
     function getTextTracks(): TextTrack[] {
@@ -31,7 +31,7 @@ export const useVideoStore = defineStore('video', () => {
     }
 
     function loadTrack(trackId: string) {
-        console.log('load track ', trackId)
+        // console.log('load track ', trackId)
         const track = getTextTracks().find(track => track.id == trackId)
         subtitles.value = Object.values(track.cues).map(c => ({ isActive: false, cue: c as VTTCue }))
 
@@ -64,11 +64,11 @@ export const useVideoStore = defineStore('video', () => {
         })
 
         cue.addEventListener("enter", (event) => {
-            console.log('cue enter')
+            // console.log('cue enter')
             subtitleItem.value.isActive = true
         });
         cue.addEventListener("exit", (event) => {
-            console.log('cue exit')
+            // console.log('cue exit')
             subtitleItem.value.isActive = false
         });
 
@@ -92,7 +92,7 @@ export const useVideoStore = defineStore('video', () => {
     function removeCue(subtitleCue: subtitleCue) {
         const track = getTextTracks()[0]
         track.removeCue(subtitleCue.cue);
-        console.log('remove clue', track)
+        // console.log('remove clue', track)
 
         const index = subtitles.value.indexOf(subtitleCue);
         if (index > -1) {

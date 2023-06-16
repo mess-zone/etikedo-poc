@@ -3,7 +3,6 @@
         <span class="timestamp">
             <button @click="decrementStart">-</button>
             <button @click="incrementStart">+</button>
-            {{ start }}/{{ end }}
             {{ formatedStart }} - {{ formatedEnd }}
             <button @click="decrementEnd">-</button>
             <button @click="incrementEnd">+</button>
@@ -86,7 +85,7 @@ function incrementEnd(e: Event) {
 
 
 function resizeInput(e: Event) {
-    console.log('resize input', e)
+    // console.log('resize input', e)
     e.target
     // @ts-ignore
     e.target.style.height = "18px";
@@ -95,7 +94,7 @@ function resizeInput(e: Event) {
 }
 
 function handleClick() {
-    console.log('click', props.subtitle)
+    // console.log('click', props.subtitle)
     videoStore.goToTime(props.subtitle.cue.startTime)
 }
 
