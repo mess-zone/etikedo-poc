@@ -63,29 +63,43 @@ function getFiles(path: string) {
         })
 }
 
-function saveFile(filePath: string, data: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      fs.writeFile(filePath, data, (error) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-        resolve();
-      });
-    });
+function saveFile(filePath: string, data: string) {
+    try {
+        fs.writeFileSync(filePath, data);
+        console.log('File saved successfully.', filePath, data);
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 function createFile(path: string) {
     console.log('creating file....')
-    const data = 'Replace\nHello World file!'
+    const data = `WEBVTT
+
+1
+00:01.000 --> 00:04.000
+Never drink liquid nitrogen.
+talvez sim
+
+2
+00:01.350 --> 00:03.561
+ou não
+
+3
+00:05.000 --> 00:09.000
+- It will <b>perforate</b> your stomach.
+- You could die.
+
+4
+03:05.000 --> 03:10.000
+Mistérios da natureza
+
+5
+09:45.050 --> 10:10.087
+Só quem sabe sabe
+`
 
     saveFile('D:\\gilma\\Documents\\PROJETOS\\MESS-ZONE\\etikedo-poc\\test\\videos\\arquivoteste.txt', data)
-        .then(() => {
-            console.log('File saved successfully.');
-        })
-        .catch((error) => {
-            console.error('An error occurred while saving the file:', error);
-        });
 }
 
 // This method will be called when Electron has finished
