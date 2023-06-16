@@ -1,14 +1,14 @@
 <template>
     <h2>
         <router-link to="/">fechar</router-link> 
-        {{fileUrl}}
+        {{selectedFileUrl}}
         <button @click="handleSave">save</button>
     </h2>
     
     <div class="container">
         <div class="col1">
             <VideoPlayer 
-                :file-url="fileUrl"
+                :file-url="selectedFileUrl"
                 :track-url="trackUrl"
             />
         </div>
@@ -18,17 +18,16 @@
     </div>
 </template>
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import VideoPlayer from '../components/VideoPlayer.vue'
 import Transcription from '../components/Transcription.vue'
 import { useVideoStore } from '../stores/video';
 import { storeToRefs } from 'pinia';
 
-const fileUrl = ref('D:\\gilma\\Documents\\PROJETOS\\MESS-ZONE\\etikedo-poc\\test\\videos\\video1.mp4')
 const trackUrl = ref('D:\\gilma\\Documents\\PROJETOS\\MESS-ZONE\\etikedo-poc\\test\\videos\\video1.vtt')
 
 const videoStore = useVideoStore()
-const { isLoadedMetadata } = storeToRefs(videoStore)
+const { isLoadedMetadata, selectedFileUrl } = storeToRefs(videoStore)
 
 watch(isLoadedMetadata, () => {
     if(isLoadedMetadata.value == true) {
@@ -48,6 +47,10 @@ async function handleSave() {
     const data = videoStore.exportTrack('transcription')
     await createFile('D:\\gilma\\Documents\\PROJETOS\\MESS-ZONE\\etikedo-poc\\test\\videos\\teste.vtt', data)
 }
+
+onMounted(() => {
+    console.log(selectedFileUrl)
+})
 
 </script>
 

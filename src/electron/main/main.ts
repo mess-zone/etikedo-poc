@@ -92,6 +92,7 @@ function createFile(path: string, data: any) {
     let content = 'WEBVTT'
 
     // TODO text cannot have new empty lines
+    // TODO order array by start date before convert to string
     content += data.map((cue: any) => 
         `\n\n${cue.id}` +
         `\n${formatDuration(cue.startTime)} --> ${formatDuration(cue.endTime)}` +

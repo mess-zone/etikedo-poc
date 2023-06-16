@@ -11,7 +11,7 @@
             <tr
                 v-for="item in files"
                 :key="item.name"
-                :class="{ clickable: item.directory }"
+                :class="{ clickable: item.directory || item.path.endsWith('.mp4') || item.path.endsWith('.mkv') }"
                 @click="onFileClick(item)"
                 >
                 <td class="icon-cell">
@@ -27,17 +27,23 @@
 <script setup lang="ts">
 import { FileInfo } from '../renderer';
 import { useRouter } from 'vue-router'
+import { useVideoStore } from '../stores/video';
+
 const emit = defineEmits(['folderclick', 'back'])
 defineProps<{
     files: FileInfo[]
 }>()
 
+const videoStore = useVideoStore()
+
 const router = useRouter()
+
 
 function onFileClick(file: FileInfo) {
     if(file.directory) {
         emit('folderclick', file)
     } else {
+        videoStore.selectedFileUrl = file.path
         router.push({ name: 'Video' })
     }
 }

@@ -6,6 +6,8 @@ export type subtitleCue = {
     cue: VTTCue,
 }
 
+const selectedFileUrl = ref('')
+
 const media = ref(null)
 const isLoadedMetadata = ref(false)
 
@@ -120,6 +122,7 @@ export const useVideoStore = defineStore('video', () => {
     }
 
     return {
+        selectedFileUrl,
         media,
         setMedia,
         isLoadedMetadata,
