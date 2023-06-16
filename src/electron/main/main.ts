@@ -63,6 +63,31 @@ function getFiles(path: string) {
         })
 }
 
+function saveFile(filePath: string, data: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      fs.writeFile(filePath, data, (error) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve();
+      });
+    });
+}
+
+function createFile(path: string) {
+    console.log('creating file....')
+    const data = 'Replace\nHello World file!'
+
+    saveFile('D:\\gilma\\Documents\\PROJETOS\\MESS-ZONE\\etikedo-poc\\test\\videos\\arquivoteste.txt', data)
+        .then(() => {
+            console.log('File saved successfully.');
+        })
+        .catch((error) => {
+            console.error('An error occurred while saving the file:', error);
+        });
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -71,6 +96,7 @@ app.whenReady().then(() => {
     ipcMain.handle('get-root-path', () => process.cwd())
     ipcMain.handle('get-back-path', (event, path) => pathModule.join(path,'../'))
     ipcMain.handle('get-files', (event, path) => getFiles(path))
+    ipcMain.handle('create-file', (event, path) => createFile(path))
 
     createWindow()
     app.on('activate', function () {

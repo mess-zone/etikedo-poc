@@ -21,6 +21,8 @@ function handleClickAdd() {
     videoStore.addCue('text', videoStore.getCurrentTime(), videoStore.getCurrentTime() + 10)
 }
 
+
+
 </script>
 
 <style scoped>

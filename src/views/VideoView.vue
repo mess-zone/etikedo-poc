@@ -1,5 +1,10 @@
 <template>
-    <h2><router-link to="/">fechar</router-link> {{fileUrl}}</h2>
+    <h2>
+        <router-link to="/">fechar</router-link> 
+        {{fileUrl}}
+        <button @click="handleSave">save</button>
+    </h2>
+    
     <div class="container">
         <div class="col1">
             <VideoPlayer 
@@ -30,6 +35,18 @@ watch(isLoadedMetadata, () => {
         videoStore.loadTrack('transcription')
     }
 })
+
+const electronAPI = window.electronAPI
+
+async function createFile() {
+  const response = await electronAPI.createFile(trackUrl.value)
+  console.log(response)
+}
+
+async function handleSave() {
+    console.log('save')
+    await createFile()
+}
 
 </script>
 
