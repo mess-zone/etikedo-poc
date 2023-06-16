@@ -95,9 +95,21 @@ const escapeNewLines = (str: string) => {
 function createFile(path: string, data: any) {
     console.log('creating file....')
 
+    // order array by start date before convert to string
+    data.sort((a: any, b: any) => { 
+        if(a.startTime < b.startTime) {
+            // a is less than b
+            return -1
+        } else if(a.startTime > b.startTime) {
+            // a is greater than b
+            return 1
+        } 
+        // a must be equal to b
+        return 0
+    })
+
     let content = 'WEBVTT'
 
-    // TODO order array by start date before convert to string
     content += data.map((cue: any) => 
         `\n\n${cue.id}` +
         `\n${formatDuration(cue.startTime)} --> ${formatDuration(cue.endTime)}` +
