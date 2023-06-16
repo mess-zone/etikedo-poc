@@ -5,13 +5,6 @@
             :src="fileUrl"
             ref="media"
         >
-            <track
-                default
-                id="transcription"
-                label="transcrição"
-                kind="subtitles"
-                srclang="pt"
-                :src="trackUrl">
         </video>
     </div>
 </template>
@@ -22,8 +15,7 @@ import { useVideoStore } from '../stores/video';
 const videoStore = useVideoStore()
 
 defineProps<{
-    fileUrl: string,
-    trackUrl: string,
+    fileUrl: string
 }>()
 
 const media = ref(null)

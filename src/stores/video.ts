@@ -32,9 +32,35 @@ export const useVideoStore = defineStore('video', () => {
         return Object.values(media.value.textTracks)
     }
 
+    function importTextTrack(trackId: string, path: string) {
+
+        media.value.textTracks.addEventListener("addtrack", (e) => {
+            // console.log('added track', e.track)
+            e.track.mode = 'showing'
+            // media.value.textTracks[0].mode = "showing"; // thanks Firefox
+            // loadTrack(trackId)
+        });
+
+        const track = document.createElement("track");
+        // track.default = true
+        track.kind = "subtitles";
+        track.id = trackId
+        track.label = trackId;
+        track.srclang = "pt-BR";
+        track.src = path
+        track.addEventListener("load", function() {
+            console.log('track loaded')
+            loadTrack(trackId)
+            // // @ts-ignore
+            // track.mode = "showing";
+            // media.value.textTracks[0].mode = "showing"; // thanks Firefox
+        });
+        media.value.appendChild(track);
+    }
+
     function loadTrack(trackId: string) {
-        // console.log('load track ', trackId)
         const track = getTextTracks().find(track => track.id == trackId)
+        console.table(track.cues)
         subtitles.value = Object.values(track.cues).map(c => ({ isActive: false, cue: c as VTTCue }))
 
         for(const subtitle of subtitles.value) {
@@ -127,6 +153,7 @@ export const useVideoStore = defineStore('video', () => {
         setMedia,
         isLoadedMetadata,
         getTextTracks,
+        importTextTrack,
         loadTrack,
         exportTrack,
         subtitles,

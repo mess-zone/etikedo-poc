@@ -9,7 +9,6 @@
         <div class="col1">
             <VideoPlayer 
                 :file-url="selectedFileUrl"
-                :track-url="trackUrl"
             />
         </div>
         <div class="col2">
@@ -24,6 +23,7 @@ import Transcription from '../components/Transcription.vue'
 import { useVideoStore } from '../stores/video';
 import { storeToRefs } from 'pinia';
 
+// TODO hardcoded
 const trackUrl = ref('D:\\gilma\\Documents\\PROJETOS\\MESS-ZONE\\etikedo-poc\\test\\videos\\video1.vtt')
 
 const videoStore = useVideoStore()
@@ -31,7 +31,7 @@ const { isLoadedMetadata, selectedFileUrl } = storeToRefs(videoStore)
 
 watch(isLoadedMetadata, () => {
     if(isLoadedMetadata.value == true) {
-        videoStore.loadTrack('transcription')
+        videoStore.importTextTrack('transcription', trackUrl.value)
     }
 })
 
@@ -48,9 +48,9 @@ async function handleSave() {
     await createFile('D:\\gilma\\Documents\\PROJETOS\\MESS-ZONE\\etikedo-poc\\test\\videos\\teste.vtt', data)
 }
 
-onMounted(() => {
-    console.log(selectedFileUrl)
-})
+// onMounted(() => {
+//     console.log(selectedFileUrl)
+// })
 
 </script>
 
