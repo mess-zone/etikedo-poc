@@ -1,8 +1,8 @@
 <template>
     <div class="transcription-container">
-        <button @click="handleImportTrackFile">import</button>
         <h2>Transcrição</h2>
-        <button @click="handleClickAdd">add</button>
+        <button @click="handleImportTrackFile" v-if="!isTranscritionTrackLoaded">import</button>
+        <button @click="handleClickAdd" v-else>add</button>
         <ul>
             <li v-for="subtitle in subtitles" :key="subtitle.cue.id">
                 <TranscriptionItem :subtitle="subtitle" />
@@ -14,6 +14,7 @@
 import { useVideoStore } from '../stores/video';
 import { storeToRefs } from 'pinia';
 import TranscriptionItem from './TranscriptionItem.vue';
+import { ref } from 'vue';
 
 const videoStore = useVideoStore()
 const { subtitles } = storeToRefs(videoStore)
@@ -23,6 +24,8 @@ function handleClickAdd() {
 }
 
 const electronAPI = window.electronAPI
+
+const isTranscritionTrackLoaded = ref(false)
 
 async function openFileDialog() {
     const dialogConfig = {
@@ -45,6 +48,7 @@ async function handleImportTrackFile() {
     if(paths) {
         console.log('arquivo selecionado', paths[0])
         videoStore.importTextTrack('transcription', paths[0])
+        isTranscritionTrackLoaded.value = true
     } else {
         console.log('dialogo cancelado')
     }
