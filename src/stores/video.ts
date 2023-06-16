@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { stringifyQuery } from 'vue-router'
+import { v4 as uuidv4 } from 'uuid';
 
 export type subtitleCue = {
     isActive: boolean,
@@ -119,7 +119,7 @@ export const useVideoStore = defineStore('video', () => {
     function addCue(text: string, start: number, end: number) {
         const track = getTextTracks()[0]
         const cue = new VTTCue(start, end, text)
-        cue.id = ''+ Math.random()
+        cue.id = uuidv4();
 
         const subtitleItem = ref({
             isActive: false,
