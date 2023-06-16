@@ -22,5 +22,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getBackPath: (path: string) => ipcRenderer.invoke('get-back-path', path),
   getFiles: (path: string) => ipcRenderer.invoke('get-files', path),
   
-  createFile: (path: string) => ipcRenderer.invoke('create-file', path),
+  createFile: (path: string, data: any) => ipcRenderer.invoke('create-file', path, data),
 })

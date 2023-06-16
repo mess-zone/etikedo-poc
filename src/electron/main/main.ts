@@ -72,35 +72,35 @@ function saveFile(filePath: string, data: string) {
     }
 }
 
-function createFile(path: string) {
-    console.log('creating file....')
-    const data = `WEBVTT
-
-1
-00:01.000 --> 00:04.000
-Never drink liquid nitrogen.
-talvez sim
-
-2
-00:01.350 --> 00:03.561
-ou não
-
-3
-00:05.000 --> 00:09.000
-- It will <b>perforate</b> your stomach.
-- You could die.
-
-4
-03:05.000 --> 03:10.000
-Mistérios da natureza
-
-5
-09:45.050 --> 10:10.087
-Só quem sabe sabe
-`
-
-    saveFile('D:\\gilma\\Documents\\PROJETOS\\MESS-ZONE\\etikedo-poc\\test\\videos\\arquivoteste.txt', data)
+function formatDuration(durationInSeconds: number): string {
+    const hours = Math.floor(durationInSeconds / 3600);
+    const minutes = Math.floor((durationInSeconds % 3600) / 60);
+    const seconds = Math.floor(durationInSeconds % 60);
+    const milliseconds = Math.floor((durationInSeconds % 1) * 1000);
+  
+    const formattedHours = hours.toString().padStart(2, '0');
+    const formattedMinutes = minutes.toString().padStart(2, '0');
+    const formattedSeconds = seconds.toString().padStart(2, '0');
+    const formattedMilliseconds = milliseconds.toString().padStart(3, '0');
+  
+    return `${formattedHours}:${formattedMinutes}:${formattedSeconds}.${formattedMilliseconds}`;
 }
+
+function createFile(path: string, data: any) {
+    console.log('creating file....')
+
+    let content = 'WEBVTT'
+
+    // TODO text cannot have new empty lines
+    content += data.map((cue: any) => 
+        `\n\n${cue.id}` +
+        `\n${formatDuration(cue.startTime)} --> ${formatDuration(cue.endTime)}` +
+        `\n${cue.text}` 
+    ).join('')
+
+    saveFile(path, content)
+}
+  
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -110,7 +110,7 @@ app.whenReady().then(() => {
     ipcMain.handle('get-root-path', () => process.cwd())
     ipcMain.handle('get-back-path', (event, path) => pathModule.join(path,'../'))
     ipcMain.handle('get-files', (event, path) => getFiles(path))
-    ipcMain.handle('create-file', (event, path) => createFile(path))
+    ipcMain.handle('create-file', (event, path, data) => createFile(path, data))
 
     createWindow()
     app.on('activate', function () {

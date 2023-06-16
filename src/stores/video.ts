@@ -45,6 +45,13 @@ export const useVideoStore = defineStore('video', () => {
         }
     }
 
+    function exportTrack(trackId: string) {
+        const track = getTextTracks().find(track => track.id == trackId)
+        return Object.values(track.cues)
+                    .map(c => c as VTTCue)
+                    .map(c => ({ id: c.id, startTime: c.startTime, endTime: c.endTime, text: c.text }))
+    }
+
     function getCurrentTime() {
         return media.value.currentTime
     }
@@ -118,6 +125,7 @@ export const useVideoStore = defineStore('video', () => {
         isLoadedMetadata,
         getTextTracks,
         loadTrack,
+        exportTrack,
         subtitles,
         goToTime,
         addCue,

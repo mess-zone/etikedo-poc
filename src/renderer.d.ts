@@ -13,7 +13,7 @@ export interface IElectronAPI {
     getRootPath: () => Promise<string>,
     getBackPath: (path: string) => Promise<string>,
     getFiles: (path: string) => Promise<FileInfo[]>,
-    createFile: (path: string) => Promise<FileInfo[]>,
+    createFile: (path: string, data: any) => Promise<void>,
 }
 
 declare global {

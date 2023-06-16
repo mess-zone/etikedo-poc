@@ -38,14 +38,15 @@ watch(isLoadedMetadata, () => {
 
 const electronAPI = window.electronAPI
 
-async function createFile() {
-  const response = await electronAPI.createFile(trackUrl.value)
+async function createFile(path: string, data: any) {
+  const response = await electronAPI.createFile(path, data)
   console.log(response)
 }
 
 async function handleSave() {
     console.log('save')
-    await createFile()
+    const data = videoStore.exportTrack('transcription')
+    await createFile('D:\\gilma\\Documents\\PROJETOS\\MESS-ZONE\\etikedo-poc\\test\\videos\\teste.vtt', data)
 }
 
 </script>
