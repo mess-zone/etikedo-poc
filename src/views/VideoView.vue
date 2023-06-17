@@ -1,25 +1,32 @@
 <template>
-    <h2>
-        <router-link to="/">fechar</router-link> 
-        {{selectedFileUrl}}
-    </h2>
-    
-    <div class="container">
-        <div class="col1">
-            <VideoPlayer 
-                :file-url="selectedFileUrl"
-            />
-
-            <div id="audio-wave-container"></div>
+    <div class="main">
+        <header class="c-header">
+            <h2>{{selectedFileUrl}}</h2>
+            <router-link to="/">fechar</router-link> 
+        </header>
+        
+        <div class="c-container">
+            <div class="col1">
+                <VideoPlayer 
+                    class="video-container"
+                    :file-url="selectedFileUrl"
+                />
+             
+                <div class="wave-container">
+                    <div id="audio-wave-container"></div>
+                </div>
+             
+            </div>
+            <Transcription class="col2" />
+          
         </div>
-        <div class="col2">
-            <Transcription />
-        </div>
+        <BottomControls class="c-bottom-controls"></BottomControls>
     </div>
 </template>
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue';
 import VideoPlayer from '../components/VideoPlayer.vue'
+import BottomControls from '../components/BottomControls.vue'
 import Transcription from '../components/Transcription.vue'
 import { useVideoStore } from '../stores/video';
 import { storeToRefs } from 'pinia';
@@ -92,22 +99,91 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.container {
+
+.main {
+    position: absolute;
+    background-color: aquamarine;
+    inset: 0;
+    overflow: hidden;
+    display: grid;
+    /* grid-template-rows: [header-start] 70px [main-start] 1fr [bottom-start] 90px [bottom-end]; */
+    grid-template-rows: [header-start] 70px [main-start] minmax(100px, 1fr) [bottom-start] 90px [bottom-end];
+    grid-template-columns: auto;
+    grid-template-areas: 
+        "header"
+        "center"
+        "bottom";
+    justify-items: stretch;
+
+}
+
+.c-header {
+    grid-area: header;
+}
+
+.c-bottom-controls {
+    grid-area: bottom;
+}
+
+header {
+    background-color: burlywood;
     display: flex;
-    height: 90vh;
-    align-items: stretch;
+    align-items: center;
+    gap: 10px;
+    padding: 0 10px;
     justify-content: space-between;
+
+}
+
+header h2 {
+    font-size: 1em;
+    margin: 0;
+}
+
+.c-container {
+    grid-area: center;
+    border: 2px solid red;
+    display: flex;
+    /* grid-template-columns: [col1-start] 2fr [col2-start] 1fr [col2-end]; */
+    grid-template-columns: 3fr minmax(100px, 1fr);
+    grid-template-rows: auto;
+    grid-template-areas: 
+        "col1 col2";
+    /* display: flex;
+    align-items: stretch;
+    justify-content: space-between; */
+    /* height: 90vh; */
+    /* flex-basis: 100%; */
 }
 
 .col1 {
     background-color: #ebe7e7;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    max-width: 70%;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 3fr 145px;
+    grid-template-areas: 
+        "video-preview"
+        "wave-preview";
+    width: 70%;
 }
 
 .col2 {
-    min-width: 30%;
+    /* grid-area: col2; */
+    /* width: 150px; */
+    width: 30%;
+}
+
+.wave-container {
+    background-color: olivedrab;
+    /* width: 100px; */
+    overflow: hidden;
+    grid-area: wave-preview;
+}
+
+.video-container {
+    background-color: rgb(67, 35, 142);
+    /* width: 100px; */
+    overflow: hidden;
+    grid-area: video-preview;
 }
 </style>

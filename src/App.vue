@@ -1,25 +1,8 @@
 <template>
   <router-view></router-view>
-  <footer>
-    We are using Node.js <span id="node-version">{{electronAPI['node']() }}</span>,
-    Chromium <span id="chrome-version">{{electronAPI['chrome']() }}</span>,
-    and Electron <span id="electron-version">{{electronAPI['electron']() }}</span>.
-  </footer>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from "vue";
-
-const electronAPI = window.electronAPI
-
-async function sendPing() {
-  const response = await electronAPI.ping()
-  console.log(response)
-}
-
-onMounted(async () => {
-  await sendPing()
-}) 
 
 </script>
 
@@ -31,12 +14,10 @@ onMounted(async () => {
 
 body {
   font-family: sans-serif;
+  margin: 0;
 }
 
-footer {
-  font-size: .8em;
-  padding: 10px;
-  text-align: right;
+#app {
+  min-height: 100vh;
 }
-
 </style>

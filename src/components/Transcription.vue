@@ -1,10 +1,12 @@
 <template>
     <div class="transcription-container" v-if="!isLoading">
-        <h2>Transcrição</h2>
-        <h3>{{ selectedTranscriptionFileUrl }} <button @click="handleSaveTranscription" v-if="isTranscritionTrackLoaded">save</button></h3>
-        <button @click="handleImportTrackFile" v-if="!isTranscritionTrackLoaded">import</button>
-        <button @click="handleNewTrackFile" v-if="!isTranscritionTrackLoaded">new</button>
-        <button @click="handleClickAdd" v-else>add</button>
+        <header>
+            <h2>Transcrição</h2>
+            <h3>{{ selectedTranscriptionFileUrl }} <button @click="handleSaveTranscription" v-if="isTranscritionTrackLoaded">save</button></h3>
+            <button @click="handleImportTrackFile" v-if="!isTranscritionTrackLoaded">import</button>
+            <button @click="handleNewTrackFile" v-if="!isTranscritionTrackLoaded">new</button>
+            <button @click="handleClickAdd" v-else>add</button>
+        </header>
         <ul>
             <li v-for="subtitle in subtitles" :key="subtitle.cue.id">
                 <TranscriptionItem :subtitle="subtitle" />
@@ -112,14 +114,27 @@ async function handleSaveTranscription() {
 
 <style scoped>
     .transcription-container {
-        padding: 20px;
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+        grid-template-areas: 
+            "header"
+            "center";
+        justify-items: stretch;
+    }
+
+    header {
+        grid-area: header;
+        padding: 10px;
     }
 
     ul {
+        grid-area: center;
         list-style: none;
-        padding: 0;
+        padding: 10px;
+        margin: 0;
         /* background-color: aquamarine; */
-        max-height: 77vh;
+        /* height: 77vh; */
         overflow-y: auto;
     }
 </style>

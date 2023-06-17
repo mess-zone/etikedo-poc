@@ -8,6 +8,11 @@
             @back="handleBackClick"
             @folderclick="openFolder($event.path)"
         ></FilesViewer>
+        <footer>
+          We are using Node.js <span id="node-version">{{electronAPI['node']() }}</span>,
+          Chromium <span id="chrome-version">{{electronAPI['chrome']() }}</span>,
+          and Electron <span id="electron-version">{{electronAPI['electron']() }}</span>.
+        </footer>
     </div>
 </template>
 <script setup lang="ts">
@@ -58,11 +63,21 @@ onMounted(async () => {
 </script>
 
 <style  scoped>
+
+h1 {
+  margin: 0;
+}
 .searchInput {
   width: 100%;
   padding: 15px 10px;
   font-family: sans-serif;
   font-size: 1em;
+}
+
+footer {
+  font-size: .8em;
+  padding: 10px;
+  text-align: right;
 }
 
 </style>
