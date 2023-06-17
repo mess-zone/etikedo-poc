@@ -111,6 +111,25 @@ export const useVideoStore = defineStore('video', () => {
             subtitle.cue.addEventListener("exit", (event) => {
                 subtitle.isActive = false
             });
+
+            const waveRegion = wafesurferRegions.value.addRegion({
+                id: subtitle.cue.id,
+                start: subtitle.startTime,
+                end: subtitle.endTime,
+                // content: subtitleItem.value.cue.text,
+            })
+
+            waveRegion.on('update', () => {
+                subtitle.startTime = waveRegion.start
+                subtitle.cue.startTime = waveRegion.start
+    
+                subtitle.endTime = waveRegion.end
+                subtitle.cue.endTime = waveRegion.end
+    
+                // precision adjust to region always be active
+                goToTime(waveRegion.start + 0.1)
+
+            })
         }
     }
 
