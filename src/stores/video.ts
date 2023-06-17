@@ -17,6 +17,7 @@ const isLoadedMetadata = ref(false)
 const subtitles = ref<subtitleCue[]>([])
 
 const wafesurferRegions = shallowRef(RegionsPlugin.create())
+// const wafesurferRegions = ref(RegionsPlugin.create())
 
 export const useVideoStore = defineStore('video', () => {
 
@@ -140,7 +141,7 @@ export const useVideoStore = defineStore('video', () => {
             id: cue.id,
             start: start,
             end: end,
-            content: text,
+            // content: subtitleItem.value.cue.text,
         })
 
         cue.addEventListener("enter", (event) => {
@@ -180,19 +181,26 @@ export const useVideoStore = defineStore('video', () => {
         }
 
         wafesurferRegions.value.getRegions().find(r => r.id == subtitleCue.cue.id).remove()
-        console.log(wafesurferRegions.value.getRegions())
+        // console.log(wafesurferRegions.value.getRegions())
     }
 
     function updateStartTime(subtitleCue: subtitleCue, newValue: number) {
         // const index = subtitles.value.indexOf(subtitleCue);
         // subtitles.value[index].cue.startTime = newValue
         subtitleCue.cue.startTime = newValue
+        wafesurferRegions.value.getRegions().find(r => r.id == subtitleCue.cue.id).setOptions({
+            start: newValue
+        })
+        
     }
 
     function updateEndTime(subtitleCue: subtitleCue, newValue: number) {
         // const index = subtitles.value.indexOf(subtitleCue);
         // subtitles.value[index].cue.startTime = newValue
         subtitleCue.cue.endTime = newValue
+        wafesurferRegions.value.getRegions().find(r => r.id == subtitleCue.cue.id).setOptions({
+            end: newValue
+        })
     }
 
     return {

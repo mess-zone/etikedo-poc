@@ -57,8 +57,6 @@ onMounted(() => {
     // Create a Regions plugin instance
     ws.registerPlugin(wafesurferRegions.value as RegionsPlugin)
 
-    console.log(wafesurferRegions.value)
-
     ws.on('ready', () => {
         console.log('wavesurfer ready')
     })
