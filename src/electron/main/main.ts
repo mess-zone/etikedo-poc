@@ -1,3 +1,4 @@
+import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-assembler';
 import { join } from 'path';
 import {
     app,
@@ -124,6 +125,10 @@ function createFile(path: string, data: any) {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+    installExtension(VUEJS_DEVTOOLS)
+        .then((name) => console.log(`Added Extension:  ${name}`))
+        .catch((err) => console.log('An error occurred: ', err));
+
     ipcMain.handle('ping', () => 'pong')
     ipcMain.handle('get-root-path', () => process.cwd())
     ipcMain.handle('get-back-path', (event, path) => pathModule.join(path,'../'))

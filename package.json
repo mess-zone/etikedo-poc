@@ -57,10 +57,10 @@
   "devDependencies": {
     "@types/uuid": "^9.0.2",
     "@vitejs/plugin-vue": "^2.3.3",
-    "@vue/devtools": "^6.5.0",
     "concurrently": "^7.2.2",
     "electron": "^25.1.1",
     "electron-builder": "^24.4.0",
+    "electron-devtools-assembler": "^1.2.0",
     "pinia": "^2.0.18",
     "typescript": "^4.5.4",
     "vite": "^2.9.9",
