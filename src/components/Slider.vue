@@ -1,14 +1,14 @@
 <template>
     <div class="slider">
         <div class="slider__bar" ref="bar">
-            <div class="slider__handle" ref="handle"></div>
-            <div class="slider__fill"></div>
+            <div class="slider__handle" ref="handle" :style="handleStyle"></div>
+            <div class="slider__fill" :style="fillStyle"></div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import throttle from 'lodash.throttle';
 
 export interface Props {
@@ -40,6 +40,23 @@ let onWindowResize = () => {
     calcDimensions()
     // console.log(e)
 }
+
+const delta = computed(() => {
+    return props.value / props.max
+})
+
+const fillStyle = computed(() => {
+    return {
+        transformOrigin: 'left center',
+        transform: `scaleX(${delta.value})`
+    }
+})
+
+const handleStyle = computed(() => {
+    return {
+        transform: `translateX(${barWidth.value * delta.value}px)`
+    }
+})
 
 onMounted(() => {
     calcDimensions()
@@ -77,13 +94,17 @@ onMounted(() => {
     width: var(--size);
     height: var(--size);
     border-radius: 50%;
-    background-color: black;
+    background-color: rgba(0, 0, 0, 0.342);
     position: absolute;
     left: 0;
     top: calc(50% - (var(--size)/2));
+    z-index: 2;
+    margin-left: calc(var(--size) / -2);
 }
 
 .slider__fill {
-
+    height: 100%;
+    width: 100%;
+    background-color: red;
 }
 </style>
