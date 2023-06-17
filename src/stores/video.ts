@@ -142,11 +142,11 @@ export const useVideoStore = defineStore('video', () => {
         })
 
         cue.addEventListener("enter", (event) => {
-            console.log('cue enter')
+            // console.log('cue enter')
             subtitleItem.value.isActive = true
         });
         cue.addEventListener("exit", (event) => {
-            console.log('cue exit')
+            // console.log('cue exit')
             subtitleItem.value.isActive = false
         });
 
@@ -164,6 +164,9 @@ export const useVideoStore = defineStore('video', () => {
 
             subtitleItem.value.endTime = waveRegion.end
             subtitleItem.value.cue.endTime = waveRegion.end
+
+            // precision adjust to region always be active
+            goToTime(waveRegion.start + 0.1)
 
             // if(subtitleItem.value.startTime >= getCurrentTime() && subtitleItem.value.endTime <= getCurrentTime()) {
             //     subtitleItem.value.isActive = true
