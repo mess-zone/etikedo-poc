@@ -1,13 +1,56 @@
 <template>
     <div class="slider">
-        <div class="slider__bar">
-            <div class="slider__handle"></div>
+        <div class="slider__bar" ref="bar">
+            <div class="slider__handle" ref="handle"></div>
             <div class="slider__fill"></div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref } from 'vue';
+import throttle from 'lodash.throttle';
+
+export interface Props {
+  min?: number,
+  max?: number,
+  value: number,
+  disabled: boolean,
+}
+
+const props = withDefaults(defineProps<Props>(), {
+    min: 0,
+    max: 1,
+})
+
+const isDragging = ref(false)
+const handleWidth = ref(0)
+const barWidth = ref(0)
+
+const bar = ref(null)
+const handle = ref(null)
+
+function calcDimensions() {
+    handleWidth.value = handle.value.offsetWidth
+    barWidth.value = bar.value.offsetWidth
+    console.log(barWidth.value)
+}
+
+let onWindowResize = () => {
+    calcDimensions()
+    // console.log(e)
+}
+
+onMounted(() => {
+    calcDimensions()
+
+    const throttled = throttle(onWindowResize, 200);
+    // @ts-ignore
+    window.addEventListener('resize', throttled)
+})
+
+
+
 </script>
 
 <style scoped>

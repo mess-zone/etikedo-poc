@@ -1,6 +1,6 @@
 <template>
     <div class="bottom-controls">
-        <Slider/>
+        <Slider :value="0" :disabled="false"/>
     </div>
 </template>
 <script setup lang="ts">
