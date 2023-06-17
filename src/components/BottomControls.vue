@@ -1,9 +1,11 @@
 <template>
     <div class="bottom-controls">
-        bottom controls
+        <Slider/>
     </div>
 </template>
-
+<script setup lang="ts">
+import Slider from './Slider.vue';
+</script>
 <style scoped>
 .bottom-controls {
     /* background-color: burlywood; */
