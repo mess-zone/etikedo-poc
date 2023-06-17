@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { subtitleCue, useVideoStore } from '../stores/video';
 
 const textInput = ref(null)
@@ -22,10 +22,18 @@ const props = defineProps<{
     subtitle: subtitleCue
 }>()
 
+
+
 const videoStore = useVideoStore()
 
-const start = ref(props.subtitle.cue.startTime)
-const end = ref(props.subtitle.cue.endTime)
+const start = ref(props.subtitle.startTime)
+const end = ref(props.subtitle.endTime)
+
+watch(props.subtitle, (newValue: any) => {
+    // console.log(`WORKED! new start time`, newValue)
+    start.value = newValue.startTime
+    end.value = newValue.endTime
+});
 
 const formatedStart = computed(()=> {
     return formatDuration(start.value)
@@ -100,7 +108,7 @@ function resizeInput(target: HTMLTextAreaElement) {
 
 function handleClick() {
     // console.log('click', props.subtitle)
-    videoStore.goToTime(props.subtitle.cue.startTime)
+    videoStore.goToTime(props.subtitle.startTime)
 }
 
 function handleRemove(item: subtitleCue, e: Event) {

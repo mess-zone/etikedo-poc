@@ -5,6 +5,8 @@ import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions'
 
 export type subtitleCue = {
     isActive: boolean,
+    startTime: number,
+    endTime: number,
     cue: VTTCue,
 }
 
@@ -98,7 +100,7 @@ export const useVideoStore = defineStore('video', () => {
     function loadTrack(trackId: string) {
         const track = getTextTracks().find(track => track.label == trackId)
         subtitles.value = Object.values(track.cues)
-            .map(c => ({ isActive: false, cue: c as VTTCue }))
+            .map(c => ({ isActive: false, startTime: c.startTime, endTime: c.endTime, cue: c as VTTCue }))
 
         for(const subtitle of subtitles.value) {
             subtitle.cue.text = unescapeNewLine(subtitle.cue.text).trim()
@@ -132,33 +134,51 @@ export const useVideoStore = defineStore('video', () => {
         const cue = new VTTCue(start, end, text)
         cue.id = uuidv4();
 
-        const subtitleItem = ref({
+        const subtitleItem = ref<subtitleCue>({
             isActive: false,
+            startTime: start,
+            endTime: end,
             cue: cue,
         })
 
-        wafesurferRegions.value.addRegion({
+        cue.addEventListener("enter", (event) => {
+            console.log('cue enter')
+            subtitleItem.value.isActive = true
+        });
+        cue.addEventListener("exit", (event) => {
+            console.log('cue exit')
+            subtitleItem.value.isActive = false
+        });
+
+        const waveRegion = wafesurferRegions.value.addRegion({
             id: cue.id,
             start: start,
             end: end,
             // content: subtitleItem.value.cue.text,
         })
 
-        cue.addEventListener("enter", (event) => {
-            // console.log('cue enter')
-            subtitleItem.value.isActive = true
-        });
-        cue.addEventListener("exit", (event) => {
-            // console.log('cue exit')
-            subtitleItem.value.isActive = false
-        });
+        waveRegion.on('update', () => {
+            // console.log('region updated', waveRegion.start, waveRegion.end)
+            subtitleItem.value.startTime = waveRegion.start
+            subtitleItem.value.cue.startTime = waveRegion.start
+
+            subtitleItem.value.endTime = waveRegion.end
+            subtitleItem.value.cue.endTime = waveRegion.end
+
+            // if(subtitleItem.value.startTime >= getCurrentTime() && subtitleItem.value.endTime <= getCurrentTime()) {
+            //     subtitleItem.value.isActive = true
+            // } else {
+            //     subtitleItem.value.isActive = false
+            // }
+
+        })
 
         subtitles.value.push(subtitleItem.value)
         subtitles.value.sort((a, b) => { 
-            if(a.cue.startTime < b.cue.startTime) {
+            if(a.startTime < b.startTime) {
                 // a is less than b
                 return -1
-            } else if(a.cue.startTime > b.cue.startTime) {
+            } else if(a.startTime > b.startTime) {
                 // a is greater than b
                 return 1
             } 
@@ -187,6 +207,7 @@ export const useVideoStore = defineStore('video', () => {
     function updateStartTime(subtitleCue: subtitleCue, newValue: number) {
         // const index = subtitles.value.indexOf(subtitleCue);
         // subtitles.value[index].cue.startTime = newValue
+        subtitleCue.startTime = newValue
         subtitleCue.cue.startTime = newValue
         wafesurferRegions.value.getRegions().find(r => r.id == subtitleCue.cue.id).setOptions({
             start: newValue
@@ -197,6 +218,7 @@ export const useVideoStore = defineStore('video', () => {
     function updateEndTime(subtitleCue: subtitleCue, newValue: number) {
         // const index = subtitles.value.indexOf(subtitleCue);
         // subtitles.value[index].cue.startTime = newValue
+        subtitleCue.endTime = newValue
         subtitleCue.cue.endTime = newValue
         wafesurferRegions.value.getRegions().find(r => r.id == subtitleCue.cue.id).setOptions({
             end: newValue

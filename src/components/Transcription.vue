@@ -33,7 +33,7 @@ watch(isLoadedMetadata, () => {
 })
 
 function handleClickAdd() {
-    videoStore.addCue('text', videoStore.getCurrentTime(), videoStore.getCurrentTime() + 2.5)
+    videoStore.addCue('[text]', videoStore.getCurrentTime(), videoStore.getCurrentTime() + 2.5)
 }
 
 const electronAPI = window.electronAPI
