@@ -102,7 +102,7 @@ onUnmounted(() => {
 
 .main {
     position: absolute;
-    background-color: aquamarine;
+    /* background-color: aquamarine; */
     inset: 0;
     overflow: hidden;
     display: grid;
@@ -126,13 +126,14 @@ onUnmounted(() => {
 }
 
 header {
-    background-color: burlywood;
+    /* background-color: burlywood; */
     display: flex;
     align-items: center;
     gap: 10px;
     padding: 0 10px;
     justify-content: space-between;
-
+    box-shadow: 8px 0px 6px #00000061;
+    z-index: 1;
 }
 
 header h2 {
@@ -142,7 +143,7 @@ header h2 {
 
 .c-container {
     grid-area: center;
-    border: 2px solid red;
+    /* border: 2px solid red; */
     display: flex;
     /* grid-template-columns: [col1-start] 2fr [col2-start] 1fr [col2-end]; */
     grid-template-columns: 3fr minmax(100px, 1fr);
@@ -174,14 +175,14 @@ header h2 {
 }
 
 .wave-container {
-    background-color: olivedrab;
+    /* background-color: olivedrab; */
     /* width: 100px; */
     overflow: hidden;
     grid-area: wave-preview;
 }
 
 .video-container {
-    background-color: rgb(67, 35, 142);
+    /* background-color: rgb(67, 35, 142); */
     /* width: 100px; */
     overflow: hidden;
     grid-area: video-preview;

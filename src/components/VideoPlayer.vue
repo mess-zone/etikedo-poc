@@ -27,7 +27,7 @@ onMounted(() => {
 
 <style scoped>
 .video-container {
-    background-color: rgb(255, 0, 128);
+    background-color: rgb(51, 51, 51);
     /* display: flex; */
     /* height: 100%; */
     /* width: 100%; */
