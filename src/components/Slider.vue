@@ -34,6 +34,8 @@ const barWidth = ref(0)
 const bar = ref(null)
 const handle = ref(null)
 
+const limitNumberWithinRange = (num: number, MIN: number, MAX: number) => Math.min(Math.max(num, MIN), MAX)
+
 function calcDimensions() {
     handleWidth.value = handle.value.offsetWidth
     barWidth.value = bar.value.offsetWidth
@@ -46,8 +48,8 @@ let onWindowResize = () => {
 }
 
 const delta = computed(() => {
-    // return props.modelValue / props.max
-    return (props.modelValue - props.min) / (props.max - props.min)
+    const value = limitNumberWithinRange(props.modelValue, props.min, props.max)
+    return (value - props.min) / (props.max - props.min)
 })
 
 const fillStyle = computed(() => {
@@ -78,8 +80,6 @@ function pointerdown(e: PointerEvent) {
     const offsetX = e.clientX - bar.value.getBoundingClientRect().x
     const normalizedValue = offsetX / barWidth.value
     const value = (normalizedValue * (props.max - props.min)) + props.min
-
-    const limitNumberWithinRange = (num: number, MIN: number, MAX: number) => Math.min(Math.max(num, MIN), MAX)
     
     valueChanged(limitNumberWithinRange(value, props.min, props.max))
 }
