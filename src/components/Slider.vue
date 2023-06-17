@@ -1,5 +1,5 @@
 <template>
-    <div class="slider">
+    <div class="slider"  v-on:pointerdown="pointerdown">
         <div class="slider__bar" ref="bar">
             <div class="slider__handle" ref="handle" :style="handleStyle"></div>
             <div class="slider__fill" :style="fillStyle"></div>
@@ -14,13 +14,17 @@ import throttle from 'lodash.throttle';
 export interface Props {
   min?: number,
   max?: number,
-  value: number,
-  disabled: boolean,
+//   value: number,
+  disabled?: boolean,
+  modelValue: number,
 }
+
+const emit = defineEmits(['update:modelValue'])
 
 const props = withDefaults(defineProps<Props>(), {
     min: 0,
     max: 1,
+    disabled: false,
 })
 
 const isDragging = ref(false)
@@ -42,7 +46,8 @@ let onWindowResize = () => {
 }
 
 const delta = computed(() => {
-    return props.value / props.max
+    // return props.modelValue / props.max
+    return (props.modelValue - props.min) / (props.max - props.min)
 })
 
 const fillStyle = computed(() => {
@@ -65,7 +70,19 @@ onMounted(() => {
     window.addEventListener('resize', throttled)
 })
 
+function valueChanged(value: number) {
+    emit('update:modelValue', value)
+}
 
+function pointerdown(e: PointerEvent) {
+    const offsetX = e.clientX - bar.value.getBoundingClientRect().x
+    const normalizedValue = offsetX / barWidth.value
+    const value = (normalizedValue * (props.max - props.min)) + props.min
+
+    const limitNumberWithinRange = (num: number, MIN: number, MAX: number) => Math.min(Math.max(num, MIN), MAX)
+    
+    valueChanged(limitNumberWithinRange(value, props.min, props.max))
+}
 
 
 
@@ -80,6 +97,8 @@ onMounted(() => {
     align-items: center;
     cursor: pointer;
     height: 24px;
+    background-color: pink;
+    position: relative;
 }
 
 .slider__bar {

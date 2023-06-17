@@ -1,10 +1,18 @@
 <template>
     <div class="bottom-controls">
-        <Slider :value="75" :max="100"  :disabled="false"/>
+        <input type="number" v-model="inputValue" :min="min" :max="max" />
+        {{ min }} - {{ max }}
+        <Slider v-model="inputValue" :disabled="disabled" :min="min" :max="max"/>
     </div>
 </template>
 <script setup lang="ts">
+import { ref } from 'vue';
 import Slider from './Slider.vue';
+
+const inputValue = ref(20)
+const disabled = ref(false)
+const min = ref(20)
+const max = ref(50)
 </script>
 <style scoped>
 .bottom-controls {
