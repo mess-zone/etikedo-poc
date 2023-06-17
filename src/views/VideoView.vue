@@ -24,12 +24,13 @@ import Transcription from '../components/Transcription.vue'
 import { useVideoStore } from '../stores/video';
 import { storeToRefs } from 'pinia';
 import WaveSurfer from 'wavesurfer.js'
+import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions'
 
 // TODO hardcoded
 // const trackUrl = ref('D:\\gilma\\Documents\\PROJETOS\\MESS-ZONE\\etikedo-poc\\test\\videos\\video1.vtt')
 
 const videoStore = useVideoStore()
-const { selectedFileUrl } = storeToRefs(videoStore)
+const { selectedFileUrl, wafesurferRegions } = storeToRefs(videoStore)
 
 // watch(isLoadedMetadata, () => {
 //     if(isLoadedMetadata.value == true) {
@@ -53,9 +54,35 @@ onMounted(() => {
         barHeight: 1.8,
     })
 
+    // Create a Regions plugin instance
+    ws.registerPlugin(wafesurferRegions.value as RegionsPlugin)
+
+    console.log(wafesurferRegions.value)
+
     ws.on('ready', () => {
         console.log('wavesurfer ready')
     })
+
+    // Create some regions at specific time ranges
+    // ws.on('decode', () => {
+    // wsRegions.addRegion({
+    //     start: 4.4,
+    //     end: 7,
+    //     content: 'Blue',
+    // })
+
+    // wsRegions.addRegion({
+    //     id: 'region-green',
+    //     start: 10,
+    //     end: 12,
+    //     content: 'Green',
+    // })
+
+    // wsRegions.addRegion({
+    //     start: 19,
+    //     content: 'Marker',
+    // })
+    // })
 
 })
 

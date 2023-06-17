@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, shallowRef } from 'vue'
 import { v4 as uuidv4 } from 'uuid';
+import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions'
 
 export type subtitleCue = {
     isActive: boolean,
@@ -15,6 +16,8 @@ const isLoadedMetadata = ref(false)
 
 const subtitles = ref<subtitleCue[]>([])
 
+const wafesurferRegions = shallowRef(RegionsPlugin.create())
+
 export const useVideoStore = defineStore('video', () => {
 
     function $reset() {
@@ -25,6 +28,8 @@ export const useVideoStore = defineStore('video', () => {
         isLoadedMetadata.value = false
         
         subtitles.value = []
+
+        wafesurferRegions.value = RegionsPlugin.create()
     }
 
     function setMedia(videoMedia: HTMLMediaElement) {
@@ -131,6 +136,13 @@ export const useVideoStore = defineStore('video', () => {
             cue: cue,
         })
 
+        wafesurferRegions.value.addRegion({
+            id: cue.id,
+            start: start,
+            end: end,
+            content: text,
+        })
+
         cue.addEventListener("enter", (event) => {
             // console.log('cue enter')
             subtitleItem.value.isActive = true
@@ -166,6 +178,9 @@ export const useVideoStore = defineStore('video', () => {
         if (index > -1) {
             subtitles.value.splice(index, 1);
         }
+
+        wafesurferRegions.value.getRegions().find(r => r.id == subtitleCue.cue.id).remove()
+        console.log(wafesurferRegions.value.getRegions())
     }
 
     function updateStartTime(subtitleCue: subtitleCue, newValue: number) {
@@ -199,6 +214,7 @@ export const useVideoStore = defineStore('video', () => {
         removeCue,
         updateStartTime,
         updateEndTime,
+        wafesurferRegions,
     }
     
 })
