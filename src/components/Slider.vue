@@ -44,10 +44,12 @@ let onWindowResize = () => {
 onMounted(() => {
     calcDimensions()
 
-    const throttled = throttle(onWindowResize, 200);
-    // @ts-ignore
+    const throttled = throttle(onWindowResize, 200) as (this: Window, ev: UIEvent) => any
     window.addEventListener('resize', throttled)
 })
+
+
+
 
 
 
