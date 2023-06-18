@@ -28,6 +28,7 @@
 import { FileInfo } from '../renderer';
 import { useRouter } from 'vue-router'
 import { useVideoStore } from '../stores/video';
+import { useAudioStore } from '../stores/audio';
 
 const emit = defineEmits(['folderclick', 'back'])
 defineProps<{
@@ -35,6 +36,7 @@ defineProps<{
 }>()
 
 const videoStore = useVideoStore()
+const audioStore = useAudioStore()
 
 const router = useRouter()
 
@@ -43,11 +45,12 @@ function onFileClick(file: FileInfo) {
     if(file.directory) {
         emit('folderclick', file)
     } else {
-        videoStore.selectedFileUrl = file.path
-
+        
         if(file.path.endsWith('.mp4') || file.path.endsWith('.mkv')) {
+            videoStore.selectedFileUrl = file.path
             router.push({ name: 'Video' })
         } else if(file.path.endsWith('.mp3') || file.path.endsWith('.wav')) {
+            audioStore.selectedFileUrl = file.path
             router.push({ name: 'Audio' })
         }
     }

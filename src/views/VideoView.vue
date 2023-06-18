@@ -20,13 +20,13 @@
             <Captions class="col2" />
           
         </div>
-        <BottomControls class="c-bottom-controls"></BottomControls>
+        <VideoBottomControls class="c-bottom-controls"></VideoBottomControls>
     </div>
 </template>
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue';
 import VideoPlayer from '../components/VideoPlayer.vue'
-import BottomControls from '../components/BottomControls.vue'
+import VideoBottomControls from '../components/VideoBottomControls.vue'
 import Captions from '../components/Captions.vue'
 import { useVideoStore } from '../stores/video';
 import { storeToRefs } from 'pinia';

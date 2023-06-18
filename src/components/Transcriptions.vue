@@ -1,30 +1,30 @@
 <template>
     <div class="transcription-container" v-if="!isLoading">
         <header>
-            <h2>Captions</h2>
+            <h2>Transcriptions</h2>
             <h3>{{ selectedTranscriptionFileUrl }} <button @click="handleSaveTranscription" v-if="isTranscritionTrackLoaded">save</button></h3>
             <button @click="handleImportTrackFile" v-if="!isTranscritionTrackLoaded">import</button>
             <button @click="handleNewTrackFile" v-if="!isTranscritionTrackLoaded">new</button>
             <button @click="handleClickAdd" v-else>add</button>
         </header>
         <ul>
-            <li v-for="subtitle in subtitles" :key="subtitle.cue.id">
-                <CaptionItem :transcription="subtitle" />
+            <li v-for="subtitle in transcriptions" :key="subtitle.cue.id">
+                <TranscriptionItem :transcription="subtitle" />
             </li>
         </ul>
     </div>
     <div v-else>loading...</div>
 </template>
 <script setup lang="ts">
-import { useVideoStore } from '../stores/video';
+import { useAudioStore } from '../stores/audio';
 import { storeToRefs } from 'pinia';
-import CaptionItem from './CaptionItem.vue';
+import TranscriptionItem from './TranscriptionItem.vue';
 import { ref, watch } from 'vue';
 
-const videoStore = useVideoStore()
-const { selectedTranscriptionFileUrl, subtitles } = storeToRefs(videoStore)
+const audioStore = useAudioStore()
+const { selectedTranscriptionFileUrl, transcriptions } = storeToRefs(audioStore)
 
-const { isLoadedMetadata } = storeToRefs(videoStore)
+const { isLoadedMetadata } = storeToRefs(audioStore)
 
 const isLoading = ref(true)
 
@@ -35,7 +35,7 @@ watch(isLoadedMetadata, () => {
 })
 
 function handleClickAdd() {
-    videoStore.addCue('[text]', videoStore.getCurrentTime(), videoStore.getCurrentTime() + 2.5)
+    audioStore.addCue('[text]', audioStore.getCurrentTime(), audioStore.getCurrentTime() + 2.5)
 }
 
 const electronAPI = window.electronAPI
@@ -63,7 +63,7 @@ async function handleImportTrackFile() {
     if(paths) {
         selectedTranscriptionFileUrl.value = paths[0]
         // console.log('arquivo selecionado', selectedTranscriptionFileUrl.value)
-        videoStore.importTextTrack('transcription', selectedTranscriptionFileUrl.value)
+        audioStore.importTextTrack('transcription', selectedTranscriptionFileUrl.value)
         isTranscritionTrackLoaded.value = true
     } else {
         console.log('dialogo cancelado')
@@ -92,7 +92,7 @@ async function handleNewTrackFile() {
     if(path) {
         selectedTranscriptionFileUrl.value = path
         // console.log('caminho selecionado', selectedTranscriptionFileUrl.value)
-        videoStore.createEmptyTrack('transcription')
+        audioStore.createEmptyTrack('transcription')
         // console.log(videoStore.media.textTracks)
         isTranscritionTrackLoaded.value = true
     } else {
@@ -106,8 +106,8 @@ async function createFile(path: string, data: any) {
 
 async function handleSaveTranscription() {
     console.log('save transcription file')
-    const data = videoStore.exportTrack('transcription')
-    await createFile(videoStore.selectedTranscriptionFileUrl, data)
+    const data = audioStore.exportTrack('transcription')
+    await createFile(audioStore.selectedTranscriptionFileUrl, data)
 }
 
 </script>

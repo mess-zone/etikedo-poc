@@ -298,7 +298,7 @@ export const useAudioStore = defineStore('audio', () => {
         importTextTrack,
         loadTrack,
         exportTrack,
-        subtitles: transcriptions,
+        transcriptions,
         goToTime,
         addCue,
         getCurrentTime,

@@ -6,9 +6,9 @@
         </header>
         
         <div class="c-container">
-            <Captions class="transcription-container"/>
+            <Transcriptions class="transcription-container"/>
 
-            <VideoPlayer 
+            <AudioPlayer 
                 class="video-container"
                 :file-url="selectedFileUrl"
             />
@@ -17,21 +17,21 @@
                 <div id="audio-wave-container"></div>
             </div>
         </div>
-        <BottomControls class="c-bottom-controls"></BottomControls>
+        <AudioBottomControls class="c-bottom-controls"></AudioBottomControls>
     </div>
 </template>
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue';
-import VideoPlayer from '../components/VideoPlayer.vue'
-import BottomControls from '../components/BottomControls.vue'
-import Captions from '../components/Captions.vue'
-import { useVideoStore } from '../stores/video';
+import AudioPlayer from '../components/AudioPlayer.vue'
+import AudioBottomControls from '../components/AudioBottomControls.vue'
+import { useAudioStore } from '../stores/audio';
 import { storeToRefs } from 'pinia';
 import WaveSurfer from 'wavesurfer.js'
 import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions'
+import Transcriptions from '../components/Transcriptions.vue';
 
-const videoStore = useVideoStore()
-const { selectedFileUrl, wafesurferRegions } = storeToRefs(videoStore)
+const audioStore = useAudioStore()
+const { selectedFileUrl, wafesurferRegions } = storeToRefs(audioStore)
 
 // watch(isLoadedMetadata, () => {
 //     if(isLoadedMetadata.value == true) {
@@ -87,7 +87,7 @@ onMounted(() => {
 
 onUnmounted(() => {
     // console.log('video unmonted')
-    videoStore.$reset()
+    audioStore.$reset()
 })
 
 </script>
@@ -140,7 +140,7 @@ header h2 {
     grid-area: center;
     display: grid;
     grid-template-columns: auto;
-    grid-template-rows: 1fr 0px 145px;
+    grid-template-rows: 1fr 54px 145px;
     grid-template-areas: 
         "transcription"
         "audio-preview"

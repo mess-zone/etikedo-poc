@@ -14,17 +14,17 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
-import { subtitleCue, useVideoStore } from '../stores/video';
+import { transcriptionCue, useAudioStore } from '../stores/audio';
 
 const textInput = ref(null)
 
 const props = defineProps<{
-    transcription: subtitleCue
+    transcription: transcriptionCue
 }>()
 
 
 
-const videoStore = useVideoStore()
+const videoStore = useAudioStore()
 
 const start = ref(props.transcription.startTime)
 const end = ref(props.transcription.endTime)
