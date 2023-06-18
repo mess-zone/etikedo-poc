@@ -23,6 +23,10 @@ const wafesurferRegions = shallowRef(RegionsPlugin.create())
 
 const isPlaying = ref(false)
 
+const currentTime = ref(0)
+
+const duration = ref(0)
+
 export const useVideoStore = defineStore('video', () => {
 
     function $reset() {
@@ -43,8 +47,9 @@ export const useVideoStore = defineStore('video', () => {
         media.value = videoMedia
 
         media.value.addEventListener('loadedmetadata', (e: Event) => {
-            // console.log('loadedmetadata')
+            console.log('loadedmetadata')
             isLoadedMetadata.value = true
+            duration.value = media.value.duration
         }, { once: true })
 
         // media.value.textTracks.onchange = (event) => {
@@ -52,15 +57,16 @@ export const useVideoStore = defineStore('video', () => {
         // };
 
         media.value.addEventListener('play', () => {
-            console.log('[PLAY]')
             isPlaying.value = true
         })
         // media.value.addEventListener('playing', () => {
         //     console.log('[PLAYING]')
         // })
         media.value.addEventListener('pause', () => {
-            console.log('[PAUSE]')
             isPlaying.value = false
+        })
+        media.value.addEventListener('timeupdate', (e) => {
+            currentTime.value = media.value.currentTime
         })
     }
 
@@ -285,6 +291,8 @@ export const useVideoStore = defineStore('video', () => {
         updateEndTime,
         wafesurferRegions,
         isPlaying,
+        currentTime,
+        duration,
     }
     
 })

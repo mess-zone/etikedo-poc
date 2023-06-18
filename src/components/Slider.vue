@@ -38,7 +38,8 @@ const limitNumberWithinRange = (num: number, MIN: number, MAX: number) => Math.m
 const { width: windowWidth } = useWindowSize()
 
 function calculateDimentions() {
-    barWidth.value = bar.value.offsetWidth
+    barWidth.value = bar.value.getBoundingClientRect().width
+    // console.log('calcula dimentions', barWidth.value)
 }
 
 watch(
@@ -68,6 +69,7 @@ const handleStyle = computed(() => {
 
 onMounted(() => {
     calculateDimentions()
+    // window.dispatchEvent(new Event('resize'));
 })
 
 function valueChanged(value: number) {
