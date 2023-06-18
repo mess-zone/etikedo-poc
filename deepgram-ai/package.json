@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "transcribe": "node transcribe.js"
+    "transcribe": "node transcribe.js",
+    "convert": "node convert.js"
   },
   "author": "",
   "license": "ISC",

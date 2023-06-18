@@ -1,10 +1,8 @@
-# Transcrição de vídeo/audio para texto
+# Transcrição de vídeo/áudio para texto
 Speech to Text (STT) scripts
 
-
-Converte um video para audio
-Utiliza a API do Deepgram para converter video/audio para texto
-Pode retornar a transcrição como JSON, WebVTT ou SRT
+Converte arquivos de video/audio locais para transcrições textuais, usando a API do Deepgram.
+Pode salvar a transcrição como JSON, WebVTT ou SRT
 
 ## Dependencies
 - ffmpeg deve estar instalada na máquina ([como instalar no Windows](https://phoenixnap.com/kb/ffmpeg-windows))
@@ -14,18 +12,16 @@ Pode retornar a transcrição como JSON, WebVTT ou SRT
 `npm install`
 
 ## Enviroment Variable
-crear .env file na raiz do projeto contendo a API_KEY do Deepgram
+crear .env file na raiz do projeto contendo a sua API_KEY do Deepgram:
 
 
 `DEEPGRAM_API_KEY=<sua api aqi>`
 
-## Execution
-
-**Transcrever arquivo local** 
+## Transcrever arquivo local
 
 `npm run transcribe -- --i=path/to/file.mp4 --o=./path/to/transcription.vtt`
 
-## Suported input types (--i)
+**Suported input types (--i)**
 Segundo a [documentação do Deepgram](https://developers.deepgram.com/docs/supported-audio-formats), os tipos de arquivos suportados são:
 - MP3
 - MP4
@@ -40,8 +36,15 @@ Segundo a [documentação do Deepgram](https://developers.deepgram.com/docs/supp
 - WebM
 - And more...
 
-## Suported output types (--o)
+**Suported output types (--o)**
 Os tipos de output suportados são:
 - vtt
 - srt
 - json
+
+## Converter arquivos
+Utiliza a biblioteca [fluent-ffmpeg](https://www.npmjs.com/package/fluent-ffmpeg) para fazer conversões entre praticamente qualquer tipo de arquivo de mídia.
+
+Pode ser útil para converter um vídeo em áudio antes de mandar para a API de transcrição
+
+`npm run convert -- --i=path/to/file.mp4 --o=./path/to/audio.wav`
