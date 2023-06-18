@@ -9,7 +9,7 @@
         </header>
         <ul>
             <li v-for="subtitle in subtitles" :key="subtitle.cue.id">
-                <TranscriptionItem :subtitle="subtitle" />
+                <CaptionItem :subtitle="subtitle" />
             </li>
         </ul>
     </div>
@@ -18,7 +18,7 @@
 <script setup lang="ts">
 import { useVideoStore } from '../stores/video';
 import { storeToRefs } from 'pinia';
-import TranscriptionItem from './TranscriptionItem.vue';
+import CaptionItem from './CaptionItem.vue';
 import { ref, watch } from 'vue';
 
 const videoStore = useVideoStore()
