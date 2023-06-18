@@ -3,6 +3,7 @@ import Home from "../components/Home.vue";
 import About from "../components/About.vue";
 import FileExplorerView from "../views/FileExplorerView.vue";
 import VideoView from "../views/VideoView.vue";
+import AudioView from "../views/AudioView.vue";
 
 const routes = [
     {
@@ -14,6 +15,11 @@ const routes = [
         path: "/video",
         name: "Video",
         component: VideoView,
+    },
+    {
+        path: "/audio",
+        name: "Audio",
+        component: AudioView,
     },
     {
         path: "/home",

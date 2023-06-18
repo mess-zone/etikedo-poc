@@ -11,7 +11,7 @@
             <tr
                 v-for="item in files"
                 :key="item.name"
-                :class="{ clickable: item.directory || item.path.endsWith('.mp4') || item.path.endsWith('.mkv') }"
+                :class="{ clickable: item.directory || item.path.endsWith('.mp4') || item.path.endsWith('.mkv') || item.path.endsWith('.mp3') || item.path.endsWith('.wav') }"
                 @click="onFileClick(item)"
                 >
                 <td class="icon-cell">
@@ -44,7 +44,12 @@ function onFileClick(file: FileInfo) {
         emit('folderclick', file)
     } else {
         videoStore.selectedFileUrl = file.path
-        router.push({ name: 'Video' })
+
+        if(file.path.endsWith('.mp4') || file.path.endsWith('.mkv')) {
+            router.push({ name: 'Video' })
+        } else if(file.path.endsWith('.mp3') || file.path.endsWith('.wav')) {
+            router.push({ name: 'Audio' })
+        }
     }
 }
 </script>

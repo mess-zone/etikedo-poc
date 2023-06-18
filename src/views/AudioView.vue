@@ -6,19 +6,16 @@
         </header>
         
         <div class="c-container">
-            <div class="col1">
-                <VideoPlayer 
-                    class="video-container"
-                    :file-url="selectedFileUrl"
-                />
-             
-                <div class="wave-container">
-                    <div id="audio-wave-container"></div>
-                </div>
-             
+            <Transcription class="transcription-container"/>
+
+            <VideoPlayer 
+                class="video-container"
+                :file-url="selectedFileUrl"
+            />
+            
+            <div class="wave-container">
+                <div id="audio-wave-container"></div>
             </div>
-            <Transcription class="col2" />
-          
         </div>
         <BottomControls class="c-bottom-controls"></BottomControls>
     </div>
@@ -142,9 +139,15 @@ header h2 {
 }
 
 .c-container {
+    border: 1px solid red;
     grid-area: center;
-    /* border: 2px solid red; */
-    display: flex;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: 1fr 0px 145px;
+    grid-template-areas: 
+        "transcription"
+        "audio-preview"
+        "wave-preview";
     /* grid-template-columns: [col1-start] 2fr [col2-start] 1fr [col2-end]; */
     /* grid-template-columns: 3fr minmax(100px, 1fr);
     grid-template-rows: auto;
@@ -155,23 +158,6 @@ header h2 {
     justify-content: space-between; */
     /* height: 90vh; */
     /* flex-basis: 100%; */
-}
-
-.col1 {
-    background-color: #ebe7e7;
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 3fr 145px;
-    grid-template-areas: 
-        "video-preview"
-        "wave-preview";
-    width: 70%;
-}
-
-.col2 {
-    /* grid-area: col2; */
-    /* width: 150px; */
-    width: 30%;
 }
 
 .wave-container {
@@ -185,6 +171,11 @@ header h2 {
     /* background-color: rgb(67, 35, 142); */
     /* width: 100px; */
     overflow: hidden;
-    grid-area: video-preview;
+    grid-area: audio-preview;
+}
+
+.transcription-container {
+    grid-area: transcription;
+    overflow: auto;
 }
 </style>
