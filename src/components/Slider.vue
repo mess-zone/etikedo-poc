@@ -96,6 +96,7 @@ function handleStop(e: MouseEvent) {
 }
 
 function onSliderMouseDown(e: MouseEvent) {
+    e.preventDefault()
     console.log('onSliderMouseDown')
     handleStart(e)
 
@@ -135,7 +136,7 @@ function onSliderMouseUp(e: MouseEvent) {
     height: 24px;
     /* background-color: pink; */
     position: relative;
-    user-select: none;
+    /* user-select: none; */
 }
 
 .slider__bar {
