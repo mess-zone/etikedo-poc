@@ -7,11 +7,13 @@
             <button @click="handleNewTrackFile" v-if="!isTranscritionTrackLoaded">new</button>
             <button @click="handleClickAdd" v-else>add</button>
         </header>
-        <ul>
-            <li v-for="subtitle in transcriptions" :key="subtitle.cue.id">
-                <TranscriptionItem :transcription="subtitle" />
-            </li>
-        </ul>
+        <section>
+            <ul>
+                <li v-for="subtitle in transcriptions" :key="subtitle.cue.id">
+                    <TranscriptionItem :transcription="subtitle" />
+                </li>
+            </ul>
+        </section>
     </div>
     <div v-else>loading...</div>
 </template>
@@ -121,6 +123,7 @@ async function handleSaveTranscription() {
             "header"
             "center";
         justify-items: stretch;
+        overflow: hidden;
     }
 
     header {
@@ -128,13 +131,20 @@ async function handleSaveTranscription() {
         padding: 10px;
     }
 
-    ul {
+    section {
+        /* display: flex; */
         grid-area: center;
+        overflow-y: auto;
+    }
+
+    ul {
         list-style: none;
         padding: 10px;
         margin: 0;
         /* background-color: aquamarine; */
         /* height: 77vh; */
         overflow-y: auto;
+        max-width: 1000px;
+        margin: auto;
     }
 </style>
