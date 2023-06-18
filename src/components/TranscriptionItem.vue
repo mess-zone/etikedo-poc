@@ -1,11 +1,13 @@
 <template>
     <div class="transcription-block" :class="{ 'is-active': transcription.isActive }">
         <div class="speaker">
-            <div class="avatar">a</div>
+            <div class="avatar">{{transcription.speaker}}</div>
         </div>
         <div class="transcription-item" @click="handleClick">
             <header>
-                <span class="author">antonio</span>
+                <span class="author">
+                    <input type="text" v-model="transcription.speaker">
+                </span>
                 <div class="actions">
                     <span class="timestamp">
                         <!-- <button @click="decrementStart">-</button>
@@ -20,7 +22,7 @@
                 </div>
                
             </header>
-            <textarea ref="textInput" class="text" v-model="transcription.cue.text" @input="resizeInput($event.target)"></textarea>
+            <textarea ref="textInput" class="text" v-model="transcription.text" @input="resizeInput($event.target)"></textarea>
     </div>
 
     </div>
@@ -125,7 +127,7 @@ function handleClick() {
     videoStore.goToTime(props.transcription.startTime)
 }
 
-function handleRemove(item: subtitleCue, e: Event) {
+function handleRemove(item: transcriptionCue, e: Event) {
     e.stopImmediatePropagation()
     videoStore.removeCue(item)
 }
@@ -174,6 +176,12 @@ onMounted(() => {
 .author {
     font-weight: bold;
     font-size: .8em;
+}
+
+.author input {
+    /* background-color: red; */
+    border: none;
+    background-color: transparent;
 }
 .avatar {
     width: 32px;

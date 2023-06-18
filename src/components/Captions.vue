@@ -105,7 +105,7 @@ async function createFile(path: string, data: any) {
 }
 
 async function handleSaveTranscription() {
-    console.log('save transcription file')
+    console.log('save subtitle file')
     const data = videoStore.exportTrack('transcription')
     await createFile(videoStore.selectedTranscriptionFileUrl, data)
 }

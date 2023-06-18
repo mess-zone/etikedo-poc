@@ -93,7 +93,7 @@ const escapeNewLines = (str: string) => {
     return str.replace(/\n/g, "\\n")
 }
 
-function createFile(path: string, data: any) {
+function createSubtitleFile(path: string, data: any) {
     console.log('creating file....')
 
     // order array by start date before convert to string
@@ -133,7 +133,8 @@ app.whenReady().then(() => {
     ipcMain.handle('get-root-path', () => process.cwd())
     ipcMain.handle('get-back-path', (event, path) => pathModule.join(path,'../'))
     ipcMain.handle('get-files', (event, path) => getFiles(path))
-    ipcMain.handle('create-file', (event, path, data) => createFile(path, data))
+    ipcMain.handle('create-subtitle-file', (event, path, data) => createSubtitleFile(path, data))
+    ipcMain.handle('create-file', (event, path, data) => saveFile(path, data))
 
     ipcMain.handle('file-dialog', (event, params) => {     
        return dialog.showOpenDialogSync(params);

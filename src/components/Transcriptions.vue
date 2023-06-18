@@ -102,14 +102,14 @@ async function handleNewTrackFile() {
     }
 }
 
-async function createFile(path: string, data: any) {
+async function createTranscriptionFile(path: string, data: any) {
   const response = await electronAPI.createFile(path, data)
 }
 
 async function handleSaveTranscription() {
     console.log('save transcription file')
-    const data = audioStore.exportTrack('transcription')
-    await createFile(audioStore.selectedTranscriptionFileUrl, data)
+    const data = audioStore.exportTrack()
+    await createTranscriptionFile(audioStore.selectedTranscriptionFileUrl, data)
 }
 
 </script>

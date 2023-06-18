@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions'
 
 export type transcriptionCue = {
+    id: string,
     isActive: boolean,
     startTime: number,
     endTime: number,
@@ -125,13 +126,19 @@ export const useAudioStore = defineStore('audio', () => {
     function loadTrack(trackId: string) {
         const track = getTextTracks().find(track => track.label == trackId)
         transcriptions.value = Object.values(track.cues)
+            .map(rawCue => ({
+                metadata: JSON.parse((rawCue as VTTCue).text),
+                cueObject: rawCue as VTTCue
+            }))
             .map(c => ({ 
+                id: c.cueObject.id,
                 isActive: false, 
-                startTime: c.startTime, 
-                endTime: c.endTime, 
-                speaker: 'adalberto',// TODO
-                text: (c as VTTCue).text, // TODO
-                cue: c as VTTCue }))
+                startTime: c.cueObject.startTime, 
+                endTime: c.cueObject.endTime, 
+                speaker: ''+c.metadata.speaker,
+                text: c.metadata.text,
+                cue: c.cueObject,
+            }))
 
         for(const subtitle of transcriptions.value) {
             subtitle.cue.text = unescapeNewLine(subtitle.cue.text).trim()
@@ -164,17 +171,61 @@ export const useAudioStore = defineStore('audio', () => {
         }
     }
 
-    function exportTrack(trackId: string) {
-        const track = getTextTracks().find(track => track.label == trackId)
-        return Object.values(track.cues)
-                    .map(c => c as VTTCue)
-                    .map(c => ({ 
-                        id: c.id, 
-                        startTime: c.startTime, 
-                        endTime: c.endTime, 
-                        text: c.text, // TODO
-                        speaker: 'adalberto',// TODO
-                    }))
+    function formatDuration(durationInSeconds: number): string {
+        const hours = Math.floor(durationInSeconds / 3600);
+        const minutes = Math.floor((durationInSeconds % 3600) / 60);
+        const seconds = Math.floor(durationInSeconds % 60);
+        const milliseconds = Math.floor((durationInSeconds % 1) * 1000);
+      
+        const formattedHours = hours.toString().padStart(2, '0');
+        const formattedMinutes = minutes.toString().padStart(2, '0');
+        const formattedSeconds = seconds.toString().padStart(2, '0');
+        const formattedMilliseconds = milliseconds.toString().padStart(3, '0');
+      
+        return `${formattedHours}:${formattedMinutes}:${formattedSeconds}.${formattedMilliseconds}`;
+    }
+    
+    const escapeNewLines = (str: string) => {
+        return str.replace(/\n/g, "\\n")
+    }
+
+    function asWebVTT(data: any[]) {
+        let content = 'WEBVTT'
+
+        content += data.map((cue: any) => 
+            `\n\n${cue.id}` +
+            `\n${formatDuration(cue.startTime)} --> ${formatDuration(cue.endTime)}` +
+            `\n${JSON.stringify(cue.metadata)}` 
+        ).join('')
+
+        return content
+    }
+
+    function exportTrack() {
+        const cues = transcriptions.value.map((t => ({
+            id: t.id, 
+            startTime: t.startTime, 
+            endTime: t.endTime, 
+            metadata: {
+                speaker: +t.speaker,
+                text: escapeNewLines(t.text),
+            },
+            // text: c.text, // TODO
+            // speaker: '2',// TODO
+        }))).sort((a: any, b: any) => { 
+            if(a.startTime < b.startTime) {
+                // a is less than b
+                return -1
+            } else if(a.startTime > b.startTime) {
+                // a is greater than b
+                return 1
+            } 
+            // a must be equal to b
+            return 0
+        })
+
+        return asWebVTT(cues)
+
     }
 
     function getCurrentTime() {
@@ -187,15 +238,20 @@ export const useAudioStore = defineStore('audio', () => {
 
     function addCue(text: string, start: number, end: number) {
         const track = getTextTracks()[0]
-        const cue = new VTTCue(start, end, text)
+        const metadata = {
+            speaker: 0,
+            text: text,
+        }
+        const cue = new VTTCue(start, end, JSON.stringify(metadata))
         cue.id = uuidv4();
 
         const subtitleItem = ref<transcriptionCue>({
+            id: cue.id,
             isActive: false,
             startTime: start,
             endTime: end,
-            speaker: 'adalberto', // TODO,
-            text: text, // TODO
+            speaker: ''+metadata.speaker,
+            text: metadata.text,
             cue: cue,
         })
 

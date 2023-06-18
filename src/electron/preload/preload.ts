@@ -23,6 +23,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getFiles: (path: string) => ipcRenderer.invoke('get-files', path),
   
   createFile: (path: string, data: any) => ipcRenderer.invoke('create-file', path, data),
+  createSubtitleFile: (path: string, data: any) => ipcRenderer.invoke('create-subtitle-file', path, data),
   openFileDialog: (config: any) => ipcRenderer.invoke('file-dialog', config),
   openSaveDialog: (config: any) => ipcRenderer.invoke('file-save-dialog', config),
 })
