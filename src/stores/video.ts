@@ -13,13 +13,15 @@ export type subtitleCue = {
 const selectedFileUrl = ref('')
 const selectedTranscriptionFileUrl = ref('')
 
-const media = ref(null)
+const media = ref<HTMLMediaElement>(null)
 const isLoadedMetadata = ref(false)
 
 const subtitles = ref<subtitleCue[]>([])
 
 const wafesurferRegions = shallowRef(RegionsPlugin.create())
 // const wafesurferRegions = ref(RegionsPlugin.create())
+
+const isPlaying = ref(false)
 
 export const useVideoStore = defineStore('video', () => {
 
@@ -35,6 +37,8 @@ export const useVideoStore = defineStore('video', () => {
         wafesurferRegions.value = RegionsPlugin.create()
     }
 
+    
+
     function setMedia(videoMedia: HTMLMediaElement) {
         media.value = videoMedia
 
@@ -46,6 +50,18 @@ export const useVideoStore = defineStore('video', () => {
         // media.value.textTracks.onchange = (event) => {
         //     console.log(`'${event.type}' event fired`);
         // };
+
+        media.value.addEventListener('play', () => {
+            console.log('[PLAY]')
+            isPlaying.value = true
+        })
+        // media.value.addEventListener('playing', () => {
+        //     console.log('[PLAYING]')
+        // })
+        media.value.addEventListener('pause', () => {
+            console.log('[PAUSE]')
+            isPlaying.value = false
+        })
     }
 
     function getTextTracks(): TextTrack[] {
@@ -53,6 +69,7 @@ export const useVideoStore = defineStore('video', () => {
     }
 
     function createEmptyTrack(trackId: string) {
+        // @ts-ignore
         const track: HTMLTrackElement = media.value.addTextTrack("subtitles", trackId, "pt-BR");
         
         media.value.textTracks.addEventListener("addtrack", (e) => {
@@ -267,6 +284,7 @@ export const useVideoStore = defineStore('video', () => {
         updateStartTime,
         updateEndTime,
         wafesurferRegions,
+        isPlaying,
     }
     
 })
