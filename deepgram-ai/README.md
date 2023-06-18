@@ -21,6 +21,11 @@ crear .env file na raiz do projeto contendo a sua API_KEY do Deepgram:
 
 `npm run transcribe -- --i=path/to/file.mp4 --o=./path/to/transcription.vtt`
 
+**Atenção!**
+Caminhos absolutos no Windows devem ser escapados com duas contrabarras
+
+Ex: `C:\\user\\Documents\\filetest.mp4`
+
 **Suported input types (--i)**
 Segundo a [documentação do Deepgram](https://developers.deepgram.com/docs/supported-audio-formats), os tipos de arquivos suportados são:
 - MP3

@@ -3,6 +3,7 @@ const { Deepgram } = require('@deepgram/sdk');
 const fs = require('fs');
 const mime = require('mime');
 
+console.time()
 try {
   const deepgramApiKey = process.env.DEEPGRAM_API_KEY
   
@@ -40,6 +41,7 @@ try {
   .then((transcription) => {
       fs.writeFileSync(outputPath, transcription);
       console.log('Transcription file created:', outputPath)
+      console.timeEnd()
   })
   .catch((err) => {
     console.log(err);

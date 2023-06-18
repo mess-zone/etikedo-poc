@@ -14,9 +14,10 @@ const ffmpeg = require('fluent-ffmpeg');
 function convert(input, output, callback) {
     ffmpeg(input)
         .output(output)
-        .on('end', function() {                
+        .on('end', function() {              
             callback(null);
         }).on('error', function(err){
+            console.log('error', err)  
             callback(err);
         }).run();
 }
@@ -28,6 +29,7 @@ function copyWitoutAudio(input, output, callback) {
         .on('end', function() {              
             callback(null);
         }).on('error', function(err){
+            console.log('error', err)
             callback(err);
         }).run();
 }
@@ -44,6 +46,7 @@ function mergeMedia(aud, vid, output, callback) {
         ).on('end', function() {              
             callback(null);
         }).on('error', function(err){
+            console.log('error', err)
             callback(err);
         }).run();
 }
