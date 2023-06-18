@@ -17,7 +17,7 @@
                 </div>
              
             </div>
-            <Transcription class="col2" />
+            <Captions class="col2" />
           
         </div>
         <BottomControls class="c-bottom-controls"></BottomControls>
@@ -27,14 +27,11 @@
 import { onMounted, onUnmounted } from 'vue';
 import VideoPlayer from '../components/VideoPlayer.vue'
 import BottomControls from '../components/BottomControls.vue'
-import Transcription from '../components/Transcription.vue'
+import Captions from '../components/Captions.vue'
 import { useVideoStore } from '../stores/video';
 import { storeToRefs } from 'pinia';
 import WaveSurfer from 'wavesurfer.js'
 import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions'
-
-// TODO hardcoded
-// const trackUrl = ref('D:\\gilma\\Documents\\PROJETOS\\MESS-ZONE\\etikedo-poc\\test\\videos\\video1.vtt')
 
 const videoStore = useVideoStore()
 const { selectedFileUrl, wafesurferRegions } = storeToRefs(videoStore)

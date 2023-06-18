@@ -1,7 +1,7 @@
 <template>
     <div class="transcription-container" v-if="!isLoading">
         <header>
-            <h2>Transcrição</h2>
+            <h2>Captions</h2>
             <h3>{{ selectedTranscriptionFileUrl }} <button @click="handleSaveTranscription" v-if="isTranscritionTrackLoaded">save</button></h3>
             <button @click="handleImportTrackFile" v-if="!isTranscritionTrackLoaded">import</button>
             <button @click="handleNewTrackFile" v-if="!isTranscritionTrackLoaded">new</button>
