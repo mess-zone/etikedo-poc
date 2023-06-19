@@ -1,9 +1,9 @@
 <template>
-    <div class="transcription-block" :class="[ theme, transcription.isActive?'is-active':'']">
+    <div class="transcription-block" :class="[ theme, transcription.isActive?'is-active':'']" @click="handleClick">
         <div class="speaker">
             <div class="avatar" :style="{ backgroundColor: stringToHexColor(''.padStart(5, transcription.speaker))}">{{transcription.speaker.charAt(0)}}</div>
         </div>
-        <div class="transcription-item" @click="handleClick">
+        <div class="transcription-item">
             <header>
                 <span class="author">
                     <input type="text" v-model="transcription.speaker">
