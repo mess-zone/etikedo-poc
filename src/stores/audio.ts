@@ -210,8 +210,6 @@ export const useAudioStore = defineStore('audio', () => {
                 speaker: +t.speaker,
                 text: escapeNewLines(t.text),
             },
-            // text: c.text, // TODO
-            // speaker: '2',// TODO
         }))).sort((a: any, b: any) => { 
             if(a.startTime < b.startTime) {
                 // a is less than b

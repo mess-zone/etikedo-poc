@@ -27,3 +27,5 @@ dist-ssr
 
 test/videos
 deepgram-ai/files
+
+.env

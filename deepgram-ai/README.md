@@ -27,6 +27,7 @@ Caminhos absolutos no Windows devem ser escapados com duas contrabarras
 Ex: `C:\\user\\Documents\\filetest.mp4`
 
 **Suported input types (--i)**
+
 Segundo a [documentação do Deepgram](https://developers.deepgram.com/docs/supported-audio-formats), os tipos de arquivos suportados são:
 - MP3
 - MP4
@@ -42,10 +43,18 @@ Segundo a [documentação do Deepgram](https://developers.deepgram.com/docs/supp
 - And more...
 
 **Suported output types (--o)**
+
 Os tipos de output suportados são:
 - vtt
 - srt
 - json
+
+**Diarization (--diarization)**
+
+Caso queira gerar um WebVTT file com informações sobre quem está falando.
+(Válido apenas para transcrições que geram um arquivo vtt)
+
+`npm run transcribe -- --i=path/to/file.mp4 --o=./path/to/transcription.vtt --diarization`
 
 ## Converter arquivos
 Utiliza a biblioteca [fluent-ffmpeg](https://www.npmjs.com/package/fluent-ffmpeg) para fazer conversões entre praticamente qualquer tipo de arquivo de mídia.
