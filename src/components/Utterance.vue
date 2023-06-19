@@ -1,6 +1,6 @@
 <template>
-    <span class="utterance" :class="[ mode, phrase.display ]">
-        <contenteditable class="editable" tag="span" :contenteditable="mode == 'EDIT'" v-model="phrase.text" :no-nl="true" :no-html="true" @returned="keyEnterPressed" />
+    <span class="utterance" :class="[ mode, phrase.layout ]">
+        <contenteditable class="editable" tag="span" :contenteditable="mode == 'EDIT'" v-model="text" :no-nl="true" :no-html="true" @returned="keyEnterPressed" />
         <div class="popover">
             <div class="popover-box">
                 <button v-if="mode == 'EDIT'" @click="handleExitClick">exit</button>
@@ -13,21 +13,23 @@
 <script setup lang="ts">
 import { Ref, inject, ref, watch } from 'vue';
 import contenteditable from 'vue-contenteditable'
+import { InUtterance } from '../composables/utterance';
 
-export type IUtterance = {
-    id: number,
-    text: string,
-    speaker: string,
-    start: string,
-    end: string,
-    display: string,
-}
 
 const props = defineProps<{
-    phrase: IUtterance,
+    phrase: InUtterance,
 }>()
 
-const { speakerMode, updateSpeakerMode } = inject<{ speakerMode: Ref<"PREVIEW" | "EDIT">, updateSpeakerMode: (mode: "PREVIEW" | "EDIT") => void }>('speakerMode')
+const text = ref(props.phrase.text)
+
+// watch(text, (value) => {
+//     props.phrase.updateText(value)
+// })
+
+const { speakerMode, updateSpeakerMode } = inject<{ 
+    speakerMode: Ref<"PREVIEW" | "EDIT">, 
+    updateSpeakerMode: (mode: "PREVIEW" | "EDIT") => void,
+ }>('speaker')
 
 watch(speakerMode, () => {
     if(speakerMode.value == 'EDIT') {
@@ -56,6 +58,7 @@ function handleEditClick() {
 }
 
 function exitEditingMode(){
+    props.phrase.updateText(text)
     updateSpeakerMode('PREVIEW')
 }
 
@@ -88,12 +91,12 @@ function enterEditMode() {
     opacity: .4;
 }
 
-.utterance.display-inline {
+.utterance.INLINE {
     display: inline;
     margin-right: 0.25em;
 }
 
-.utterance.display-block {
+.utterance.BLOCK {
     display: block;
     margin-bottom: 1em;
 }

@@ -1,8 +1,9 @@
-import { Ref, readonly, ref, watch } from "vue"
+import { Ref, readonly, ref, toValue, watch } from "vue"
 import { v4 as uuidv4 } from 'uuid';
 
 export type LayoutType = 'BLOCK' | 'INLINE'
 
+// TODO rename to speech, utterance, expression, phrase, statement
 export interface UtteranceData {
     id: string,
     text: string,
@@ -21,6 +22,7 @@ export interface InUtterance {
     layout?: Ref<LayoutType>,
     create(_text: string, _start?: number, _end?: number, _speaker?: number, _layout?: LayoutType): void,
     hydrate(_id: string, _text: string, _start?: number, _end?: number, _speaker?: number, _layout?: LayoutType): void,
+    updateText(value: string | Ref<string>): void,
 }
 
 export function useUtterance(): Readonly<InUtterance> {
@@ -50,8 +52,13 @@ export function useUtterance(): Readonly<InUtterance> {
         layout.value = _layout
     }
 
+    function updateText(value: string | Ref<string>) {
+        console.log('update text', value)
+        text.value = toValue(value)
+    }
+
     watch(text, (value) => {
-        console.log(`changed: ${value}`)
+        console.log(`event text changed: ${value}`)
     })
 
     return readonly({
@@ -63,5 +70,6 @@ export function useUtterance(): Readonly<InUtterance> {
         layout,
         create,
         hydrate,
+        updateText,
     })
 }

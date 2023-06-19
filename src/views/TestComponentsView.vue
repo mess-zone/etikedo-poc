@@ -27,6 +27,9 @@
         <button @click="handleAddClick">add</button>
     </div>
     
+    <div class="container-editable" :class="[speakerMode]">
+        <Utterance v-for="phrase in utterances" :key="phrase.id" :phrase="phrase"></Utterance>
+    </div>
     <ul>
         <li v-for="item in utterances" :key="item.id.value">
             <pre>{{ item }}</pre>
@@ -35,9 +38,10 @@
     </ul>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue';
+import { provide, ref } from 'vue';
 import { useTrack } from '../composables/track';
 import { InUtterance, UtteranceData } from '../composables/utterance';
+import Utterance from '../components/Utterance.vue'
 
 const { id, utterances, removeUtterance, addUtterance } = useTrack()
 
@@ -69,4 +73,32 @@ function handleRemoveClick(item: InUtterance) {
     console.log('remove', item)
     removeUtterance(item)
 }
+
+const speakerMode = ref<"PREVIEW" | "EDIT">('PREVIEW')
+
+function updateSpeakerMode(mode: "PREVIEW" | "EDIT") {
+    speakerMode.value = mode
+}
+
+provide('speaker', {
+    speakerMode,
+    updateSpeakerMode
+})
 </script>
+<style scoped>
+    .container-editable {
+        max-width: 1000px;
+        padding: 20px;
+        /* background-color: bisque; */
+        font-size: 1em;
+    }
+
+    .container-editable.PREVIEW {
+        /* background-color: yellow; */
+    }
+    .container-editable.EDIT {
+        /* background-color: rgb(255, 0, 43); */
+    }
+
+
+</style>
