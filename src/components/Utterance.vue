@@ -11,7 +11,6 @@
     </span>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue';
 import contenteditable from 'vue-contenteditable'
 
 export type IUtterance = {
@@ -66,6 +65,8 @@ function enterEditMode(phase: IUtterance) {
 .utterance {
     position: relative;
     /* border: 1px solid red; */
+    min-height: 1.5em;
+    min-width: 52px;
 }
 
 .utterance.display-inline {
@@ -94,8 +95,8 @@ function enterEditMode(phase: IUtterance) {
 } */
 
 .editable {
-    /* background-color: rgba(137, 43, 226, 0.5); */
-    line-height: 1.5;
+    /* background-color: pink; */
+    line-height: 1.5em;
     /* outline-offset: 5px; */
     outline: none;
     border-bottom: 3px solid transparent;
@@ -103,6 +104,11 @@ function enterEditMode(phase: IUtterance) {
 
 .utterance:not(.is-editing):hover .editable {
     border-bottom-color: rgb(137, 43, 226);
+}
+
+.utterance .editable:empty:before {
+    content: '[empty]';
+    opacity: .4;
 }
 
 .popover {
