@@ -1,10 +1,10 @@
 <template>
     <span class="utterance" :class="[ mode, phrase.display ]">
-        <contenteditable class="editable" tag="span" :contenteditable="mode == 'EDIT'" v-model="phrase.text" :no-nl="true" :no-html="true" @returned="keyEnterPressed(phrase)" />
+        <contenteditable class="editable" tag="span" :contenteditable="mode == 'EDIT'" v-model="phrase.text" :no-nl="true" :no-html="true" @returned="keyEnterPressed" />
         <div class="popover">
             <div class="popover-box">
-                <button v-if="mode == 'EDIT'" @click="handleExitClick(phrase)">exit</button>
-                <button v-else @click="handleEditClick(phrase)">edit</button>
+                <button v-if="mode == 'EDIT'" @click="handleExitClick">exit</button>
+                <button v-else @click="handleEditClick">edit</button>
                     {{ phrase.id }} <a href="#">{{ phrase.speaker }}</a> {{ phrase.start }}
             </div>
         </div>
@@ -42,24 +42,23 @@ export type ModeType = 'PREVIEW' | 'EDIT' | 'DISABLED'
 
 const mode = ref<ModeType>('PREVIEW') 
 
-function keyEnterPressed(phase: IUtterance) {
-    console.log('enter pressed')
-    exitEditingMode(phase)
+function keyEnterPressed() {
+    exitEditingMode()
 }
 
-function handleExitClick(phase: IUtterance) {
-    exitEditingMode(phase)
+function handleExitClick() {
+    exitEditingMode()
 }
 
-function handleEditClick(phase: IUtterance) {
-    enterEditMode(phase)
+function handleEditClick() {
+    enterEditMode()
 }
 
-function exitEditingMode(phase: IUtterance){
+function exitEditingMode(){
     updateSpeakerMode('PREVIEW')
 }
 
-function enterEditMode(phase: IUtterance) {
+function enterEditMode() {
     mode.value = 'EDIT'
     updateSpeakerMode('EDIT')
 }
@@ -109,17 +108,6 @@ function enterEditMode(phase: IUtterance) {
     /* box-shadow: 0px 0 6px 4px rgb(14 223 0); */
     outline-color: rgb(226, 177, 43);
 }
-
-/* .utterance.speaker-mode-editing:not(.EDIT) {
-    pointer-events: none;
-    background-color: rgb(0, 195, 255) !important;
-}
-.utterance.speaker-mode-editing:not(.EDIT) .editable {
-    opacity: .5;
-} */
-
-/* .utterance.EDIT .editable {
-} */
 
 .editable {
     /* background-color: pink; */
