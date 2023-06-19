@@ -136,12 +136,12 @@ export const useAudioStore = defineStore('audio', () => {
                 startTime: c.cueObject.startTime, 
                 endTime: c.cueObject.endTime, 
                 speaker: ''+c.metadata.speaker,
-                text: c.metadata.text,
+                text: unescapeNewLine(c.metadata.text).trim(),
                 cue: c.cueObject,
             }))
 
         for(const subtitle of transcriptions.value) {
-            subtitle.cue.text = unescapeNewLine(subtitle.cue.text).trim()
+            // subtitle.cue.text = subtitle.cue.text
 
             subtitle.cue.addEventListener("enter", (event) => {
                 subtitle.isActive = true

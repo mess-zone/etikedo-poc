@@ -1,5 +1,5 @@
 <template>
-    <div class="transcription-block" :class="{ 'is-active': transcription.isActive }">
+    <div class="transcription-block" :class="[ theme, transcription.isActive?'is-active':'']">
         <div class="speaker">
             <div class="avatar" :style="{ backgroundColor: stringToHexColor(''.padStart(5, transcription.speaker))}">{{transcription.speaker.charAt(0)}}</div>
         </div>
@@ -22,7 +22,7 @@
                 </div>
                
             </header>
-            <textarea ref="textInput" class="text" v-model="transcription.text" @input="resizeInput($event.target)"></textarea>
+            <textarea ref="textInput" class="text" v-model="transcription.text" @input="resizeInput"></textarea>
     </div>
 
     </div>
@@ -35,7 +35,8 @@ import { transcriptionCue, useAudioStore } from '../stores/audio';
 const textInput = ref(null)
 
 const props = defineProps<{
-    transcription: transcriptionCue
+    transcription: transcriptionCue,
+    theme: string,
 }>()
 
 function stringToHexColor(str: string): string {
@@ -131,11 +132,11 @@ function incrementEnd(e: Event) {
 }
 
 
-function resizeInput(target: HTMLTextAreaElement) {
+function resizeInput() {
     // @ts-ignore
-    target.style.height = "18px";
+    textInput.value.style.height = "18px";
     // @ts-ignore
-    target.style.height = target.scrollHeight + "px";
+    textInput.value.style.height = textInput.value.scrollHeight + "px";
 }
 
 function handleClick() {
@@ -149,7 +150,7 @@ function handleRemove(item: transcriptionCue, e: Event) {
 }
 
 onMounted(() => {
-    resizeInput(textInput.value)
+    resizeInput()
 })
 
 </script>
@@ -162,11 +163,20 @@ onMounted(() => {
     gap: 10px;
 
     padding: 10px 15px;
-    border-radius: 8px;
-    margin-bottom: 10px;
+
     box-sizing: border-box;
-    border: 3px solid transparent;
     cursor: pointer;
+}
+.transcription-block.estilo-1 {
+    border-radius: 8px;
+    border: 3px solid transparent;
+    margin-bottom: 10px;
+}
+.transcription-block.estilo-2 {
+    padding: 20px;
+    gap: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    opacity: .6;
 }
 
 .transcription-item {
@@ -179,7 +189,14 @@ onMounted(() => {
     /* cursor: pointer; */
 }
 
-.transcription-block:hover {
+.transcription-block.estilo-2 .transcription-item {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.transcription-block.estilo-1:hover {
     background-color: rgba(255, 192, 203, 0.507);
 }
 
@@ -198,7 +215,19 @@ onMounted(() => {
     /* background-color: red; */
     border: none;
     background-color: transparent;
+    font-weight: bold;
+    outline: none;
 }
+
+.transcription-block.estilo-2 .author {
+    display: none;
+}
+
+.transcription-block.estilo-2 header {
+    justify-content: right;
+}
+
+
 .avatar {
     width: 32px;
     height: 32px;
@@ -218,6 +247,15 @@ onMounted(() => {
     gap: 10px;
 }
 
+.transcription-block.estilo-2 .actions {
+    visibility: hidden;
+}
+.transcription-block.estilo-2.is-active .actions,
+.transcription-block.estilo-2:hover .actions {
+    visibility: visible;
+}
+
+
 header {
     display: flex;
     align-items: center;
@@ -226,6 +264,8 @@ header {
 
 .timestamp {
     font-size: .8em;
+    color: rgba(0, 0, 0, 0.6);
+    text-align: right;
 }
 .text {
     font-size: 1em;
@@ -240,11 +280,16 @@ header {
     border: none;
     min-height: 18px;
     /* margin-bottom: 5px; */
+    outline: none;
 }
 
-.transcription-block.is-active {
+.transcription-block.estilo-1.is-active {
     background-color: rgba(255, 113, 184, 0.226);
     border-color: rgba(240, 0, 120, 0.842);
+}
+
+.transcription-block.estilo-2.is-active {
+    opacity: 1;
 }
 
 .btn-remove {

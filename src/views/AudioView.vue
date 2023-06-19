@@ -136,7 +136,6 @@ header h2 {
 }
 
 .c-container {
-    border: 1px solid red;
     grid-area: center;
     display: grid;
     grid-template-columns: auto;

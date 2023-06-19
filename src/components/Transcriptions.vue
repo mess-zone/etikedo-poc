@@ -1,7 +1,7 @@
 <template>
-    <div class="transcription-container" v-if="!isLoading">
+    <div class="transcription-container" v-if="!isLoading" :class="theme">
         <header>
-            <h2>Transcriptions</h2>
+            <h2>Transcriptions <button @click="setTheme('estilo-1')">estilo 1</button> <button @click="setTheme('estilo-2')">estilo 2</button></h2>
             <h3>{{ selectedTranscriptionFileUrl }} <button @click="handleSaveTranscription" v-if="isTranscritionTrackLoaded">save</button></h3>
             <button @click="handleImportTrackFile" v-if="!isTranscritionTrackLoaded">import</button>
             <button @click="handleNewTrackFile" v-if="!isTranscritionTrackLoaded">new</button>
@@ -10,7 +10,7 @@
         <section>
             <ul>
                 <li v-for="subtitle in transcriptions" :key="subtitle.cue.id">
-                    <TranscriptionItem :transcription="subtitle" />
+                    <TranscriptionItem :transcription="subtitle" :theme="theme" />
                 </li>
             </ul>
         </section>
@@ -22,6 +22,12 @@ import { useAudioStore } from '../stores/audio';
 import { storeToRefs } from 'pinia';
 import TranscriptionItem from './TranscriptionItem.vue';
 import { ref, watch } from 'vue';
+
+const theme = ref('estilo-1')
+
+function setTheme(st: string) {
+    theme.value = st
+}
 
 const audioStore = useAudioStore()
 const { selectedTranscriptionFileUrl, transcriptions } = storeToRefs(audioStore)
