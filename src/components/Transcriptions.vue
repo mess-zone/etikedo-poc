@@ -6,6 +6,13 @@
             <button @click="handleImportTrackFile" v-if="!isTranscritionTrackLoaded">import</button>
             <button @click="handleNewTrackFile" v-if="!isTranscritionTrackLoaded">new</button>
             <button @click="handleClickAdd" v-else>add</button>
+
+            <input type="text" />
+  
+            <div class="container-editable">
+                <Utterance v-for="phrase in phrases" :key="phrase.id" :phrase="phrase"></Utterance>
+            </div>
+            <pre v-for="phrase in phrases" :key="phrase.id" style="max-width: 100vw; overflow: auto;">{{ phrase.text }}</pre>
         </header>
         <section>
             <ul>
@@ -22,6 +29,62 @@ import { useAudioStore } from '../stores/audio';
 import { storeToRefs } from 'pinia';
 import TranscriptionItem from './TranscriptionItem.vue';
 import { ref, watch } from 'vue';
+import Utterance, { IUtterance } from './Utterance.vue'
+
+
+const phrases = ref<IUtterance[]>([
+    {
+        id: 0,
+        text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sed dolorem, autem voluptas error eaque neque! Ipsam, deserunt officiis fugiat laborum enim libero corrupti id, optio iste accusantium odit natus non? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sed dolorem, autem voluptas error eaque neque! Ipsam, deserunt officiis fugiat laborum enim libero corrupti id, optio iste accusantium odit natus non?",
+        speaker: 'Lucas',
+        isEditable: false,
+        start: '00:45:89',
+        display: 'display-block',
+    },
+    {
+        id: 1,
+        text: "Deu certo mesmo?",
+        speaker: 'Gilmar Vitor da Silva Andrade',
+        isEditable: false,
+        start: '00:45:89',
+        display: 'display-block',
+    },
+    {
+        id: 2,
+        text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sed dolorem, autem voluptas error eaque neque! Ipsam, deserunt officiis fugiat laborum enim libero corrupti id, optio iste accusantium odit natus non?",
+        speaker: 'Marcos',
+        isEditable: false,
+        start: '00:67:07',
+        display: 'display-block',
+    },
+    {
+        id: 3,
+        text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit",
+        speaker: 'Marcos',
+        isEditable: false,
+        start: '00:67:07',
+        display: 'display-inline',
+    },
+    {
+        id: 4,
+        text: "ed dolorem,",
+        speaker: 'Marcos',
+        isEditable: false,
+        start: '00:67:07',
+        display: 'display-inline',
+    },
+    {
+        id: 5,
+        text: "autem voluptas error eaque neque",
+        speaker: 'Marcos',
+        isEditable: false,
+        start: '00:67:07',
+        display: 'display-inline',
+    },
+])
+
+
+
 
 const theme = ref('estilo-1')
 
@@ -121,6 +184,21 @@ async function handleSaveTranscription() {
 </script>
 
 <style scoped>
+    .container-editable {
+        padding: 20px;
+        /* background-color: bisque; */
+        font-size: 1em;
+    }
+
+    .container-editable:has(.utterance.is-editing) .utterance:not(.is-editing) {
+        pointer-events: none;
+    }
+    .container-editable:has(.utterance.is-editing) .utterance:not(.is-editing) .editable {
+        opacity: .5;
+    }
+
+
+
     .transcription-container {
         display: grid;
         grid-template-columns: 1fr;
