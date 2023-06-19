@@ -1,36 +1,26 @@
 <template>
-    <div class="container-editable" :class="{ 'is-editing': speakerModeIsEditing }">
-        <Utterance v-for="phrase in phrases" :key="phrase.id" :phrase="phrase" @mode:changed="modeChanged" ></Utterance>
+    <div class="container-editable" :class="[speakerMode]">
+        <Utterance v-for="phrase in phrases" :key="phrase.id" :phrase="phrase"></Utterance>
     </div>
 </template>
 <script setup lang="ts">
 import { provide, ref } from 'vue';
-import Utterance, { IUtterance, ModeType } from './Utterance.vue'
+import Utterance, { IUtterance } from './Utterance.vue'
 
 const props = defineProps<{
     phrases: IUtterance[]
 }>()
 
-const speakerModeIsEditing = ref(false)
+const speakerMode = ref<"PREVIEW" | "EDIT">('PREVIEW')
 
-function updateSpeakerMode(value: boolean) {
-    speakerModeIsEditing.value = value
+function updateSpeakerMode(mode: "PREVIEW" | "EDIT") {
+    speakerMode.value = mode
 }
 
 provide('speakerMode', {
-    speakerModeIsEditing,
+    speakerMode,
     updateSpeakerMode
 })
-
-
-function modeChanged(mode: ModeType) {
-    // if(mode == 'EDIT') {
-    //     speakerModeIsEditing.value = true
-    // } else {
-    //     speakerModeIsEditing.value = false
-    // }
-}
-
 
 </script>
 <style scoped>
@@ -40,25 +30,11 @@ function modeChanged(mode: ModeType) {
         font-size: 1em;
     }
 
-    /**
-        // TODO hover not working
-     */
-
-    .container-editable:has(.utterance.is-editing) .utterance:not(.is-editing) {
-        pointer-events: none;
+    .container-editable.PREVIEW {
+        /* background-color: yellow; */
     }
-    .container-editable:has(.utterance.is-editing) .utterance:not(.is-editing) .editable {
-        opacity: .5;
-    }
-
-    .container-editable.is-editing {
-        background-color: rgb(0, 195, 255);
-        /* pointer-events: none; */
-        /* opacity: .2; */
-    }
-
-    .container-editable.is-editing {
-        /* background-color: aquamarine; */
+    .container-editable.EDIT {
+        /* background-color: rgb(255, 0, 43); */
     }
 
 

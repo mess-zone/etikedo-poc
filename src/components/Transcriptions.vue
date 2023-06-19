@@ -6,12 +6,10 @@
             <button @click="handleImportTrackFile" v-if="!isTranscritionTrackLoaded">import</button>
             <button @click="handleNewTrackFile" v-if="!isTranscritionTrackLoaded">new</button>
             <button @click="handleClickAdd" v-else>add</button>
-
-            <input type="text" />
   
             <Speaker :phrases="phrases"></Speaker>
 
-            <pre v-for="phrase in phrases" :key="phrase.id" style="max-width: 100vw; overflow: auto;">{{ phrase.text }}</pre>
+            <pre v-for="phrase in phrases" :key="phrase.id" style="max-width: 100vw; overflow: auto;">{{ phrase.speaker }}: {{  phrase.text }}</pre>
         </header>
         <section>
             <ul>

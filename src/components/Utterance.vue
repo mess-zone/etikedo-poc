@@ -1,6 +1,5 @@
 <template>
-    <span class="utterance" :class="[speakerModeIsEditing?'speaker-mode-editing':'', mode, phrase.display ]">
-        {{ speakerModeIsEditing }}
+    <span class="utterance" :class="[ mode, phrase.display ]">
         <contenteditable class="editable" tag="span" :contenteditable="mode == 'EDIT'" v-model="phrase.text" :no-nl="true" :no-html="true" @returned="keyEnterPressed(phrase)" />
         <div class="popover">
             <div class="popover-box">
@@ -12,9 +11,8 @@
     </span>
 </template>
 <script setup lang="ts">
-import { Ref, inject, ref } from 'vue';
+import { Ref, inject, ref, watch } from 'vue';
 import contenteditable from 'vue-contenteditable'
-const emit = defineEmits(['mode:changed'])
 
 export type IUtterance = {
     id: number,
@@ -28,7 +26,17 @@ const props = defineProps<{
     phrase: IUtterance,
 }>()
 
-const { speakerModeIsEditing, updateSpeakerMode } = inject<{ speakerModeIsEditing: Ref, updateSpeakerMode: (value: boolean) => void }>('speakerMode')
+const { speakerMode, updateSpeakerMode } = inject<{ speakerMode: Ref<"PREVIEW" | "EDIT">, updateSpeakerMode: (mode: "PREVIEW" | "EDIT") => void }>('speakerMode')
+
+watch(speakerMode, () => {
+    if(speakerMode.value == 'EDIT') {
+        if(mode.value != 'EDIT') {
+            mode.value = 'DISABLED'
+        }
+    } else {
+        mode.value = 'PREVIEW'
+    }
+})
 
 export type ModeType = 'PREVIEW' | 'EDIT' | 'DISABLED'
 
@@ -48,15 +56,12 @@ function handleEditClick(phase: IUtterance) {
 }
 
 function exitEditingMode(phase: IUtterance){
-    mode.value = 'PREVIEW'
-    updateSpeakerMode(false)
-    emit('mode:changed', mode.value)
+    updateSpeakerMode('PREVIEW')
 }
 
 function enterEditMode(phase: IUtterance) {
     mode.value = 'EDIT'
-    updateSpeakerMode(true)
-    emit('mode:changed', mode.value)
+    updateSpeakerMode('EDIT')
 }
 
 </script>
@@ -71,14 +76,16 @@ function enterEditMode(phase: IUtterance) {
 }
 
 .utterance.PREVIEW {
-    background-color: yellow !important;
+    /* background-color: yellow !important; */
+    /* cursor: pointer; */
 }
 .utterance.EDIT {
-    background-color: rgb(255, 0, 43) !important;
+    /* background-color: rgb(255, 0, 43) !important; */
 }
 .utterance.DISABLED {
-    background-color: rgb(0, 195, 255) !important;
+    /* background-color: rgb(0, 195, 255) !important; */
     pointer-events: none;
+    opacity: .4;
 }
 
 .utterance.display-inline {
@@ -103,13 +110,13 @@ function enterEditMode(phase: IUtterance) {
     outline-color: rgb(226, 177, 43);
 }
 
-.utterance.speaker-mode-editing:not(.EDIT) {
+/* .utterance.speaker-mode-editing:not(.EDIT) {
     pointer-events: none;
     background-color: rgb(0, 195, 255) !important;
 }
 .utterance.speaker-mode-editing:not(.EDIT) .editable {
     opacity: .5;
-}
+} */
 
 /* .utterance.EDIT .editable {
 } */
@@ -122,7 +129,7 @@ function enterEditMode(phase: IUtterance) {
     border-bottom: 3px solid transparent;
 }
 
-.utterance:not(.EDIT):hover .editable {
+.utterance.PREVIEW:hover .editable {
     border-bottom-color: rgb(137, 43, 226);
 }
 
