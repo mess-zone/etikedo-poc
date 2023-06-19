@@ -1,9 +1,10 @@
 <template>
-    <span class="utterance" :class="[phrase.isEditable ? 'is-editing':'', phrase.display ]">
-        <contenteditable class="editable" tag="span" :contenteditable="phrase.isEditable" v-model="phrase.text" :no-nl="true" :no-html="true" @returned="enterPressed(phrase)" />
+    <span class="utterance" :class="[speakerModeIsEditing?'speaker-mode-editing':'', mode, phrase.display ]">
+        {{ speakerModeIsEditing }}
+        <contenteditable class="editable" tag="span" :contenteditable="mode == 'EDIT'" v-model="phrase.text" :no-nl="true" :no-html="true" @returned="keyEnterPressed(phrase)" />
         <div class="popover">
             <div class="popover-box">
-                <button v-if="phrase.isEditable" @click="handleExitClick(phrase)">exit</button>
+                <button v-if="mode == 'EDIT'" @click="handleExitClick(phrase)">exit</button>
                 <button v-else @click="handleEditClick(phrase)">edit</button>
                     {{ phrase.id }} <a href="#">{{ phrase.speaker }}</a> {{ phrase.start }}
             </div>
@@ -11,31 +12,29 @@
     </span>
 </template>
 <script setup lang="ts">
+import { Ref, inject, ref } from 'vue';
 import contenteditable from 'vue-contenteditable'
+const emit = defineEmits(['mode:changed'])
 
 export type IUtterance = {
     id: number,
     text: string,
     speaker: string,
-    isEditable: boolean,
     start: string,
     display: string,
 }
 
 const props = defineProps<{
-    phrase: IUtterance
+    phrase: IUtterance,
 }>()
 
-// const phrase = ref<Phase>({
-//         id: 0,
-//         text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sed dolorem, autem voluptas error eaque neque! Ipsam, deserunt officiis fugiat laborum enim libero corrupti id, optio iste accusantium odit natus non? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sed dolorem, autem voluptas error eaque neque! Ipsam, deserunt officiis fugiat laborum enim libero corrupti id, optio iste accusantium odit natus non?",
-//         speaker: 'Lucas',
-//         isEditable: false,
-//         start: '00:45:89',
-//         display: 'display-block',
-// })
+const { speakerModeIsEditing, updateSpeakerMode } = inject<{ speakerModeIsEditing: Ref, updateSpeakerMode: (value: boolean) => void }>('speakerMode')
 
-function enterPressed(phase: IUtterance) {
+export type ModeType = 'PREVIEW' | 'EDIT' | 'DISABLED'
+
+const mode = ref<ModeType>('PREVIEW') 
+
+function keyEnterPressed(phase: IUtterance) {
     console.log('enter pressed')
     exitEditingMode(phase)
 }
@@ -49,13 +48,15 @@ function handleEditClick(phase: IUtterance) {
 }
 
 function exitEditingMode(phase: IUtterance){
-  console.log('exit editing mode');
-  phase.isEditable = false
+    mode.value = 'PREVIEW'
+    updateSpeakerMode(false)
+    emit('mode:changed', mode.value)
 }
 
 function enterEditMode(phase: IUtterance) {
-    console.log('click', phase)
-    phase.isEditable = true
+    mode.value = 'EDIT'
+    updateSpeakerMode(true)
+    emit('mode:changed', mode.value)
 }
 
 </script>
@@ -69,6 +70,17 @@ function enterEditMode(phase: IUtterance) {
     min-width: 52px;
 }
 
+.utterance.PREVIEW {
+    background-color: yellow !important;
+}
+.utterance.EDIT {
+    background-color: rgb(255, 0, 43) !important;
+}
+.utterance.DISABLED {
+    background-color: rgb(0, 195, 255) !important;
+    pointer-events: none;
+}
+
 .utterance.display-inline {
     display: inline;
     margin-right: 0.25em;
@@ -79,19 +91,27 @@ function enterEditMode(phase: IUtterance) {
     margin-bottom: 1em;
 }
 
-.utterance.is-editing {
+.utterance.EDIT {
     outline: 2px solid rgb(137, 43, 226);
     outline-offset: 0.25em;
     border-radius: 0.25em;
 }
 
-.utterance.is-editing:has(.editable:focus) {
+.utterance.EDIT:has(.editable:focus) {
     /* background-color: green; */
     /* box-shadow: 0px 0 6px 4px rgb(14 223 0); */
     outline-color: rgb(226, 177, 43);
 }
 
-/* .utterance.is-editing .editable {
+.utterance.speaker-mode-editing:not(.EDIT) {
+    pointer-events: none;
+    background-color: rgb(0, 195, 255) !important;
+}
+.utterance.speaker-mode-editing:not(.EDIT) .editable {
+    opacity: .5;
+}
+
+/* .utterance.EDIT .editable {
 } */
 
 .editable {
@@ -102,7 +122,7 @@ function enterEditMode(phase: IUtterance) {
     border-bottom: 3px solid transparent;
 }
 
-.utterance:not(.is-editing):hover .editable {
+.utterance:not(.EDIT):hover .editable {
     border-bottom-color: rgb(137, 43, 226);
 }
 
@@ -129,7 +149,7 @@ function enterEditMode(phase: IUtterance) {
     padding: 10px;
 }
 
-.utterance.is-editing .popover,
+.utterance.EDIT .popover,
 .utterance:hover .popover {
     display: block;
 }

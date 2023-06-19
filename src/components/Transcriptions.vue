@@ -9,9 +9,8 @@
 
             <input type="text" />
   
-            <div class="container-editable">
-                <Utterance v-for="phrase in phrases" :key="phrase.id" :phrase="phrase"></Utterance>
-            </div>
+            <Speaker :phrases="phrases"></Speaker>
+
             <pre v-for="phrase in phrases" :key="phrase.id" style="max-width: 100vw; overflow: auto;">{{ phrase.text }}</pre>
         </header>
         <section>
@@ -29,7 +28,8 @@ import { useAudioStore } from '../stores/audio';
 import { storeToRefs } from 'pinia';
 import TranscriptionItem from './TranscriptionItem.vue';
 import { ref, watch } from 'vue';
-import Utterance, { IUtterance } from './Utterance.vue'
+import { IUtterance } from './Utterance.vue'
+import Speaker from './Speaker.vue'
 
 
 const phrases = ref<IUtterance[]>([
