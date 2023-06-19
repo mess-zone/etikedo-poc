@@ -28,7 +28,7 @@
     </div>
     
     <ul>
-        <li v-for="item in utterances" :key="item.id">
+        <li v-for="item in utterances" :key="item.id.value">
             <pre>{{ item }}</pre>
             <button @click="handleRemoveClick(item)">remove</button>
         </li>
@@ -37,7 +37,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useTrack } from '../composables/track';
-import { UtteranceData } from '../composables/utterance';
+import { InUtterance, UtteranceData } from '../composables/utterance';
 
 const { id, utterances, removeUtterance, addUtterance } = useTrack()
 
@@ -65,7 +65,7 @@ function handleAddClick() {
     }
 }
 
-function handleRemoveClick(item: UtteranceData) {
+function handleRemoveClick(item: InUtterance) {
     console.log('remove', item)
     removeUtterance(item)
 }

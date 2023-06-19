@@ -1,5 +1,4 @@
-import { Ref, isRef, ref, toValue, unref } from "vue"
-import { v4 as uuidv4 } from 'uuid';
+import { Ref, ref, toValue } from "vue"
 import { InUtterance, UtteranceData, useUtterance } from './utterance'
 
 
@@ -61,6 +60,11 @@ export function useTrack() {
     const utterances = ref<InUtterance[]>([])
     
     addUtterance(sample[0])
+    addUtterance(sample[1])
+    addUtterance(sample[2])
+    addUtterance(sample[3])
+    addUtterance(sample[4])
+    addUtterance(sample[5])
 
     function addUtterance(item: UtteranceData | Ref<UtteranceData>) {
         const { text, start, end, speaker, layout } = toValue(item)

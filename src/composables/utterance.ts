@@ -50,7 +50,7 @@ export function useUtterance(): Readonly<InUtterance> {
         layout.value = _layout
     }
 
-    watch(id, (value) => {
+    watch(text, (value) => {
         console.log(`changed: ${value}`)
     })
 
