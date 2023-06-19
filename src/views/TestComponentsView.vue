@@ -36,7 +36,8 @@
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
-import { UtteranceData, useTrack } from '../composables/track';
+import { useTrack } from '../composables/track';
+import { UtteranceData } from '../composables/utterance';
 
 const { id, utterances, removeUtterance, addUtterance } = useTrack()
 

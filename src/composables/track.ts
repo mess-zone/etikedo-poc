@@ -1,14 +1,7 @@
 import { Ref, isRef, ref, toValue, unref } from "vue"
 import { v4 as uuidv4 } from 'uuid';
+import { InUtterance, UtteranceData, useUtterance } from './utterance'
 
-export interface UtteranceData {
-    id: string,
-    text: string,
-    start: number,
-    end: number,
-    speaker?: number,
-    layout?: 'BLOCK' | 'INLINE',
-}
 
 const sample: UtteranceData[] = [
     {
@@ -65,15 +58,19 @@ export function useTrack() {
 
     const id = ref('track-id')
 
-    const utterances = ref<UtteranceData[]>(sample)
+    const utterances = ref<InUtterance[]>([])
+    
+    addUtterance(sample[0])
 
     function addUtterance(item: UtteranceData | Ref<UtteranceData>) {
-        const i = toValue(item)
-        i.id = uuidv4()
-        utterances.value.push(i)
+        const { text, start, end, speaker, layout } = toValue(item)
+
+        const utterance = useUtterance()
+        utterance.create(text, start, end, speaker, layout)
+        utterances.value.push(utterance)
     }
 
-    function removeUtterance(item: UtteranceData) {
+    function removeUtterance(item: InUtterance | Ref<InUtterance>) {
         const index = utterances.value.indexOf(toValue(item));
         if (index > -1) {
             utterances.value.splice(index, 1);
