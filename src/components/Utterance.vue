@@ -5,7 +5,7 @@
             <div class="popover-box">
                 <button v-if="mode == 'EDIT'" @click="handleExitClick">exit</button>
                 <button v-else @click="handleEditClick">edit</button>
-                    {{ phrase.id }} <a href="#">{{ phrase.speaker }}</a> {{ phrase.start }}
+                <input v-model="phrase.speaker" /> {{ phrase.start }} - {{ phrase.end }}
             </div>
         </div>
     </span>
@@ -19,6 +19,7 @@ export type IUtterance = {
     text: string,
     speaker: string,
     start: string,
+    end: string,
     display: string,
 }
 
@@ -142,6 +143,9 @@ function enterEditMode() {
 .popover-box {
     background-color: rgb(137, 43, 226);
     padding: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
 
 .utterance.EDIT .popover,
