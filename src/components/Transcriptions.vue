@@ -29,7 +29,6 @@ import { ref, watch } from 'vue';
 import { IUtterance } from './Utterance.vue'
 import Speaker from './Speaker.vue'
 
-
 const phrases = ref<IUtterance[]>([
     {
         id: 0,
