@@ -1,4 +1,4 @@
-import { MaybeRefOrGetter, Ref, computed, ref, toRef, toValue } from "vue"
+import { MaybeRefOrGetter, Ref, computed, ref, toRef, toValue, watchEffect } from "vue"
 import { v4 as uuidv4 } from 'uuid';
 
 export type LayoutType = 'BLOCK' | 'INLINE'
@@ -70,11 +70,11 @@ export function useTrack() {
 
     const utterances = ref<UtteranceData[]>([])
 
-    // TODO usar watch ou watchEffect?
-    const utterancesOrdered = computed(() => {
-        console.log('reordenar array')
+    // TODO usar computed, watch ou watchEffect?
+    watchEffect(() => {
+        console.log('reprocess utterances')
         // order array by start date 
-        return utterances.value.sort((a: UtteranceData, b: UtteranceData) => { 
+        utterances.value.sort((a: UtteranceData, b: UtteranceData) => { 
             if(a.start < b.start) {
                 // a is less than b
                 return -1
@@ -86,6 +86,22 @@ export function useTrack() {
             return 0
         })
     })
+
+    // const utterancesOrdered = computed(() => {
+    //     console.log('reprocessar array')
+    //     // order array by start date 
+    //     return utterances.value.sort((a: UtteranceData, b: UtteranceData) => { 
+    //         if(a.start < b.start) {
+    //             // a is less than b
+    //             return -1
+    //         } else if(a.start > b.start) {
+    //             // a is greater than b
+    //             return 1
+    //         } 
+    //         // a must be equal to b
+    //         return 0
+    //     })
+    // })
     
     addUtterance(sample[0])
     addUtterance(sample[1])
@@ -138,7 +154,6 @@ export function useTrack() {
     return {
         id,
         utterances,
-        utterancesOrdered,
         addUtterance,
         removeUtterance,
         updateUtteranceText,

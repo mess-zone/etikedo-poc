@@ -5,7 +5,8 @@
             <div class="popover-box">
                 <button v-if="mode == 'EDIT'" @click="handleExitClick">salvar</button>
                 <button v-else @click="handleEditClick">edit</button>
-                <input v-model="phrase.speaker" /> {{ phrase.start }} - {{ phrase.end }}
+                <input v-model="phrase.speaker" /> 
+                {{ phrase.start }} - {{ phrase.end }}
                 <button v-if="mode == 'EDIT'" @click="handleDeleteClick">delete</button>
             </div>
         </div>
@@ -21,8 +22,8 @@ const props = defineProps<{
     phrase: UtteranceData,
 }>()
 
-// const { text } = toRefs(props.phrase) // ref 'text' is synced with 'props'
-const text = ref(props.phrase.text) // ref 'text' is not synced with 'props'
+const { text } = toRefs(props.phrase) // ref 'text' is synced with 'props'
+// const text = ref(props.phrase.text) // ref 'text' is not synced with 'props'
 
 // watch(text, (value) => {
 //     updateUtteranceText(props.phrase.id, text)
@@ -68,7 +69,7 @@ function handleDeleteClick() {
 }
 
 function exitEditingMode(){
-    updateUtteranceText(props.phrase.id, text)
+    // updateUtteranceText(props.phrase.id, text)
     updateSpeakerMode('PREVIEW')
 }
 
