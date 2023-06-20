@@ -31,19 +31,18 @@
         <Utterance v-for="phrase in utterances" :key="phrase.id" :phrase="phrase"></Utterance>
     </div>
     <ul>
-        <li v-for="item in utterances" :key="item.id.value">
+        <li v-for="item in utterances" :key="item.id">
             <pre>{{ item }}</pre>
             <button @click="handleRemoveClick(item)">remove</button>
         </li>
     </ul>
 </template>
 <script setup lang="ts">
-import { provide, ref } from 'vue';
-import { useTrack } from '../composables/track';
-import { InUtterance, UtteranceData } from '../composables/utterance';
+import { MaybeRef, provide, ref, toValue } from 'vue';
+import { UtteranceData, useTrack } from '../composables/track';
 import Utterance from '../components/Utterance.vue'
 
-const { id, utterances, removeUtterance, addUtterance } = useTrack()
+const { id, utterances, removeUtterance, addUtterance, updateUtteranceText } = useTrack()
 
 const utteranceToAdd = ref<UtteranceData>({
     id: null,
@@ -69,20 +68,21 @@ function handleAddClick() {
     }
 }
 
-function handleRemoveClick(item: InUtterance) {
+function handleRemoveClick(item: UtteranceData) {
     console.log('remove', item)
     removeUtterance(item)
 }
 
 const speakerMode = ref<"PREVIEW" | "EDIT">('PREVIEW')
 
-function updateSpeakerMode(mode: "PREVIEW" | "EDIT") {
-    speakerMode.value = mode
+function updateSpeakerMode(mode: MaybeRef<"PREVIEW" | "EDIT">) {
+    speakerMode.value = toValue(mode)
 }
 
 provide('speaker', {
     speakerMode,
-    updateSpeakerMode
+    updateSpeakerMode,
+    updateUtteranceText,
 })
 </script>
 <style scoped>

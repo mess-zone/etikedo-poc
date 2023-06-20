@@ -1,6 +1,17 @@
-import { Ref, ref, toValue } from "vue"
-import { InUtterance, UtteranceData, useUtterance } from './utterance'
+import { MaybeRef, Ref, ref, toValue } from "vue"
+import { v4 as uuidv4 } from 'uuid';
 
+export type LayoutType = 'BLOCK' | 'INLINE'
+
+// TODO rename to speech, utterance, expression, phrase, or statement?
+export interface UtteranceData {
+    id: string,
+    text: string,
+    start: number,
+    end: number,
+    speaker?: number,
+    layout?: LayoutType,
+}
 
 const sample: UtteranceData[] = [
     {
@@ -57,7 +68,7 @@ export function useTrack() {
 
     const id = ref('track-id')
 
-    const utterances = ref<InUtterance[]>([])
+    const utterances = ref<UtteranceData[]>([])
     
     addUtterance(sample[0])
     addUtterance(sample[1])
@@ -66,19 +77,31 @@ export function useTrack() {
     addUtterance(sample[4])
     addUtterance(sample[5])
 
-    function addUtterance(item: UtteranceData | Ref<UtteranceData>) {
+    function addUtterance(item: MaybeRef<UtteranceData>) {
         const { text, start, end, speaker, layout } = toValue(item)
 
-        const utterance = useUtterance()
-        utterance.create(text, start, end, speaker, layout)
+        const utterance = {
+            id: uuidv4(),
+            text, 
+            start, 
+            end, 
+            speaker, 
+            layout,
+        }
         utterances.value.push(utterance)
     }
 
-    function removeUtterance(item: InUtterance | Ref<InUtterance>) {
+    function removeUtterance(item: MaybeRef<UtteranceData>) {
         const index = utterances.value.indexOf(toValue(item));
         if (index > -1) {
             utterances.value.splice(index, 1);
         }
+    }
+
+    function updateUtteranceText(id: MaybeRef<string>, text: MaybeRef<string>) {
+        const searchId = toValue(id)
+        const utterance = utterances.value.find(u => u.id == searchId)
+        utterance.text = toValue(text)
     }
 
     return {
@@ -86,5 +109,6 @@ export function useTrack() {
         utterances,
         addUtterance,
         removeUtterance,
+        updateUtteranceText,
     }
 }

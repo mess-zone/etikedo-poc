@@ -11,24 +11,26 @@
     </span>
 </template>
 <script setup lang="ts">
-import { Ref, inject, ref, watch } from 'vue';
+import { MaybeRef, Ref, inject, ref, toRefs, watch } from 'vue';
 import contenteditable from 'vue-contenteditable'
-import { InUtterance } from '../composables/utterance';
+import { UtteranceData } from '../composables/track';
 
 
 const props = defineProps<{
-    phrase: InUtterance,
+    phrase: UtteranceData,
 }>()
 
+// const { text } = toRefs(props.phrase) // reactive props using toRefs
 const text = ref(props.phrase.text)
 
 // watch(text, (value) => {
-//     props.phrase.updateText(value)
+//     updateUtteranceText(props.phrase.id, text)
 // })
 
-const { speakerMode, updateSpeakerMode } = inject<{ 
+const { speakerMode, updateSpeakerMode, updateUtteranceText } = inject<{ 
     speakerMode: Ref<"PREVIEW" | "EDIT">, 
-    updateSpeakerMode: (mode: "PREVIEW" | "EDIT") => void,
+    updateSpeakerMode: (mode: MaybeRef<"PREVIEW" | "EDIT">) => void,
+    updateUtteranceText: (id: MaybeRef<string>, text: MaybeRef<string>) => void
  }>('speaker')
 
 watch(speakerMode, () => {
@@ -58,7 +60,7 @@ function handleEditClick() {
 }
 
 function exitEditingMode(){
-    props.phrase.updateText(text)
+    updateUtteranceText(props.phrase.id, text)
     updateSpeakerMode('PREVIEW')
 }
 
