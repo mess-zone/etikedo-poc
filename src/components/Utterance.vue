@@ -3,7 +3,7 @@
         <contenteditable class="editable" tag="span" :contenteditable="mode == 'EDIT'" v-model="text" :no-nl="true" :no-html="true" @returned="keyEnterPressed" />
         <div class="popover">
             <div class="popover-box">
-                <button v-if="mode == 'EDIT'" @click="handleExitClick">exit</button>
+                <button v-if="mode == 'EDIT'" @click="handleExitClick">salvar</button>
                 <button v-else @click="handleEditClick">edit</button>
                 <input v-model="phrase.speaker" /> {{ phrase.start }} - {{ phrase.end }}
             </div>
@@ -27,10 +27,11 @@ const text = ref(props.phrase.text) // ref 'text' is not synced with 'props'
 //     updateUtteranceText(props.phrase.id, text)
 // })
 
-const { speakerMode, updateSpeakerMode, updateUtteranceText } = inject<{ 
+const { speakerMode, updateSpeakerMode, updateUtteranceText, getUtterance } = inject<{ 
     speakerMode: Ref<"PREVIEW" | "EDIT">, 
     updateSpeakerMode: (mode: MaybeRefOrGetter<"PREVIEW" | "EDIT">) => void,
-    updateUtteranceText: (id: MaybeRefOrGetter<string>, text: MaybeRefOrGetter<string>) => void
+    updateUtteranceText: (id: MaybeRefOrGetter<string>, text: MaybeRefOrGetter<string>) => void,
+    getUtterance: (id: MaybeRefOrGetter<string>) => Ref<UtteranceData>,
  }>('speaker')
 
 watch(speakerMode, () => {

@@ -1,4 +1,4 @@
-import { MaybeRefOrGetter, Ref, ref, toValue } from "vue"
+import { MaybeRefOrGetter, Ref, ref, toRef, toValue } from "vue"
 import { v4 as uuidv4 } from 'uuid';
 
 export type LayoutType = 'BLOCK' | 'INLINE'
@@ -104,11 +104,26 @@ export function useTrack() {
         utterance.text = toValue(text)
     }
 
+    function getUtterance(id: MaybeRefOrGetter<string>) {
+        const searchId = toValue(id)
+        const utterance = utterances.value.find(u => u.id == searchId)
+        return toRef(utterance)
+    }
+
+    function splitUtterance() {
+        // TODO
+    }
+
+    function mergeUtterances() {
+        // TODO
+    }
+
     return {
         id,
         utterances,
         addUtterance,
         removeUtterance,
         updateUtteranceText,
+        getUtterance,
     }
 }
