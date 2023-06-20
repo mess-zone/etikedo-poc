@@ -6,7 +6,13 @@
                 <button v-if="mode == 'EDIT'" @click="handleExitClick">salvar</button>
                 <button v-else @click="handleEditClick">edit</button>
                 <input v-model="phrase.speaker" /> 
-                {{ phrase.start }} - {{ phrase.end }}
+                <div class="time-widget" v-if="mode == 'EDIT'">
+                    <TimestampSelector v-model="start" @update:model-value="handleStartChanged"/>
+                    <input type="number" v-model="phrase.start" />
+                </div>
+                <div v-else>
+                    {{ phrase.start }} - {{ phrase.end }}
+                </div>
                 <button v-if="mode == 'EDIT'" @click="handleDeleteClick">delete</button>
             </div>
         </div>
@@ -16,25 +22,28 @@
 import { MaybeRefOrGetter, Ref, inject, ref, toRefs, watch } from 'vue';
 import contenteditable from 'vue-contenteditable'
 import { UtteranceData } from '../composables/track';
+import TimestampSelector from '../components/TimestampSelector.vue';
 
 
 const props = defineProps<{
     phrase: UtteranceData,
 }>()
 
-const { text } = toRefs(props.phrase) // ref 'text' is synced with 'props'
-// const text = ref(props.phrase.text) // ref 'text' is not synced with 'props'
+// const { text } = toRefs(props.phrase) // ref 'text' is synced with 'props'
+const text = ref(props.phrase.text) // ref 'text' is not synced with 'props'
+const start = ref(props.phrase.start)
 
 // watch(text, (value) => {
 //     updateUtteranceText(props.phrase.id, text)
 // })
 
-const { speakerMode, updateSpeakerMode, updateUtteranceText, getUtterance, removeUtterance } = inject<{ 
+const { speakerMode, updateSpeakerMode, updateUtteranceText, getUtterance, removeUtterance, updateUtteranceStart } = inject<{ 
     speakerMode: Ref<"PREVIEW" | "EDIT">, 
     updateSpeakerMode: (mode: MaybeRefOrGetter<"PREVIEW" | "EDIT">) => void,
     updateUtteranceText: (id: MaybeRefOrGetter<string>, text: MaybeRefOrGetter<string>) => void,
     getUtterance: (id: MaybeRefOrGetter<string>) => Ref<UtteranceData>,
     removeUtterance: (item: MaybeRefOrGetter<UtteranceData>) => void,
+    updateUtteranceStart: (id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<number>) => void
  }>('speaker')
 
 watch(speakerMode, () => {
@@ -69,13 +78,18 @@ function handleDeleteClick() {
 }
 
 function exitEditingMode(){
-    // updateUtteranceText(props.phrase.id, text)
+    updateUtteranceText(props.phrase.id, text)
+    updateUtteranceStart(props.phrase.id, start)
     updateSpeakerMode('PREVIEW')
 }
 
 function enterEditMode() {
     mode.value = 'EDIT'
     updateSpeakerMode('EDIT')
+}
+
+function handleStartChanged(value: number) {
+    console.log('start changed', value)
 }
 
 </script>
