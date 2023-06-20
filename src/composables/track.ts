@@ -1,4 +1,4 @@
-import { MaybeRef, Ref, ref, toValue } from "vue"
+import { MaybeRefOrGetter, Ref, ref, toValue } from "vue"
 import { v4 as uuidv4 } from 'uuid';
 
 export type LayoutType = 'BLOCK' | 'INLINE'
@@ -77,7 +77,7 @@ export function useTrack() {
     addUtterance(sample[4])
     addUtterance(sample[5])
 
-    function addUtterance(item: MaybeRef<UtteranceData>) {
+    function addUtterance(item: MaybeRefOrGetter<UtteranceData>) {
         const { text, start, end, speaker, layout } = toValue(item)
 
         const utterance = {
@@ -91,14 +91,14 @@ export function useTrack() {
         utterances.value.push(utterance)
     }
 
-    function removeUtterance(item: MaybeRef<UtteranceData>) {
+    function removeUtterance(item: MaybeRefOrGetter<UtteranceData>) {
         const index = utterances.value.indexOf(toValue(item));
         if (index > -1) {
             utterances.value.splice(index, 1);
         }
     }
 
-    function updateUtteranceText(id: MaybeRef<string>, text: MaybeRef<string>) {
+    function updateUtteranceText(id: MaybeRefOrGetter<string>, text: MaybeRefOrGetter<string>) {
         const searchId = toValue(id)
         const utterance = utterances.value.find(u => u.id == searchId)
         utterance.text = toValue(text)

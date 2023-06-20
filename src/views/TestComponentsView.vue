@@ -38,7 +38,7 @@
     </ul>
 </template>
 <script setup lang="ts">
-import { MaybeRef, provide, ref, toValue } from 'vue';
+import { MaybeRefOrGetter, provide, ref, toValue } from 'vue';
 import { UtteranceData, useTrack } from '../composables/track';
 import Utterance from '../components/Utterance.vue'
 
@@ -75,7 +75,7 @@ function handleRemoveClick(item: UtteranceData) {
 
 const speakerMode = ref<"PREVIEW" | "EDIT">('PREVIEW')
 
-function updateSpeakerMode(mode: MaybeRef<"PREVIEW" | "EDIT">) {
+function updateSpeakerMode(mode: MaybeRefOrGetter<"PREVIEW" | "EDIT">) {
     speakerMode.value = toValue(mode)
 }
 

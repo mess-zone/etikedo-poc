@@ -11,7 +11,7 @@
     </span>
 </template>
 <script setup lang="ts">
-import { MaybeRef, Ref, inject, ref, toRefs, watch } from 'vue';
+import { MaybeRefOrGetter, Ref, inject, ref, toRefs, watch } from 'vue';
 import contenteditable from 'vue-contenteditable'
 import { UtteranceData } from '../composables/track';
 
@@ -20,8 +20,8 @@ const props = defineProps<{
     phrase: UtteranceData,
 }>()
 
-// const { text } = toRefs(props.phrase) // reactive props using toRefs
-const text = ref(props.phrase.text)
+// const { text } = toRefs(props.phrase) // ref 'text' is synced with 'props'
+const text = ref(props.phrase.text) // ref 'text' is not synced with 'props'
 
 // watch(text, (value) => {
 //     updateUtteranceText(props.phrase.id, text)
@@ -29,8 +29,8 @@ const text = ref(props.phrase.text)
 
 const { speakerMode, updateSpeakerMode, updateUtteranceText } = inject<{ 
     speakerMode: Ref<"PREVIEW" | "EDIT">, 
-    updateSpeakerMode: (mode: MaybeRef<"PREVIEW" | "EDIT">) => void,
-    updateUtteranceText: (id: MaybeRef<string>, text: MaybeRef<string>) => void
+    updateSpeakerMode: (mode: MaybeRefOrGetter<"PREVIEW" | "EDIT">) => void,
+    updateUtteranceText: (id: MaybeRefOrGetter<string>, text: MaybeRefOrGetter<string>) => void
  }>('speaker')
 
 watch(speakerMode, () => {
@@ -100,6 +100,7 @@ function enterEditMode() {
 
 .utterance.BLOCK {
     display: block;
+    margin-top: 1em;
     margin-bottom: 1em;
 }
 
