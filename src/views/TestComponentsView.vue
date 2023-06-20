@@ -46,7 +46,7 @@ const { id, utterances, removeUtterance, addUtterance, updateUtteranceText } = u
 
 const utteranceToAdd = ref<UtteranceData>({
     id: null,
-    text: '[EMPTY]',
+    text: '',
     start: 0,
     end: 0,
     speaker: 0,
@@ -60,7 +60,7 @@ function handleAddClick() {
 
     utteranceToAdd.value = {
         id: null,
-        text: '[EMPTY]',
+        text: '',
         start: 0,
         end: 0,
         speaker: 0,
