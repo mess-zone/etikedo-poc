@@ -1,4 +1,4 @@
-import { MaybeRefOrGetter, Ref, ref, toRef, toValue } from "vue"
+import { MaybeRefOrGetter, Ref, computed, ref, toRef, toValue } from "vue"
 import { v4 as uuidv4 } from 'uuid';
 
 export type LayoutType = 'BLOCK' | 'INLINE'
@@ -69,6 +69,23 @@ export function useTrack() {
     const id = ref('track-id')
 
     const utterances = ref<UtteranceData[]>([])
+
+    // TODO usar watch ou watchEffect?
+    const utterancesOrdered = computed(() => {
+        console.log('reordenar array')
+        // order array by start date 
+        return utterances.value.sort((a: UtteranceData, b: UtteranceData) => { 
+            if(a.start < b.start) {
+                // a is less than b
+                return -1
+            } else if(a.start > b.start) {
+                // a is greater than b
+                return 1
+            } 
+            // a must be equal to b
+            return 0
+        })
+    })
     
     addUtterance(sample[0])
     addUtterance(sample[1])
@@ -121,6 +138,7 @@ export function useTrack() {
     return {
         id,
         utterances,
+        utterancesOrdered,
         addUtterance,
         removeUtterance,
         updateUtteranceText,

@@ -27,7 +27,7 @@
         <button @click="handleAddClick">add</button>
     </div>
     
-    <Speaker :phrases="utterances"></Speaker>
+    <Speaker :phrases="utterancesOrdered"></Speaker>
     <ul>
         <li v-for="item in utterances" :key="item.id">
             <pre>{{ item }}</pre>
@@ -40,7 +40,7 @@ import { MaybeRefOrGetter, provide, ref, toValue } from 'vue';
 import { UtteranceData, useTrack } from '../composables/track';
 import Speaker from '../components/Speaker.vue'
 
-const { id, utterances, removeUtterance, addUtterance, updateUtteranceText, getUtterance } = useTrack()
+const { id, utterances, utterancesOrdered, removeUtterance, addUtterance, updateUtteranceText, getUtterance } = useTrack()
 
 const utteranceToAdd = ref<UtteranceData>({
     id: null,
@@ -48,7 +48,7 @@ const utteranceToAdd = ref<UtteranceData>({
     start: 0,
     end: 0,
     speaker: 0,
-    layout: 'BLOCK',
+    layout: 'INLINE',
 })
 
 function handleAddClick() {
@@ -62,7 +62,7 @@ function handleAddClick() {
         start: 0,
         end: 0,
         speaker: 0,
-        layout: 'BLOCK',
+        layout: 'INLINE',
     }
 }
 
