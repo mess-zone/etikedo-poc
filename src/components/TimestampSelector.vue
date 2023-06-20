@@ -6,34 +6,41 @@
     </div>
 </template>
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, toRef, toRefs, watch } from 'vue';
 
 export interface Props {
     modelValue: number,
     min?: number,
+    step?: number,
 }
 
 const props = withDefaults(defineProps<Props>(), {
     min: 0,
+    step: 1,
 })
 
 const emit = defineEmits<{
     'update:model-value': [id: number],
 }>()
 
-const STEP = 0.5
 
+const { modelValue, min } = toRefs(props)
 const timestamp = ref(props.modelValue)
 
+watch([min], () => {
+    timestamp.value = props.modelValue
+})
+
 function decrement() {
-    console.log('-')
-    timestamp.value -= STEP
+    timestamp.value -= props.step
+    if(timestamp.value < props.min) {
+        timestamp.value = props.min
+    }
     emit('update:model-value', timestamp.value)
 }
 
 function increment() {
-    console.log('+')
-    timestamp.value += STEP
+    timestamp.value += props.step
     emit('update:model-value', timestamp.value)
 }
 
