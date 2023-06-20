@@ -82,6 +82,7 @@ provide('speaker', {
     updateSpeakerMode,
     updateUtteranceText,
     getUtterance,
+    removeUtterance,
 })
 </script>
 <style scoped>

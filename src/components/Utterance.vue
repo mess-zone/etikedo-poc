@@ -6,6 +6,7 @@
                 <button v-if="mode == 'EDIT'" @click="handleExitClick">salvar</button>
                 <button v-else @click="handleEditClick">edit</button>
                 <input v-model="phrase.speaker" /> {{ phrase.start }} - {{ phrase.end }}
+                <button v-if="mode == 'EDIT'" @click="handleDeleteClick">delete</button>
             </div>
         </div>
     </span>
@@ -27,11 +28,12 @@ const text = ref(props.phrase.text) // ref 'text' is not synced with 'props'
 //     updateUtteranceText(props.phrase.id, text)
 // })
 
-const { speakerMode, updateSpeakerMode, updateUtteranceText, getUtterance } = inject<{ 
+const { speakerMode, updateSpeakerMode, updateUtteranceText, getUtterance, removeUtterance } = inject<{ 
     speakerMode: Ref<"PREVIEW" | "EDIT">, 
     updateSpeakerMode: (mode: MaybeRefOrGetter<"PREVIEW" | "EDIT">) => void,
     updateUtteranceText: (id: MaybeRefOrGetter<string>, text: MaybeRefOrGetter<string>) => void,
     getUtterance: (id: MaybeRefOrGetter<string>) => Ref<UtteranceData>,
+    removeUtterance: (item: MaybeRefOrGetter<UtteranceData>) => void,
  }>('speaker')
 
 watch(speakerMode, () => {
@@ -58,6 +60,11 @@ function handleExitClick() {
 
 function handleEditClick() {
     enterEditMode()
+}
+
+function handleDeleteClick() {
+    removeUtterance(props.phrase)
+    updateSpeakerMode('PREVIEW')
 }
 
 function exitEditingMode(){
