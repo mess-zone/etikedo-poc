@@ -1,7 +1,7 @@
 <template>
     <div class="speaker">
         <div class="actor">
-            <div class="avatar" :style="avatarStyle">{{ speaker }}</div>
+            <div class="avatar" :style="avatarStyle">{{ phrases[0].speaker }}</div>
         </div>
         <div class="container-editable" :class="[speakerMode]">
             <Utterance v-for="phrase in phrases" :key="phrase.id" :phrase="phrase"></Utterance>
@@ -9,15 +9,13 @@
     </div>
 </template>
 <script setup lang="ts">
-import { computed, provide, ref } from 'vue';
+import { computed, provide, ref, toRef, toRefs } from 'vue';
 import { UtteranceData } from '../composables/track';
 import Utterance from './Utterance.vue';
 
 const props = defineProps<{
     phrases: UtteranceData[]
 }>()
-
-const speaker = ref(props.phrases[0].speaker)
 
 const speakerMode = ref<"PREVIEW" | "EDIT">('PREVIEW')
 

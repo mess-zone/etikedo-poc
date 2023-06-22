@@ -5,7 +5,7 @@
             <div class="popover-box">
                 <button v-if="mode == 'EDIT'" @click="handleExitClick">salvar</button>
                 <button v-else @click="handleEditClick">edit</button>
-                <input v-model="phrase.speaker" disabled /> 
+                <input type="number" v-model="speaker" :disabled="mode != 'EDIT'" /> 
                 <div class="time-widget" v-if="mode == 'EDIT'">
                     <TimestampSelector v-model="start" :min="0" :step="timeStep"/>
                     <TimestampSelector v-model="end" :min="start" :step="timeStep"/>
@@ -38,6 +38,7 @@ const text = ref(props.phrase.text) // ref 'text' is not synced with 'props'
 const start = ref(props.phrase.start)
 const end = ref(props.phrase.end)
 const layout = ref(props.phrase.layout)
+const speaker = ref(props.phrase.speaker)
 
 const timeStep = 0.5
 
@@ -45,7 +46,7 @@ const timeStep = 0.5
 //     updateUtteranceText(props.phrase.id, text)
 // })
 
-const { speakerMode, updateSpeakerMode, updateUtteranceText, getUtterance, removeUtterance, updateUtteranceStart, updateUtteranceEnd, updateUtteranceLayout } = inject<{ 
+const { speakerMode, updateSpeakerMode, updateUtteranceText, getUtterance, removeUtterance, updateUtteranceStart, updateUtteranceEnd, updateUtteranceLayout, updateUtteranceSpeaker } = inject<{ 
     speakerMode: Ref<"PREVIEW" | "EDIT">, 
     updateSpeakerMode: (mode: MaybeRefOrGetter<"PREVIEW" | "EDIT">) => void,
     updateUtteranceText: (id: MaybeRefOrGetter<string>, text: MaybeRefOrGetter<string>) => void,
@@ -54,6 +55,7 @@ const { speakerMode, updateSpeakerMode, updateUtteranceText, getUtterance, remov
     updateUtteranceStart: (id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<number>) => void,
     updateUtteranceEnd: (id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<number>) => void,
     updateUtteranceLayout: (id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<LayoutType>) => void,
+    updateUtteranceSpeaker: (id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<number>) => void,
  }>('speaker')
 
 watch(speakerMode, () => {
@@ -123,6 +125,7 @@ function exitEditingMode(){
     updateUtteranceStart(props.phrase.id, start)
     updateUtteranceEnd(props.phrase.id, end)
     updateUtteranceLayout(props.phrase.id, layout)
+    updateUtteranceSpeaker(props.phrase.id, speaker)
     updateSpeakerMode('PREVIEW')
 }
 

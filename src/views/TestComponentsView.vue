@@ -42,7 +42,7 @@ import { MaybeRefOrGetter, provide, ref, toValue } from 'vue';
 import { UtteranceData, useTrack } from '../composables/track';
 import Speaker from '../components/Speaker.vue'
 
-const { id, sortedUtterances, diarizedUtterances, removeUtterance, addUtterance, getUtterance, updateUtteranceText, updateUtteranceStart, updateUtteranceEnd, updateUtteranceLayout } = useTrack()
+const { id, sortedUtterances, diarizedUtterances, removeUtterance, addUtterance, getUtterance, updateUtteranceText, updateUtteranceStart, updateUtteranceEnd, updateUtteranceLayout, updateUtteranceSpeaker } = useTrack()
 
 const utteranceToAdd = ref<UtteranceData>({
     id: null,
@@ -88,6 +88,7 @@ provide('speaker', {
     updateUtteranceStart,
     updateUtteranceEnd,
     updateUtteranceLayout,
+    updateUtteranceSpeaker,
 })
 </script>
 <style scoped>
