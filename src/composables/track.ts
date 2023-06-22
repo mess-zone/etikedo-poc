@@ -157,6 +157,13 @@ export function useTrack() {
         utterance.end = value
     }
 
+    function updateUtteranceLayout(id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<LayoutType>) {
+        const searchId = toValue(id)
+        const utterance = utterances.value.find(u => u.id == searchId)
+        const value = toValue(newValue)
+        utterance.layout = value
+    }
+
     function splitUtterance() {
         // TODO
     }
@@ -174,5 +181,6 @@ export function useTrack() {
         updateUtteranceText,
         updateUtteranceStart,
         updateUtteranceEnd,
+        updateUtteranceLayout,
     }
 }

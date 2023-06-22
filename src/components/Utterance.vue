@@ -13,6 +13,10 @@
                 <div v-else>
                     {{ formatedStart }} - {{ formatedEnd }}
                 </div>
+                <select v-model="layout" :disabled="mode !== 'EDIT'">
+                    <option>INLINE</option>
+                    <option>BLOCK</option>
+                </select>
                 <button v-if="mode == 'EDIT'" @click="handleDeleteClick">delete</button>
             </div>
         </div>
@@ -21,7 +25,7 @@
 <script setup lang="ts">
 import { MaybeRefOrGetter, Ref, computed, inject, ref, toRefs, watch } from 'vue';
 import contenteditable from 'vue-contenteditable'
-import { UtteranceData } from '../composables/track';
+import { LayoutType, UtteranceData } from '../composables/track';
 import TimestampSelector from '../components/TimestampSelector.vue';
 
 
@@ -33,6 +37,7 @@ const props = defineProps<{
 const text = ref(props.phrase.text) // ref 'text' is not synced with 'props'
 const start = ref(props.phrase.start)
 const end = ref(props.phrase.end)
+const layout = ref(props.phrase.layout)
 
 const timeStep = 0.5
 
@@ -40,7 +45,7 @@ const timeStep = 0.5
 //     updateUtteranceText(props.phrase.id, text)
 // })
 
-const { speakerMode, updateSpeakerMode, updateUtteranceText, getUtterance, removeUtterance, updateUtteranceStart, updateUtteranceEnd } = inject<{ 
+const { speakerMode, updateSpeakerMode, updateUtteranceText, getUtterance, removeUtterance, updateUtteranceStart, updateUtteranceEnd, updateUtteranceLayout } = inject<{ 
     speakerMode: Ref<"PREVIEW" | "EDIT">, 
     updateSpeakerMode: (mode: MaybeRefOrGetter<"PREVIEW" | "EDIT">) => void,
     updateUtteranceText: (id: MaybeRefOrGetter<string>, text: MaybeRefOrGetter<string>) => void,
@@ -48,6 +53,7 @@ const { speakerMode, updateSpeakerMode, updateUtteranceText, getUtterance, remov
     removeUtterance: (item: MaybeRefOrGetter<UtteranceData>) => void,
     updateUtteranceStart: (id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<number>) => void,
     updateUtteranceEnd: (id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<number>) => void,
+    updateUtteranceLayout: (id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<LayoutType>) => void,
  }>('speaker')
 
 watch(speakerMode, () => {
@@ -116,6 +122,7 @@ function exitEditingMode(){
     updateUtteranceText(props.phrase.id, text)
     updateUtteranceStart(props.phrase.id, start)
     updateUtteranceEnd(props.phrase.id, end)
+    updateUtteranceLayout(props.phrase.id, layout)
     updateSpeakerMode('PREVIEW')
 }
 
