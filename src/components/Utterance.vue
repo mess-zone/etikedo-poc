@@ -5,7 +5,7 @@
             <div class="popover-box">
                 <button v-if="mode == 'EDIT'" @click="handleExitClick">salvar</button>
                 <button v-else @click="handleEditClick">edit</button>
-                <input v-model="phrase.speaker" /> 
+                <input v-model="phrase.speaker" disabled /> 
                 <div class="time-widget" v-if="mode == 'EDIT'">
                     <TimestampSelector v-model="start" :min="0" :step="timeStep"/>
                     <TimestampSelector v-model="end" :min="start" :step="timeStep"/>
