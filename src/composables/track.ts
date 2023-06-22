@@ -70,13 +70,8 @@ export function useTrack() {
 
     const utterances = ref<UtteranceData[]>([])
 
-    const diarizedUtterances = ref<UtteranceData[][]>([])
-
-    // TODO usar computed, watch ou watchEffect?
-    watchEffect(() => {
-        console.log('reprocess utterances')
-        // order array by start date 
-        utterances.value.sort((a: UtteranceData, b: UtteranceData) => { 
+    const sortedUtterances = computed(() => {
+        return utterances.value.sort((a: UtteranceData, b: UtteranceData) => { 
             if(a.start < b.start) {
                 // a is less than b
                 return -1
@@ -87,21 +82,51 @@ export function useTrack() {
             // a must be equal to b
             return 0
         })
-
-        diarizedUtterances.value = []
-        if(utterances.value.length) {
-            let previousSpeaker = [utterances.value[0]]
-            diarizedUtterances.value.push(previousSpeaker)
-            for(let index = 1; index < utterances.value.length; index++) {
-                if(utterances.value[index].speaker == previousSpeaker[0].speaker) {
-                    previousSpeaker.push(utterances.value[index])
-                } else {
-                    previousSpeaker = [utterances.value[index]]
-                    diarizedUtterances.value.push(previousSpeaker)
-                }
-            }
-        }
     })
+
+    const diarizedUtterances = computed(() => {
+        const posts = sortedUtterances.value.reduce((speaker: UtteranceData[][], utterance: UtteranceData) => {
+            if (speaker.length === 0) 
+                speaker.unshift([utterance]);
+            else if (speaker[0][0].speaker === utterance.speaker)
+                speaker[0].push(utterance);
+            else
+                speaker.unshift([utterance]);
+            return speaker;
+        }, []);
+        return posts.reverse();
+    })
+
+    // TODO usar computed, watch ou watchEffect?
+    // watchEffect(() => {
+    //     console.log('reprocess utterances')
+    //     // order array by start date 
+    //     utterances.value.sort((a: UtteranceData, b: UtteranceData) => { 
+    //         if(a.start < b.start) {
+    //             // a is less than b
+    //             return -1
+    //         } else if(a.start > b.start) {
+    //             // a is greater than b
+    //             return 1
+    //         } 
+    //         // a must be equal to b
+    //         return 0
+    //     })
+
+    //     diarizedUtterances.value = []
+    //     if(utterances.value.length) {
+    //         let previousSpeaker = [utterances.value[0]]
+    //         diarizedUtterances.value.push(previousSpeaker)
+    //         for(let index = 1; index < utterances.value.length; index++) {
+    //             if(utterances.value[index].speaker == previousSpeaker[0].speaker) {
+    //                 previousSpeaker.push(utterances.value[index])
+    //             } else {
+    //                 previousSpeaker = [utterances.value[index]]
+    //                 diarizedUtterances.value.push(previousSpeaker)
+    //             }
+    //         }
+    //     }
+    // })
     
     addUtterance(sample[0])
     addUtterance(sample[1])
@@ -174,7 +199,7 @@ export function useTrack() {
 
     return {
         id,
-        utterances,
+        sortedUtterances,
         diarizedUtterances,
         addUtterance,
         removeUtterance,
