@@ -9,11 +9,9 @@
                 <div class="time-widget" v-if="mode == 'EDIT'">
                     <TimestampSelector v-model="start" :min="0" :step="timeStep"/>
                     <TimestampSelector v-model="end" :min="start" :step="timeStep"/>
-                    <input type="number" v-model="start" />
-                    <input type="number" v-model="end" />
                 </div>
                 <div v-else>
-                    {{ phrase.start }} - {{ phrase.end }}
+                    {{ formatedStart }} - {{ formatedEnd }}
                 </div>
                 <button v-if="mode == 'EDIT'" @click="handleDeleteClick">delete</button>
             </div>
@@ -21,7 +19,7 @@
     </span>
 </template>
 <script setup lang="ts">
-import { MaybeRefOrGetter, Ref, inject, ref, toRefs, watch } from 'vue';
+import { MaybeRefOrGetter, Ref, computed, inject, ref, toRefs, watch } from 'vue';
 import contenteditable from 'vue-contenteditable'
 import { UtteranceData } from '../composables/track';
 import TimestampSelector from '../components/TimestampSelector.vue';
@@ -64,12 +62,34 @@ watch(speakerMode, () => {
 
 watch(start, (newValue, oldValue) => {
     end.value = end.value + newValue - oldValue
-    console.log('start changed, new end:', end.value)
+    // console.log('start changed, new end:', end.value)
 })
 
-watch(end, () => {
-    console.log('end changed', end)
+const formatedStart = computed(() => {
+    return formatDuration(start.value)
 })
+
+const formatedEnd = computed(() => {
+    return formatDuration(end.value)
+})
+
+function formatDuration(durationInSeconds: number): string {
+    const hours = Math.floor(durationInSeconds / 3600);
+    const minutes = Math.floor((durationInSeconds % 3600) / 60);
+    const seconds = Math.floor(durationInSeconds % 60);
+    const milliseconds = Math.floor((durationInSeconds % 1) * 1000);
+  
+    const formattedHours = hours.toString().padStart(2, '0');
+    const formattedMinutes = minutes.toString().padStart(2, '0');
+    const formattedSeconds = seconds.toString().padStart(2, '0');
+    const formattedMilliseconds = milliseconds.toString().padStart(3, '0');
+  
+    return `${formattedHours}:${formattedMinutes}:${formattedSeconds}.${formattedMilliseconds}`;
+}
+
+// watch(end, () => {
+//     console.log('end changed', end)
+// })
 
 export type ModeType = 'PREVIEW' | 'EDIT' | 'DISABLED'
 

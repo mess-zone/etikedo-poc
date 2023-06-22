@@ -24,24 +24,24 @@ const emit = defineEmits<{
 }>()
 
 
-const { modelValue, min } = toRefs(props)
-const timestamp = ref(props.modelValue)
+const { modelValue: timestamp, min } = toRefs(props)
+// const timestamp = ref(modelValue)
 
-watch([min], () => {
-    timestamp.value = props.modelValue
-})
+// watch([min], () => {
+//     timestamp.value = modelValue.value
+// })
 
 function decrement() {
-    timestamp.value -= props.step
-    if(timestamp.value < props.min) {
-        timestamp.value = props.min
+    let newValue = timestamp.value - props.step
+    if(newValue < props.min) {
+        newValue = props.min
     }
-    emit('update:model-value', timestamp.value)
+    emit('update:model-value', newValue)
 }
 
 function increment() {
-    timestamp.value += props.step
-    emit('update:model-value', timestamp.value)
+    let newValue = timestamp.value + props.step
+    emit('update:model-value', newValue)
 }
 
 const formated = computed(() => {
