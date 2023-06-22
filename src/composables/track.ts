@@ -70,6 +70,8 @@ export function useTrack() {
 
     const utterances = ref<UtteranceData[]>([])
 
+    const diarizedUtterances = ref<UtteranceData[][]>([])
+
     // TODO usar computed, watch ou watchEffect?
     watchEffect(() => {
         console.log('reprocess utterances')
@@ -85,23 +87,21 @@ export function useTrack() {
             // a must be equal to b
             return 0
         })
-    })
 
-    // const utterancesOrdered = computed(() => {
-    //     console.log('reprocessar array')
-    //     // order array by start date 
-    //     return utterances.value.sort((a: UtteranceData, b: UtteranceData) => { 
-    //         if(a.start < b.start) {
-    //             // a is less than b
-    //             return -1
-    //         } else if(a.start > b.start) {
-    //             // a is greater than b
-    //             return 1
-    //         } 
-    //         // a must be equal to b
-    //         return 0
-    //     })
-    // })
+        diarizedUtterances.value = []
+        if(utterances.value.length) {
+            let previousSpeaker = [utterances.value[0]]
+            diarizedUtterances.value.push(previousSpeaker)
+            for(let index = 1; index < utterances.value.length; index++) {
+                if(utterances.value[index].speaker == previousSpeaker[0].speaker) {
+                    previousSpeaker.push(utterances.value[index])
+                } else {
+                    previousSpeaker = [utterances.value[index]]
+                    diarizedUtterances.value.push(previousSpeaker)
+                }
+            }
+        }
+    })
     
     addUtterance(sample[0])
     addUtterance(sample[1])
@@ -175,6 +175,7 @@ export function useTrack() {
     return {
         id,
         utterances,
+        diarizedUtterances,
         addUtterance,
         removeUtterance,
         getUtterance,
