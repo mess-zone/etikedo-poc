@@ -1,4 +1,4 @@
-import { MaybeRefOrGetter, Ref, computed, ref, toRef, toValue, watchEffect } from "vue"
+import { MaybeRefOrGetter, Ref, computed, markRaw, reactive, ref, toRef, toValue, watchEffect } from "vue"
 import { v4 as uuidv4 } from 'uuid';
 
 export type LayoutType = 'BLOCK' | 'INLINE'
@@ -11,6 +11,14 @@ export interface UtteranceData {
     end: number,
     speaker?: number,
     layout?: LayoutType,
+}
+
+export type TranscriptionCue = {
+    id: string,
+    isActive: boolean,
+    data: UtteranceData,
+    cue: VTTCue,
+    // TODO wavesurferegion
 }
 
 const sample: UtteranceData[] = [
@@ -64,18 +72,18 @@ const sample: UtteranceData[] = [
     },
 ]
 
-export function useTrack() {
+export function useTrack(trackId: string) {
 
-    const id = ref('track-id')
+    const id = ref(trackId)
 
-    const utterances = ref<UtteranceData[]>([])
+    const utterances = ref<TranscriptionCue[]>([])
 
     const sortedUtterances = computed(() => {
-        return utterances.value.sort((a: UtteranceData, b: UtteranceData) => { 
-            if(a.start < b.start) {
+        return utterances.value.sort((a, b) => { 
+            if(a.data.start < b.data.start) {
                 // a is less than b
                 return -1
-            } else if(a.start > b.start) {
+            } else if(a.data.start > b.data.start) {
                 // a is greater than b
                 return 1
             } 
@@ -85,10 +93,10 @@ export function useTrack() {
     })
 
     const diarizedUtterances = computed(() => {
-        const posts = sortedUtterances.value.reduce((speaker: UtteranceData[][], utterance: UtteranceData) => {
+        const posts = sortedUtterances.value.reduce((speaker: TranscriptionCue[][], utterance: TranscriptionCue) => {
             if (speaker.length === 0) 
                 speaker.unshift([utterance]);
-            else if (speaker[0][0].speaker === utterance.speaker)
+            else if (speaker[0][0].data.speaker === utterance.data.speaker)
                 speaker[0].push(utterance);
             else
                 speaker.unshift([utterance]);
@@ -128,29 +136,48 @@ export function useTrack() {
     //     }
     // })
     
-    addUtterance(sample[0])
-    addUtterance(sample[1])
-    addUtterance(sample[2])
-    addUtterance(sample[3])
-    addUtterance(sample[4])
-    addUtterance(sample[5])
+    // addUtterance(sample[0])
+    // addUtterance(sample[1])
+    // addUtterance(sample[2])
+    // addUtterance(sample[3])
+    // addUtterance(sample[4])
+    // addUtterance(sample[5])
 
     function addUtterance(item: MaybeRefOrGetter<UtteranceData>) {
         const { text, start, end, speaker, layout } = toValue(item)
 
-        const utterance = {
-            id: uuidv4(),
+        const id =  uuidv4()
+        const data = {
+            id,
             text, 
             start, 
             end, 
             speaker, 
             layout,
         }
+        const utterance = reactive({
+            id,
+            isActive: false,
+            data,
+            cue: markRaw(new VTTCue(start, end, JSON.stringify(data)))
+        })
+
+        utterance.cue.addEventListener("enter", (event) => {
+            // console.log('cue enter')
+            utterance.isActive = true
+        });
+        utterance.cue.addEventListener("exit", (event) => {
+            // console.log('cue exit')
+            utterance.isActive = false
+        });
+
         utterances.value.push(utterance)
+
+        return utterance
     }
 
-    function removeUtterance(item: MaybeRefOrGetter<UtteranceData>) {
-        const index = utterances.value.indexOf(toValue(item));
+    function removeUtterance(item: TranscriptionCue) {
+        const index = utterances.value.indexOf(item);
         if (index > -1) {
             utterances.value.splice(index, 1);
         }
@@ -159,7 +186,7 @@ export function useTrack() {
     function updateUtteranceText(id: MaybeRefOrGetter<string>, text: MaybeRefOrGetter<string>) {
         const searchId = toValue(id)
         const utterance = utterances.value.find(u => u.id == searchId)
-        utterance.text = toValue(text)
+        utterance.data.text = toValue(text)
     }
 
     function getUtterance(id: MaybeRefOrGetter<string>) {
@@ -172,28 +199,28 @@ export function useTrack() {
         const searchId = toValue(id)
         const utterance = utterances.value.find(u => u.id == searchId)
         const value = toValue(newValue)
-        utterance.start = value
+        utterance.data.start = value
     }
 
     function updateUtteranceEnd(id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<number>) {
         const searchId = toValue(id)
         const utterance = utterances.value.find(u => u.id == searchId)
         const value = toValue(newValue)
-        utterance.end = value
+        utterance.data.end = value
     }
 
     function updateUtteranceLayout(id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<LayoutType>) {
         const searchId = toValue(id)
         const utterance = utterances.value.find(u => u.id == searchId)
         const value = toValue(newValue)
-        utterance.layout = value
+        utterance.data.layout = value
     }
 
     function updateUtteranceSpeaker(id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<number>) {
         const searchId = toValue(id)
         const utterance = utterances.value.find(u => u.id == searchId)
         const value = toValue(newValue)
-        utterance.speaker = value
+        utterance.data.speaker = value
     }
 
     function splitUtterance() {
@@ -204,7 +231,7 @@ export function useTrack() {
         // TODO
     }
 
-    return {
+    return ref({
         id,
         sortedUtterances,
         diarizedUtterances,
@@ -216,5 +243,5 @@ export function useTrack() {
         updateUtteranceEnd,
         updateUtteranceLayout,
         updateUtteranceSpeaker,
-    }
+    })
 }

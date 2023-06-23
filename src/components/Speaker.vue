@@ -1,7 +1,7 @@
 <template>
     <div class="speaker">
         <div class="actor">
-            <div class="avatar" :style="avatarStyle">{{ phrases[0].speaker }}</div>
+            <div class="avatar" :style="avatarStyle">{{ phrases[0].data.speaker }}</div>
         </div>
         <div class="container-editable" :class="[speakerMode]">
             <Utterance v-for="phrase in phrases" :key="phrase.id" :phrase="phrase"></Utterance>
@@ -10,11 +10,11 @@
 </template>
 <script setup lang="ts">
 import { computed, provide, ref, toRef, toRefs } from 'vue';
-import { UtteranceData } from '../composables/track';
+import { TranscriptionCue } from '../composables/track';
 import Utterance from './Utterance.vue';
 
 const props = defineProps<{
-    phrases: UtteranceData[]
+    phrases: TranscriptionCue[]
 }>()
 
 const speakerMode = ref<"PREVIEW" | "EDIT">('PREVIEW')
@@ -23,14 +23,14 @@ function updateSpeakerMode(mode: "PREVIEW" | "EDIT") {
     speakerMode.value = mode
 }
 
-provide('speakerMode', {
+provide('speaker', {
     speakerMode,
     updateSpeakerMode,
 })
 
 const avatarStyle = computed(() => {
     return {
-        'background-color': stringToHexColor(''.padStart(5, ''+props.phrases[0].speaker))
+        'background-color': stringToHexColor(''.padStart(5, ''+props.phrases[0].data.speaker))
     }
 })
 

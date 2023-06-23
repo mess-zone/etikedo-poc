@@ -1,5 +1,5 @@
 <template>
-    <span class="utterance" :class="[ mode, phrase.layout ]">
+    <span class="utterance" :class="[ mode, phrase.data.layout ]">
         <contenteditable class="editable" tag="span" :contenteditable="mode == 'EDIT'" v-model="text" :no-nl="true" :no-html="true" @returned="keyEnterPressed" />
         <div class="popover">
             <div class="popover-box">
@@ -25,38 +25,42 @@
 <script setup lang="ts">
 import { MaybeRefOrGetter, Ref, computed, inject, ref, toRefs, watch } from 'vue';
 import contenteditable from 'vue-contenteditable'
-import { LayoutType, UtteranceData } from '../composables/track';
+import { LayoutType, TranscriptionCue, UtteranceData } from '../composables/track';
 import TimestampSelector from '../components/TimestampSelector.vue';
 
 
 const props = defineProps<{
-    phrase: UtteranceData,
+    phrase: TranscriptionCue,
 }>()
 
 // const { text } = toRefs(props.phrase) // ref 'text' is synced with 'props'
-const text = ref(props.phrase.text) // ref 'text' is not synced with 'props'
-const start = ref(props.phrase.start)
-const end = ref(props.phrase.end)
-const layout = ref(props.phrase.layout)
-const speaker = ref(props.phrase.speaker)
+const text = ref(props.phrase.data.text) // ref 'text' is not synced with 'props'
+const start = ref(props.phrase.data.start)
+const end = ref(props.phrase.data.end)
+const layout = ref(props.phrase.data.layout)
+const speaker = ref(props.phrase.data.speaker)
 
 const timeStep = 0.5
 
 // watch(text, (value) => {
-//     updateUtteranceText(props.phrase.id, text)
+//     console.log('estou editando o texto?', text, value)
 // })
 
-const { speakerMode, updateSpeakerMode, updateUtteranceText, getUtterance, removeUtterance, updateUtteranceStart, updateUtteranceEnd, updateUtteranceLayout, updateUtteranceSpeaker } = inject<{ 
+// TOD use props?
+const { speakerMode, updateSpeakerMode } = inject<{ 
     speakerMode: Ref<"PREVIEW" | "EDIT">, 
     updateSpeakerMode: (mode: MaybeRefOrGetter<"PREVIEW" | "EDIT">) => void,
+ }>('speaker')
+
+const { updateUtteranceText, getUtterance, removeUtterance, updateUtteranceStart, updateUtteranceEnd, updateUtteranceLayout, updateUtteranceSpeaker } = inject<{ 
     updateUtteranceText: (id: MaybeRefOrGetter<string>, text: MaybeRefOrGetter<string>) => void,
     getUtterance: (id: MaybeRefOrGetter<string>) => Ref<UtteranceData>,
-    removeUtterance: (item: MaybeRefOrGetter<UtteranceData>) => void,
+    removeUtterance: (item: MaybeRefOrGetter<TranscriptionCue>) => void,
     updateUtteranceStart: (id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<number>) => void,
     updateUtteranceEnd: (id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<number>) => void,
     updateUtteranceLayout: (id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<LayoutType>) => void,
     updateUtteranceSpeaker: (id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<number>) => void,
- }>('speaker')
+ }>('track')
 
 watch(speakerMode, () => {
     if(speakerMode.value == 'EDIT') {

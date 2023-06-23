@@ -7,16 +7,19 @@
             <button @click="handleNewTrackFile" v-if="!isTranscritionTrackLoaded">new</button>
             <button @click="handleClickAdd" v-else>add</button>
   
-            <Speaker :phrases="phrases"></Speaker>
-
-            <pre v-for="phrase in phrases" :key="phrase.id" style="max-width: 100vw; overflow: auto;">{{ phrase.speaker }}: {{  phrase.text }}</pre>
+            <!-- {{ track }} -->
         </header>
-        <section>
-            <ul>
-                <li v-for="subtitle in transcriptions" :key="subtitle.cue.id">
-                    <TranscriptionItem :transcription="subtitle" :theme="theme" />
+        <section v-if="loadedTrack && loadedTrack.sortedUtterances">
+
+            <Speaker v-for="speaker in loadedTrack.diarizedUtterances" :key="speaker[0].id" :phrases="speaker"></Speaker>
+            
+            <!-- <ul>
+                <li v-for="utterance in loadedTrack.sortedUtterances" :key="utterance.id">
+                    <pre>
+                        {{ utterance }}
+                    </pre>
                 </li>
-            </ul>
+            </ul> -->
         </section>
     </div>
     <div v-else>loading...</div>
@@ -25,60 +28,61 @@
 import { useAudioStore } from '../stores/audio';
 import { storeToRefs } from 'pinia';
 import TranscriptionItem from './TranscriptionItem.vue';
-import { ref, watch } from 'vue';
-import { IUtterance } from './Utterance.vue'
+import { computed, ref, watch, provide, MaybeRefOrGetter, toValue } from 'vue';
+// import { IUtterance } from './Utterance.vue'
 import Speaker from './Speaker.vue'
+import { TranscriptionCue } from '../composables/track';
 
-const phrases = ref<IUtterance[]>([
-    {
-        id: 0,
-        text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sed dolorem, autem voluptas error eaque neque! Ipsam, deserunt officiis fugiat laborum enim libero corrupti id, optio iste accusantium odit natus non? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sed dolorem, autem voluptas error eaque neque! Ipsam, deserunt officiis fugiat laborum enim libero corrupti id, optio iste accusantium odit natus non?",
-        speaker: 'Lucas',
-        start: '00:45:89',
-        end: '00:57:13',
-        display: 'display-block',
-    },
-    {
-        id: 1,
-        text: "Deu certo mesmo?",
-        speaker: 'Gilmar Vitor da Silva Andrade',
-        start: '00:45:89',
-        end: '00:57:13',
-        display: 'display-block',
-    },
-    {
-        id: 2,
-        text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sed dolorem, autem voluptas error eaque neque! Ipsam, deserunt officiis fugiat laborum enim libero corrupti id, optio iste accusantium odit natus non?",
-        speaker: 'Marcos',
-        start: '00:67:07',
-        end: '00:57:13',
-        display: 'display-block',
-    },
-    {
-        id: 3,
-        text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit",
-        speaker: 'Marcos',
-        start: '00:67:07',
-        end: '00:57:13',
-        display: 'display-inline',
-    },
-    {
-        id: 4,
-        text: "ed dolorem,",
-        speaker: 'Marcos',
-        start: '00:67:07',
-        end: '00:57:13',
-        display: 'display-inline',
-    },
-    {
-        id: 5,
-        text: "autem voluptas error eaque neque",
-        speaker: 'Marcos',
-        start: '00:67:07',
-        end: '00:57:13',
-        display: 'display-inline',
-    },
-])
+// const phrases = ref<IUtterance[]>([
+//     {
+//         id: 0,
+//         text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sed dolorem, autem voluptas error eaque neque! Ipsam, deserunt officiis fugiat laborum enim libero corrupti id, optio iste accusantium odit natus non? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sed dolorem, autem voluptas error eaque neque! Ipsam, deserunt officiis fugiat laborum enim libero corrupti id, optio iste accusantium odit natus non?",
+//         speaker: 'Lucas',
+//         start: '00:45:89',
+//         end: '00:57:13',
+//         display: 'display-block',
+//     },
+//     {
+//         id: 1,
+//         text: "Deu certo mesmo?",
+//         speaker: 'Gilmar Vitor da Silva Andrade',
+//         start: '00:45:89',
+//         end: '00:57:13',
+//         display: 'display-block',
+//     },
+//     {
+//         id: 2,
+//         text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sed dolorem, autem voluptas error eaque neque! Ipsam, deserunt officiis fugiat laborum enim libero corrupti id, optio iste accusantium odit natus non?",
+//         speaker: 'Marcos',
+//         start: '00:67:07',
+//         end: '00:57:13',
+//         display: 'display-block',
+//     },
+//     {
+//         id: 3,
+//         text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit",
+//         speaker: 'Marcos',
+//         start: '00:67:07',
+//         end: '00:57:13',
+//         display: 'display-inline',
+//     },
+//     {
+//         id: 4,
+//         text: "ed dolorem,",
+//         speaker: 'Marcos',
+//         start: '00:67:07',
+//         end: '00:57:13',
+//         display: 'display-inline',
+//     },
+//     {
+//         id: 5,
+//         text: "autem voluptas error eaque neque",
+//         speaker: 'Marcos',
+//         start: '00:67:07',
+//         end: '00:57:13',
+//         display: 'display-inline',
+//     },
+// ])
 
 
 
@@ -90,7 +94,10 @@ function setTheme(st: string) {
 }
 
 const audioStore = useAudioStore()
-const { selectedTranscriptionFileUrl, transcriptions } = storeToRefs(audioStore)
+const { selectedTranscriptionFileUrl, loadedTrack } = storeToRefs(audioStore)
+
+const track = audioStore.loadedTrack
+
 
 const { isLoadedMetadata } = storeToRefs(audioStore)
 
@@ -106,6 +113,7 @@ function handleClickAdd() {
     audioStore.addCue('[text]', audioStore.getCurrentTime(), audioStore.getCurrentTime() + 2.5)
 }
 
+// @ts-ignore
 const electronAPI = window.electronAPI
 
 const isTranscritionTrackLoaded = ref(false)
@@ -160,7 +168,7 @@ async function handleNewTrackFile() {
     if(path) {
         selectedTranscriptionFileUrl.value = path
         // console.log('caminho selecionado', selectedTranscriptionFileUrl.value)
-        audioStore.createEmptyTrack('transcription')
+        audioStore.createEmptyTrack()
         // console.log(videoStore.media.textTracks)
         isTranscritionTrackLoaded.value = true
     } else {
@@ -177,6 +185,25 @@ async function handleSaveTranscription() {
     const data = audioStore.exportTrack()
     await createTranscriptionFile(audioStore.selectedTranscriptionFileUrl, data)
 }
+
+// const speakerMode = ref<"PREVIEW" | "EDIT">('PREVIEW')
+
+// function updateSpeakerMode(mode: MaybeRefOrGetter<"PREVIEW" | "EDIT">) {
+//     speakerMode.value = toValue(mode)
+// }
+
+provide('track', {
+    // speakerMode,
+    // updateSpeakerMode,
+    loadedTrack,
+    updateUtteranceText: loadedTrack.value.updateUtteranceText,
+    getUtterance: loadedTrack.value.getUtterance,
+    removeUtterance: loadedTrack.value.removeUtterance,
+    updateUtteranceStart: loadedTrack.value.updateUtteranceStart,
+    updateUtteranceEnd: loadedTrack.value.updateUtteranceEnd,
+    updateUtteranceLayout: loadedTrack.value.updateUtteranceLayout,
+    updateUtteranceSpeaker: loadedTrack.value.updateUtteranceSpeaker,
+})
 
 </script>
 
@@ -216,6 +243,7 @@ async function handleSaveTranscription() {
         /* display: flex; */
         grid-area: center;
         overflow-y: auto;
+        padding: 20px 0;
     }
 
     ul {

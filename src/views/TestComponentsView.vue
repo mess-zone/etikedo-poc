@@ -39,10 +39,10 @@
 </template>
 <script setup lang="ts">
 import { MaybeRefOrGetter, provide, ref, toValue } from 'vue';
-import { UtteranceData, useTrack } from '../composables/track';
+import { UtteranceData, TranscriptionCue, useTrack } from '../composables/track';
 import Speaker from '../components/Speaker.vue'
 
-const { id, sortedUtterances, diarizedUtterances, removeUtterance, addUtterance, getUtterance, updateUtteranceText, updateUtteranceStart, updateUtteranceEnd, updateUtteranceLayout, updateUtteranceSpeaker } = useTrack()
+const { id, sortedUtterances, diarizedUtterances, removeUtterance, addUtterance, getUtterance, updateUtteranceText, updateUtteranceStart, updateUtteranceEnd, updateUtteranceLayout, updateUtteranceSpeaker } = useTrack('transcription')
 
 const utteranceToAdd = ref<UtteranceData>({
     id: null,
@@ -68,7 +68,7 @@ function handleAddClick() {
     }
 }
 
-function handleRemoveClick(item: UtteranceData) {
+function handleRemoveClick(item: TranscriptionCue) {
     console.log('remove', item)
     removeUtterance(item)
 }

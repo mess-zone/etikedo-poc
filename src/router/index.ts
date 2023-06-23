@@ -7,16 +7,16 @@ import VideoView from "../views/VideoView.vue";
 import AudioView from "../views/AudioView.vue";
 
 const routes = [
+    // {
+    //     path: "/",
+    //     name: "Tests",
+    //     component: TestComponentsView,
+    // },
     {
         path: "/",
         name: "FileExplorer",
-        component: TestComponentsView,
+        component: FileExplorerView,
     },
-    // {
-    //     path: "/",
-    //     name: "FileExplorer",
-    //     component: FileExplorerView,
-    // },
     {
         path: "/video",
         name: "Video",
