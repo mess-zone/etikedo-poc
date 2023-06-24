@@ -202,7 +202,7 @@ export const useAudioStore = defineStore('audio', () => {
 
         content += data.map((cue: any) => 
             `\n\n${cue.id}` +
-            `\n${formatDuration(cue.startTime)} --> ${formatDuration(cue.endTime)}` +
+            `\n${formatDuration(cue.start)} --> ${formatDuration(cue.end)}` +
             `\n${JSON.stringify(cue.metadata)}` 
         ).join('')
 
@@ -210,28 +210,18 @@ export const useAudioStore = defineStore('audio', () => {
     }
 
     function exportTrack() {
-        console.error('TODO...')
-        // const cues = transcriptions.value.map((t => ({
-        //     id: t.id, 
-        //     startTime: t.startTime, 
-        //     endTime: t.endTime, 
-        //     metadata: {
-        //         speaker: +t.speaker,
-        //         text: escapeNewLines(t.text),
-        //     },
-        // }))).sort((a: any, b: any) => { 
-        //     if(a.startTime < b.startTime) {
-        //         // a is less than b
-        //         return -1
-        //     } else if(a.startTime > b.startTime) {
-        //         // a is greater than b
-        //         return 1
-        //     } 
-        //     // a must be equal to b
-        //     return 0
-        // })
+        const cues = loadedTrack.value.sortedUtterances.map((t => ({
+            id: t.id, 
+            start: t.data.start, 
+            end: t.data.end, 
+            metadata: {
+                speaker: t.data.speaker,
+                layout: t.data.layout,
+                text: escapeNewLines(t.data.text),
+            },
+        })))
 
-        // return asWebVTT(cues)
+        return asWebVTT(cues)
 
     }
 
