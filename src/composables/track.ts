@@ -177,6 +177,42 @@ export function useTrack(trackId: string) {
         return utterance
     }
 
+    const unescapeNewLine = (str: string) => str.replace(/\\n/g, '\n')
+
+    function importCue(cue: VTTCue) {
+        const id = cue.id
+        const metadata = JSON.parse(cue.text)
+
+        const data: UtteranceData = {
+            id,
+            text: unescapeNewLine(metadata.text),
+            start: cue.startTime, 
+            end: cue.endTime, 
+            speaker: metadata.speaker, 
+            layout: metadata.layout,
+        }
+        const utterance = reactive({
+            id,
+            isActive: false,
+            data,
+            cue: markRaw(cue)
+        })
+
+        utterance.cue.addEventListener("enter", (event) => {
+            utterance.isActive = true
+        });
+        utterance.cue.addEventListener("exit", (event) => {
+            utterance.isActive = false
+        });
+
+        utterances.value.push(utterance)
+
+        
+
+
+        return utterance
+    }
+
     function removeUtterance(item: TranscriptionCue) {
         const index = utterances.value.indexOf(item);
         if (index > -1) {
@@ -211,7 +247,6 @@ export function useTrack(trackId: string) {
 
     }
 
-    // FIX IT ao mudar o layout, a duração do waveform está resetando
     function updateUtteranceLayout(id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<LayoutType>) {
         const searchId = toValue(id)
         const utterance = utterances.value.find(u => u.id == searchId)
@@ -238,6 +273,7 @@ export function useTrack(trackId: string) {
         id,
         sortedUtterances,
         diarizedUtterances,
+        importCue,
         addUtterance,
         removeUtterance,
         getUtterance,

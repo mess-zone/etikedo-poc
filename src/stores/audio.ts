@@ -128,11 +128,34 @@ export const useAudioStore = defineStore('audio', () => {
         media.value.appendChild(track);
     }
 
-    const unescapeNewLine = (str: string) => str.replace(/\\n/g, '\n')
 
     function loadTrack(trackId: string) {
         const track = getHTMLTextTracksElements().find(track => track.label == trackId)
-        console.error('TODO...')
+        console.log(track)
+
+        for(let i = 0; i< track.cues.length; i++) {
+            console.log('adding track')
+            const addedUtterance = loadedTrack.value.importCue(track.cues[i] as VTTCue)
+            const waveRegion = wavesurferRegions.value.addRegion({
+                id: addedUtterance.id,
+                start: addedUtterance.data.start,
+                end: addedUtterance.data.end,
+                // content: subtitleItem.value.cue.text,
+            })
+
+            waveRegion.on('update', () => {
+                loadedTrack.value.updateUtteranceStart(waveRegion.id, waveRegion.start)
+                addedUtterance.cue.startTime = waveRegion.start
+    
+                loadedTrack.value.updateUtteranceEnd(waveRegion.id, waveRegion.end)
+                addedUtterance.cue.endTime = waveRegion.end
+    
+                // precision adjust to region always be active
+                goToTime(waveRegion.start + 0.1)
+
+            })
+        }
+
         // transcriptions.value = Object.values(track.cues)
         //     .map(rawCue => ({
         //         metadata: JSON.parse((rawCue as VTTCue).text),
