@@ -15,7 +15,7 @@ Pode salvar a transcrição como JSON, WebVTT ou SRT
 crear .env file na raiz do projeto contendo a sua API_KEY do Deepgram:
 
 
-`DEEPGRAM_API_KEY=<sua api aqi>`
+`DEEPGRAM_API_KEY=<sua api aqui>`
 
 ## Transcrever arquivo local
 

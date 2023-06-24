@@ -76,7 +76,7 @@ function asWebVTT(data) {
 
   content += data.map((cue) => 
       `\n\n${cue.id}` +
-      `\n${formatDuration(cue.startTime)} --> ${formatDuration(cue.endTime)}` +
+      `\n${formatDuration(cue.start)} --> ${formatDuration(cue.end)}` +
       `\n${JSON.stringify(cue.metadata)}` 
   ).join('')
 
@@ -100,10 +100,11 @@ function formatDuration(durationInSeconds) {
 function createMetadata(utterances) {
   return utterances.map((u => ({
     id: u.id, 
-    startTime: u.start, 
-    endTime: u.end, 
+    start: u.start, 
+    end: u.end, 
     metadata: {
         speaker: u.speaker,
+        layout: 'INLINE',
         text: escapeNewLines(u.transcript),
     },
 })))
