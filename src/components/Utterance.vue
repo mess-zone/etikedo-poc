@@ -1,19 +1,20 @@
 <template>
     <span class="utterance" :class="[ mode, phrase.data.layout, phrase.isActive ? 'is-active' : '' ]">
-        <contenteditable class="editable" tag="span" :contenteditable="mode == 'EDIT'" v-model="text" :no-nl="true" :no-html="true" @returned="keyEnterPressed" />
+        <contenteditable class="editable" tag="span" :contenteditable="mode == 'EDIT'" v-model="editText" :no-nl="true" :no-html="true" @returned="keyEnterPressed" />
         <div class="popover">
             <div class="popover-box">
                 <button v-if="mode == 'EDIT'" @click="handleExitClick">salvar</button>
                 <button v-else @click="handleEditClick">edit</button>
-                <input type="number" v-model="speaker" :disabled="mode != 'EDIT'" /> 
+                <input type="number" v-model="editSpeaker" :disabled="mode != 'EDIT'" /> 
+                ({{ props.phrase.data.start }} / {{ props.phrase.data.end }})
                 <div class="time-widget" v-if="mode == 'EDIT'">
-                    <TimestampSelector v-model="start" :min="0" :step="timeStep"/>
-                    <TimestampSelector v-model="end" :min="start" :step="timeStep"/>
+                    <TimestampSelector v-model="editStart" :min="0" :step="timeStep"/>
+                    <TimestampSelector v-model="editEnd" :min="editStart" :step="timeStep"/>
                 </div>
                 <div v-else>
                     {{ formatedStart }} - {{ formatedEnd }}
                 </div>
-                <select v-model="layout" :disabled="mode !== 'EDIT'">
+                <select v-model="editLayout" :disabled="mode !== 'EDIT'">
                     <option>INLINE</option>
                     <option>BLOCK</option>
                 </select>
@@ -36,18 +37,25 @@ const props = defineProps<{
     phrase: TranscriptionCue,
 }>()
 
-// const { text } = toRefs(props.phrase) // ref 'text' is synced with 'props'
-const text = ref(props.phrase.data.text) // ref 'text' is not synced with 'props'
-const start = ref(props.phrase.data.start)
-const end = ref(props.phrase.data.end)
-const layout = ref(props.phrase.data.layout)
-const speaker = ref(props.phrase.data.speaker)
+const { phrase } = toRefs(props) // ref 'text' is synced with 'props'
+
+const editText = ref(phrase.value.data.text)
+const editStart = ref(phrase.value.data.start)
+const editEnd = ref(phrase.value.data.end)
+const editLayout = ref(phrase.value.data.layout)
+const editSpeaker = ref(phrase.value.data.speaker)
+
+watch(props.phrase, (value) => {
+    // console.log('a phrase foi alterada?', value)
+    editText.value = phrase.value.data.text
+    editStart.value = phrase.value.data.start
+    editEnd.value = phrase.value.data.end
+    editLayout.value = phrase.value.data.layout
+    editSpeaker.value = phrase.value.data.speaker
+})
 
 const timeStep = 0.5
 
-// watch(text, (value) => {
-//     console.log('estou editando o texto?', text, value)
-// })
 
 // TOD use props?
 const { speakerMode, updateSpeakerMode } = inject<{ 
@@ -75,17 +83,17 @@ watch(speakerMode, () => {
     }
 })
 
-watch(start, (newValue, oldValue) => {
-    end.value = end.value + newValue - oldValue
+watch(editStart, (newValue, oldValue) => {
+    editEnd.value = editEnd.value + newValue - oldValue
     // console.log('start changed, new end:', end.value)
 })
 
 const formatedStart = computed(() => {
-    return formatDuration(start.value)
+    return formatDuration(editStart.value)
 })
 
 const formatedEnd = computed(() => {
-    return formatDuration(end.value)
+    return formatDuration(editEnd.value)
 })
 
 function formatDuration(durationInSeconds: number): string {
@@ -128,11 +136,11 @@ function handleDeleteClick() {
 }
 
 function exitEditingMode(){
-    audioStore.updateText(props.phrase, text)
-    audioStore.updateStartTime(props.phrase, start)
-    audioStore.updateEndTime(props.phrase, end)
-    audioStore.updateLayout(props.phrase, layout)
-    audioStore.updateSpeaker(props.phrase, speaker)
+    audioStore.updateText(props.phrase, editText)
+    audioStore.updateStartTime(props.phrase, editStart)
+    audioStore.updateEndTime(props.phrase, editEnd)
+    audioStore.updateLayout(props.phrase, editLayout)
+    audioStore.updateSpeaker(props.phrase, editSpeaker)
     updateSpeakerMode('PREVIEW')
 }
 

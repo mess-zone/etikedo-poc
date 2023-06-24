@@ -264,12 +264,12 @@ export const useAudioStore = defineStore('audio', () => {
         })
 
         waveRegion.on('update', () => {
-            // console.log('region updated', waveRegion.start, waveRegion.end)
-            loadedTrack.value.updateUtteranceStart(utterance.id, waveRegion.start)
+            // console.log('region updated', waveRegion.id, waveRegion.start, waveRegion.end)
+            loadedTrack.value.updateUtteranceStart(waveRegion.id, waveRegion.start)
             // utterance.data.start = waveRegion.start
             utterance.cue.startTime = waveRegion.start
 
-            loadedTrack.value.updateUtteranceEnd(utterance.id, waveRegion.end)
+            loadedTrack.value.updateUtteranceEnd(waveRegion.id, waveRegion.end)
             // utterance.data.end = waveRegion.end
             utterance.cue.endTime = waveRegion.end
 
