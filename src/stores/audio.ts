@@ -1,17 +1,8 @@
 import { defineStore } from 'pinia'
 import { MaybeRefOrGetter, ref, shallowRef, toValue } from 'vue'
-import { v4 as uuidv4 } from 'uuid';
-import { LayoutType, UtteranceData, useTrack } from '../composables/track';
+import { LayoutType, useTrack } from '../composables/track';
 import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions'
 import { TranscriptionCue } from '../composables/track'
-
-// export type transcriptionCue = {
-//     id: string,
-//     isActive: boolean,
-//     cue: VTTCue,
-//     data: UtteranceData,
-//     // TODO wavesurferegion
-// }
 
 const selectedFileUrl = ref('')
 const selectedTranscriptionFileUrl = ref('')
@@ -19,7 +10,6 @@ const selectedTranscriptionFileUrl = ref('')
 const media = ref<HTMLMediaElement>(null)
 const isLoadedMetadata = ref(false)
 
-// const transcriptions = ref<TranscriptionCue[]>([])
 
 const wavesurferRegions = shallowRef(RegionsPlugin.create())
 
@@ -56,9 +46,6 @@ export const useAudioStore = defineStore('audio', () => {
             duration.value = media.value.duration
         }, { once: true })
 
-        // media.value.textTracks.onchange = (event) => {
-        //     console.log(`'${event.type}' event fired`);
-        // };
 
         media.value.addEventListener('play', () => {
             isPlaying.value = true
@@ -78,12 +65,8 @@ export const useAudioStore = defineStore('audio', () => {
         return Object.values(media.value.textTracks)
     }
 
-    // function getTrack(id: string) {
-    //     return loadedTracks.value.find(t => t.id == id)
-    // }
 
     function createEmptyTrack() {
-        // loadedTracks.value.push(useTrack(trackId))
         
         const id = 'transcription'
         // @ts-ignore
@@ -156,50 +139,6 @@ export const useAudioStore = defineStore('audio', () => {
             })
         }
 
-        // transcriptions.value = Object.values(track.cues)
-        //     .map(rawCue => ({
-        //         metadata: JSON.parse((rawCue as VTTCue).text),
-        //         cueObject: rawCue as VTTCue
-        //     }))
-        //     .map(c => ({ 
-        //         id: c.cueObject.id,
-        //         isActive: false, 
-        //         startTime: c.cueObject.startTime, 
-        //         endTime: c.cueObject.endTime, 
-        //         speaker: ''+c.metadata.speaker,
-        //         text: unescapeNewLine(c.metadata.text).trim(),
-        //         cue: c.cueObject,
-        //     }))
-
-        // for(const subtitle of transcriptions.value) {
-        //     // subtitle.cue.text = subtitle.cue.text
-
-        //     subtitle.cue.addEventListener("enter", (event) => {
-        //         subtitle.isActive = true
-        //     });
-        //     subtitle.cue.addEventListener("exit", (event) => {
-        //         subtitle.isActive = false
-        //     });
-
-        //     const waveRegion = wafesurferRegions.value.addRegion({
-        //         id: subtitle.cue.id,
-        //         start: subtitle.startTime,
-        //         end: subtitle.endTime,
-        //         // content: subtitleItem.value.cue.text,
-        //     })
-
-        //     waveRegion.on('update', () => {
-        //         subtitle.startTime = waveRegion.start
-        //         subtitle.cue.startTime = waveRegion.start
-    
-        //         subtitle.endTime = waveRegion.end
-        //         subtitle.cue.endTime = waveRegion.end
-    
-        //         // precision adjust to region always be active
-        //         goToTime(waveRegion.start + 0.1)
-
-        //     })
-        // }
     }
 
     function formatDuration(durationInSeconds: number): string {
@@ -346,7 +285,6 @@ export const useAudioStore = defineStore('audio', () => {
         importTextTrack,
         loadTrack,
         exportTrack,
-        // transcriptions,
         goToTime,
         getCurrentTime,
         addCue,

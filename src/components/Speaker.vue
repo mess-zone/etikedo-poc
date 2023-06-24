@@ -3,13 +3,13 @@
         <div class="actor">
             <div class="avatar" :style="avatarStyle">{{ phrases[0].data.speaker }}</div>
         </div>
-        <div class="container-editable" :class="[speakerMode]">
+        <div class="container-utterances" :class="[speakerMode]">
             <Utterance v-for="phrase in phrases" :key="phrase.id" :phrase="phrase"></Utterance>
         </div>
     </div>
 </template>
 <script setup lang="ts">
-import { computed, provide, ref, toRef, toRefs } from 'vue';
+import { computed, provide, ref } from 'vue';
 import { TranscriptionCue } from '../composables/track';
 import Utterance from './Utterance.vue';
 
@@ -86,20 +86,20 @@ function stringToHexColor(str: string): string {
     }
 
 
-    .container-editable {
+    .container-utterance {
         /* background-color: bisque; */
 
         margin-top: 0.25em;
     }
 
-    .container-editable.PREVIEW {
+    .container-utterance.PREVIEW {
         /* background-color: yellow; */
     }
-    .container-editable.EDIT {
+    .container-utterance.EDIT {
         /* background-color: rgb(255, 0, 43); */
     }
 
-    .container-editable :first-child {
+    .container-utterance :first-child {
         /* background-color: aqua; */
         margin-top: 0;
     }

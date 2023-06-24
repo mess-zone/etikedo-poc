@@ -26,10 +26,9 @@
 <script setup lang="ts">
 import { MaybeRefOrGetter, Ref, computed, inject, ref, toRefs, watch } from 'vue';
 import contenteditable from 'vue-contenteditable'
-import { LayoutType, TranscriptionCue, UtteranceData } from '../composables/track';
+import { TranscriptionCue } from '../composables/track';
 import TimestampSelector from '../components/TimestampSelector.vue';
 import { useAudioStore } from '../stores/audio';
-import { storeToRefs } from 'pinia';
 
 const audioStore = useAudioStore()
 
@@ -57,21 +56,12 @@ watch(props.phrase, (value) => {
 const timeStep = 0.5
 
 
-// TOD use props?
+// TODO usar props e emit para comunicação entre Speaker e Utterance
 const { speakerMode, updateSpeakerMode } = inject<{ 
     speakerMode: Ref<"PREVIEW" | "EDIT">, 
     updateSpeakerMode: (mode: MaybeRefOrGetter<"PREVIEW" | "EDIT">) => void,
  }>('speaker')
 
-// const { updateUtteranceText, getUtterance, removeUtterance, updateUtteranceStart, updateUtteranceEnd, updateUtteranceLayout, updateUtteranceSpeaker } = inject<{ 
-//     updateUtteranceText: (id: MaybeRefOrGetter<string>, text: MaybeRefOrGetter<string>) => void,
-//     getUtterance: (id: MaybeRefOrGetter<string>) => Ref<UtteranceData>,
-//     removeUtterance: (item: MaybeRefOrGetter<TranscriptionCue>) => void,
-//     updateUtteranceStart: (id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<number>) => void,
-//     updateUtteranceEnd: (id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<number>) => void,
-//     updateUtteranceLayout: (id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<LayoutType>) => void,
-//     updateUtteranceSpeaker: (id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<number>) => void,
-//  }>('track')
 
 watch(speakerMode, () => {
     if(speakerMode.value == 'EDIT') {
@@ -85,7 +75,6 @@ watch(speakerMode, () => {
 
 watch(editStart, (newValue, oldValue) => {
     editEnd.value = editEnd.value + newValue - oldValue
-    // console.log('start changed, new end:', end.value)
 })
 
 const formatedStart = computed(() => {
@@ -109,10 +98,6 @@ function formatDuration(durationInSeconds: number): string {
   
     return `${formattedHours}:${formattedMinutes}:${formattedSeconds}.${formattedMilliseconds}`;
 }
-
-// watch(end, () => {
-//     console.log('end changed', end)
-// })
 
 export type ModeType = 'PREVIEW' | 'EDIT' | 'DISABLED'
 

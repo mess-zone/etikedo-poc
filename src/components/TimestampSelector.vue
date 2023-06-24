@@ -6,7 +6,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { computed, ref, toRef, toRefs, watch } from 'vue';
+import { computed, toRefs } from 'vue';
 
 export interface Props {
     modelValue: number,
@@ -24,12 +24,7 @@ const emit = defineEmits<{
 }>()
 
 
-const { modelValue: timestamp, min } = toRefs(props)
-// const timestamp = ref(modelValue)
-
-// watch([min], () => {
-//     timestamp.value = modelValue.value
-// })
+const { modelValue: timestamp } = toRefs(props)
 
 function decrement() {
     let newValue = timestamp.value - props.step

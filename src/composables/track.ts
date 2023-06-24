@@ -1,6 +1,5 @@
-import { MaybeRefOrGetter, Ref, ShallowRef, computed, markRaw, reactive, ref, shallowRef, toRef, toValue, watchEffect } from "vue"
+import { MaybeRefOrGetter, computed, markRaw, reactive, ref, toRef, toValue } from "vue"
 import { v4 as uuidv4 } from 'uuid';
-import RegionsPlugin, { Region } from 'wavesurfer.js/dist/plugins/regions'
 
 export type LayoutType = 'BLOCK' | 'INLINE'
 
@@ -105,44 +104,6 @@ export function useTrack(trackId: string) {
         return posts.reverse();
     })
 
-    // TODO usar computed, watch ou watchEffect?
-    // watchEffect(() => {
-    //     console.log('reprocess utterances')
-    //     // order array by start date 
-    //     utterances.value.sort((a: UtteranceData, b: UtteranceData) => { 
-    //         if(a.start < b.start) {
-    //             // a is less than b
-    //             return -1
-    //         } else if(a.start > b.start) {
-    //             // a is greater than b
-    //             return 1
-    //         } 
-    //         // a must be equal to b
-    //         return 0
-    //     })
-
-    //     diarizedUtterances.value = []
-    //     if(utterances.value.length) {
-    //         let previousSpeaker = [utterances.value[0]]
-    //         diarizedUtterances.value.push(previousSpeaker)
-    //         for(let index = 1; index < utterances.value.length; index++) {
-    //             if(utterances.value[index].speaker == previousSpeaker[0].speaker) {
-    //                 previousSpeaker.push(utterances.value[index])
-    //             } else {
-    //                 previousSpeaker = [utterances.value[index]]
-    //                 diarizedUtterances.value.push(previousSpeaker)
-    //             }
-    //         }
-    //     }
-    // })
-    
-    // addUtterance(sample[0])
-    // addUtterance(sample[1])
-    // addUtterance(sample[2])
-    // addUtterance(sample[3])
-    // addUtterance(sample[4])
-    // addUtterance(sample[5])
-
     function addUtterance(item: MaybeRefOrGetter<UtteranceData>) {
         const { text, start, end, speaker, layout } = toValue(item)
 
@@ -207,9 +168,6 @@ export function useTrack(trackId: string) {
 
         utterances.value.push(utterance)
 
-        
-
-
         return utterance
     }
 
@@ -244,7 +202,6 @@ export function useTrack(trackId: string) {
         const utterance = utterances.value.find(u => u.id == searchId)
         const value = toValue(newValue)
         utterance.data.end = value
-
     }
 
     function updateUtteranceLayout(id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<LayoutType>) {
