@@ -1,5 +1,5 @@
 <template>
-    <span class="utterance" :class="[ mode, phrase.data.layout, phrase.isActive ? 'is-active' : '' ]">
+    <span class="utterance" :class="[ mode, phrase.data.layout, phrase.isActive ? 'is-active' : '' ]" @click="handleUtteranceClick">
         <contenteditable class="editable" tag="span" :contenteditable="mode == 'EDIT'" v-model="editText" :no-nl="true" :no-html="true" @returned="keyEnterPressed" />
         <div class="popover">
             <div class="popover-box">
@@ -149,6 +149,11 @@ function enterEditMode() {
     updateSpeakerMode('EDIT')
 }
 
+function handleUtteranceClick() {
+    console.log('utterance click')
+    audioStore.goToTime(phrase.value.data.start)
+}
+
 </script>
 
 <style scoped>
@@ -158,6 +163,7 @@ function enterEditMode() {
     /* border: 1px solid red; */
     min-height: 1.5em;
     min-width: 52px;
+    cursor: pointer;
 }
 
 .utterance.is-active {
@@ -169,6 +175,7 @@ function enterEditMode() {
     /* cursor: pointer; */
 }
 .utterance.EDIT {
+    cursor: text;
     /* background-color: rgb(255, 0, 43) !important; */
 }
 .utterance.DISABLED {
