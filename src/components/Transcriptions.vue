@@ -11,7 +11,9 @@
         </header>
         <section v-if="loadedTrack && loadedTrack.sortedUtterances">
 
-            <Speaker v-for="speaker in loadedTrack.diarizedUtterances" :key="speaker[0].id" :phrases="speaker"></Speaker>
+            <div class="center">
+                <Speaker v-for="speaker in loadedTrack.diarizedUtterances" :key="speaker[0].id" :phrases="speaker"></Speaker>
+            </div>
             
             <!-- <ul>
                 <li v-for="utterance in loadedTrack.sortedUtterances" :key="utterance.id">
@@ -208,6 +210,12 @@ async function handleSaveTranscription() {
 </script>
 
 <style scoped>
+
+    .center {
+       max-width: 1000px;
+       margin: 0 auto;
+    }
+    
     .container-editable {
         padding: 20px;
         /* background-color: bisque; */
