@@ -34,7 +34,7 @@ try {
   
   deepgram.transcription.preRecorded(
     { buffer: fs.readFileSync(inputPath), mimetype: inputMimeType },
-    { punctuate: true, numerals: true, utterances: true, diarize: true, model: 'enhanced', language: 'pt-BR' },
+    { paragraphs: true, punctuate: true, numerals: true, utterances: true, diarize: true, model: 'enhanced', language: 'pt-BR' },
   )
   .then((response) => {
     if(diarization) {
