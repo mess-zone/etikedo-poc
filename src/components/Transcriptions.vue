@@ -110,7 +110,7 @@ watch(isLoadedMetadata, () => {
 })
 
 function handleClickAdd() {
-    audioStore.addCue('[text]', audioStore.getCurrentTime(), audioStore.getCurrentTime() + 2.5)
+    audioStore.addCue('', audioStore.getCurrentTime(), audioStore.getCurrentTime() + 2.5)
 }
 
 // @ts-ignore
