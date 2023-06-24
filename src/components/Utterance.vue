@@ -27,7 +27,10 @@ import { MaybeRefOrGetter, Ref, computed, inject, ref, toRefs, watch } from 'vue
 import contenteditable from 'vue-contenteditable'
 import { LayoutType, TranscriptionCue, UtteranceData } from '../composables/track';
 import TimestampSelector from '../components/TimestampSelector.vue';
+import { useAudioStore } from '../stores/audio';
+import { storeToRefs } from 'pinia';
 
+const audioStore = useAudioStore()
 
 const props = defineProps<{
     phrase: TranscriptionCue,
@@ -52,15 +55,15 @@ const { speakerMode, updateSpeakerMode } = inject<{
     updateSpeakerMode: (mode: MaybeRefOrGetter<"PREVIEW" | "EDIT">) => void,
  }>('speaker')
 
-const { updateUtteranceText, getUtterance, removeUtterance, updateUtteranceStart, updateUtteranceEnd, updateUtteranceLayout, updateUtteranceSpeaker } = inject<{ 
-    updateUtteranceText: (id: MaybeRefOrGetter<string>, text: MaybeRefOrGetter<string>) => void,
-    getUtterance: (id: MaybeRefOrGetter<string>) => Ref<UtteranceData>,
-    removeUtterance: (item: MaybeRefOrGetter<TranscriptionCue>) => void,
-    updateUtteranceStart: (id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<number>) => void,
-    updateUtteranceEnd: (id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<number>) => void,
-    updateUtteranceLayout: (id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<LayoutType>) => void,
-    updateUtteranceSpeaker: (id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<number>) => void,
- }>('track')
+// const { updateUtteranceText, getUtterance, removeUtterance, updateUtteranceStart, updateUtteranceEnd, updateUtteranceLayout, updateUtteranceSpeaker } = inject<{ 
+//     updateUtteranceText: (id: MaybeRefOrGetter<string>, text: MaybeRefOrGetter<string>) => void,
+//     getUtterance: (id: MaybeRefOrGetter<string>) => Ref<UtteranceData>,
+//     removeUtterance: (item: MaybeRefOrGetter<TranscriptionCue>) => void,
+//     updateUtteranceStart: (id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<number>) => void,
+//     updateUtteranceEnd: (id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<number>) => void,
+//     updateUtteranceLayout: (id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<LayoutType>) => void,
+//     updateUtteranceSpeaker: (id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<number>) => void,
+//  }>('track')
 
 watch(speakerMode, () => {
     if(speakerMode.value == 'EDIT') {
@@ -120,16 +123,16 @@ function handleEditClick() {
 }
 
 function handleDeleteClick() {
-    removeUtterance(props.phrase)
+    audioStore.removeCue(props.phrase)
     updateSpeakerMode('PREVIEW')
 }
 
 function exitEditingMode(){
-    updateUtteranceText(props.phrase.id, text)
-    updateUtteranceStart(props.phrase.id, start)
-    updateUtteranceEnd(props.phrase.id, end)
-    updateUtteranceLayout(props.phrase.id, layout)
-    updateUtteranceSpeaker(props.phrase.id, speaker)
+    audioStore.updateText(props.phrase, text)
+    audioStore.updateStartTime(props.phrase, start)
+    audioStore.updateEndTime(props.phrase, end)
+    audioStore.updateLayout(props.phrase, layout)
+    audioStore.updateSpeaker(props.phrase, speaker)
     updateSpeakerMode('PREVIEW')
 }
 

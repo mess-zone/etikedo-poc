@@ -19,6 +19,7 @@ const props = defineProps<{
 
 const speakerMode = ref<"PREVIEW" | "EDIT">('PREVIEW')
 
+
 function updateSpeakerMode(mode: "PREVIEW" | "EDIT") {
     speakerMode.value = mode
 }

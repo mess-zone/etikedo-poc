@@ -192,18 +192,18 @@ async function handleSaveTranscription() {
 //     speakerMode.value = toValue(mode)
 // }
 
-provide('track', {
-    // speakerMode,
-    // updateSpeakerMode,
-    loadedTrack,
-    updateUtteranceText: loadedTrack.value.updateUtteranceText,
-    getUtterance: loadedTrack.value.getUtterance,
-    removeUtterance: loadedTrack.value.removeUtterance,
-    updateUtteranceStart: loadedTrack.value.updateUtteranceStart,
-    updateUtteranceEnd: loadedTrack.value.updateUtteranceEnd,
-    updateUtteranceLayout: loadedTrack.value.updateUtteranceLayout,
-    updateUtteranceSpeaker: loadedTrack.value.updateUtteranceSpeaker,
-})
+// provide('track', {
+//     // speakerMode,
+//     // updateSpeakerMode,
+//     loadedTrack,
+//     updateUtteranceText: loadedTrack.value.updateUtteranceText,
+//     getUtterance: loadedTrack.value.getUtterance,
+//     removeUtterance: loadedTrack.value.removeUtterance,
+//     updateUtteranceStart: loadedTrack.value.updateUtteranceStart,
+//     updateUtteranceEnd: loadedTrack.value.updateUtteranceEnd,
+//     updateUtteranceLayout: loadedTrack.value.updateUtteranceLayout,
+//     updateUtteranceSpeaker: loadedTrack.value.updateUtteranceSpeaker,
+// })
 
 </script>
 

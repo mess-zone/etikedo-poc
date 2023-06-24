@@ -1,5 +1,6 @@
-import { MaybeRefOrGetter, Ref, computed, markRaw, reactive, ref, toRef, toValue, watchEffect } from "vue"
+import { MaybeRefOrGetter, Ref, ShallowRef, computed, markRaw, reactive, ref, shallowRef, toRef, toValue, watchEffect } from "vue"
 import { v4 as uuidv4 } from 'uuid';
+import RegionsPlugin, { Region } from 'wavesurfer.js/dist/plugins/regions'
 
 export type LayoutType = 'BLOCK' | 'INLINE'
 
@@ -18,7 +19,6 @@ export type TranscriptionCue = {
     isActive: boolean,
     data: UtteranceData,
     cue: VTTCue,
-    // TODO wavesurferegion
 }
 
 const sample: UtteranceData[] = [
@@ -171,6 +171,9 @@ export function useTrack(trackId: string) {
 
         utterances.value.push(utterance)
 
+        
+
+
         return utterance
     }
 
@@ -205,8 +208,10 @@ export function useTrack(trackId: string) {
         const utterance = utterances.value.find(u => u.id == searchId)
         const value = toValue(newValue)
         utterance.data.end = value
+
     }
 
+    // FIX IT ao mudar o layout, a duração do waveform está resetando
     function updateUtteranceLayout(id: MaybeRefOrGetter<string>, newValue: MaybeRefOrGetter<LayoutType>) {
         const searchId = toValue(id)
         const utterance = utterances.value.find(u => u.id == searchId)

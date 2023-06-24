@@ -31,7 +31,7 @@ import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions'
 import Transcriptions from '../components/Transcriptions.vue';
 
 const audioStore = useAudioStore()
-const { selectedFileUrl, wafesurferRegions } = storeToRefs(audioStore)
+const { selectedFileUrl, wavesurferRegions } = storeToRefs(audioStore)
 
 // watch(isLoadedMetadata, () => {
 //     if(isLoadedMetadata.value == true) {
@@ -56,7 +56,7 @@ onMounted(() => {
     })
 
     // Create a Regions plugin instance
-    ws.registerPlugin(wafesurferRegions.value as RegionsPlugin)
+    ws.registerPlugin(wavesurferRegions.value as RegionsPlugin)
 
     ws.on('ready', () => {
         console.log('wavesurfer ready')
