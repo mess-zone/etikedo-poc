@@ -163,11 +163,9 @@ export function useTrack(trackId: string) {
         })
 
         utterance.cue.addEventListener("enter", (event) => {
-            // console.log('cue enter')
             utterance.isActive = true
         });
         utterance.cue.addEventListener("exit", (event) => {
-            // console.log('cue exit')
             utterance.isActive = false
         });
 

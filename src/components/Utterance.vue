@@ -1,5 +1,5 @@
 <template>
-    <span class="utterance" :class="[ mode, phrase.data.layout ]">
+    <span class="utterance" :class="[ mode, phrase.data.layout, phrase.isActive ? 'is-active' : '' ]">
         <contenteditable class="editable" tag="span" :contenteditable="mode == 'EDIT'" v-model="text" :no-nl="true" :no-html="true" @returned="keyEnterPressed" />
         <div class="popover">
             <div class="popover-box">
@@ -147,6 +147,10 @@ function enterEditMode() {
     /* border: 1px solid red; */
     min-height: 1.5em;
     min-width: 52px;
+}
+
+.utterance.is-active {
+    background-color: rgba(137, 43, 226, 0.507);
 }
 
 .utterance.PREVIEW {
