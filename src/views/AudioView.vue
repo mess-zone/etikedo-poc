@@ -24,14 +24,14 @@
 import { onMounted, onUnmounted } from 'vue';
 import AudioPlayer from '../components/AudioPlayer.vue'
 import AudioBottomControls from '../components/AudioBottomControls.vue'
-import { useAudioStore } from '../stores/audio';
+import { useMediaStore } from '../stores/media';
 import { storeToRefs } from 'pinia';
 import WaveSurfer from 'wavesurfer.js'
 import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions'
 import Transcriptions from '../components/Transcriptions.vue';
 
-const audioStore = useAudioStore()
-const { selectedFileUrl, wavesurferRegions } = storeToRefs(audioStore)
+const mediaStore = useMediaStore()
+const { selectedFileUrl, wavesurferRegions } = storeToRefs(mediaStore)
 
 onMounted(() => {
 
@@ -58,7 +58,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-    audioStore.$reset()
+    mediaStore.$reset()
 })
 
 </script>

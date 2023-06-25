@@ -21,7 +21,7 @@ const duration = ref(0)
 
 const loadedTrack = useTrack('transcription')
 
-export const useAudioStore = defineStore('audio', () => {
+export const useMediaStore = defineStore('media', () => {
 
     function $reset() {
         selectedFileUrl.value = ''
@@ -30,8 +30,7 @@ export const useAudioStore = defineStore('audio', () => {
         media.value = null
         isLoadedMetadata.value = false
 
-        // TODO reset loaded track
-        // loadedTrack.value.reset()
+        loadedTrack.value.reset()
         wavesurferRegions.value = RegionsPlugin.create()
     }
 

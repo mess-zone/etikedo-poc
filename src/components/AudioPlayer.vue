@@ -13,9 +13,9 @@
 </template>
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { useAudioStore } from '../stores/audio';
+import { useMediaStore } from '../stores/media';
 
-const audioStore = useAudioStore()
+const mediaStore = useMediaStore()
 
 defineProps<{
     fileUrl: string
@@ -24,7 +24,7 @@ defineProps<{
 const media = ref(null)
 
 onMounted(() => {
-    audioStore.setMedia(media.value)
+    mediaStore.setMedia(media.value)
 })
 </script>
 

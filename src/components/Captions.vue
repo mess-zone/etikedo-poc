@@ -7,24 +7,22 @@
             <button @click="handleNewTrackFile" v-if="!isTranscritionTrackLoaded">new</button>
             <button @click="handleClickAdd" v-else>add</button>
         </header>
-        <ul>
-            <li v-for="subtitle in subtitles" :key="subtitle.cue.id">
-                <CaptionItem :transcription="subtitle" />
-            </li>
-        </ul>
+        <section v-if="loadedTrack && loadedTrack.sortedUtterances">
+            <Speaker v-for="speaker in loadedTrack.diarizedUtterances" :key="speaker[0].id" :phrases="speaker"></Speaker>
+        </section>
     </div>
     <div v-else>loading...</div>
 </template>
 <script setup lang="ts">
-import { useVideoStore } from '../stores/video';
+import { useMediaStore } from '../stores/media';
 import { storeToRefs } from 'pinia';
-import CaptionItem from './CaptionItem.vue';
 import { ref, watch } from 'vue';
+import Speaker from './Speaker.vue'
 
-const videoStore = useVideoStore()
-const { selectedTranscriptionFileUrl, subtitles } = storeToRefs(videoStore)
+const mediaStore = useMediaStore()
+const { selectedTranscriptionFileUrl, loadedTrack } = storeToRefs(mediaStore)
 
-const { isLoadedMetadata } = storeToRefs(videoStore)
+const { isLoadedMetadata } = storeToRefs(mediaStore)
 
 const isLoading = ref(true)
 
@@ -35,9 +33,10 @@ watch(isLoadedMetadata, () => {
 })
 
 function handleClickAdd() {
-    videoStore.addCue('[text]', videoStore.getCurrentTime(), videoStore.getCurrentTime() + 2.5)
+    mediaStore.addCue('', mediaStore.getCurrentTime(), mediaStore.getCurrentTime() + 2.5)
 }
 
+// @ts-ignore
 const electronAPI = window.electronAPI
 
 const isTranscritionTrackLoaded = ref(false)
@@ -63,7 +62,7 @@ async function handleImportTrackFile() {
     if(paths) {
         selectedTranscriptionFileUrl.value = paths[0]
         // console.log('arquivo selecionado', selectedTranscriptionFileUrl.value)
-        videoStore.importTextTrack('transcription', selectedTranscriptionFileUrl.value)
+        mediaStore.importTextTrack('transcription', selectedTranscriptionFileUrl.value)
         isTranscritionTrackLoaded.value = true
     } else {
         console.log('dialogo cancelado')
@@ -87,29 +86,25 @@ async function openSaveDialog() {
 }
 
 async function handleNewTrackFile() {
-    // console.log('new file')
     const path = await openSaveDialog()
     if(path) {
         selectedTranscriptionFileUrl.value = path
-        // console.log('caminho selecionado', selectedTranscriptionFileUrl.value)
-        videoStore.createEmptyTrack('transcription')
-        // console.log(videoStore.media.textTracks)
+        mediaStore.createEmptyTrack()
         isTranscritionTrackLoaded.value = true
     } else {
         console.log('dialogo cancelado')
     }
 }
 
-async function createFile(path: string, data: any) {
+async function createTranscriptionFile(path: string, data: any) {
   const response = await electronAPI.createFile(path, data)
 }
 
 async function handleSaveTranscription() {
-    console.log('save subtitle file')
-    const data = videoStore.exportTrack('transcription')
-    await createFile(videoStore.selectedTranscriptionFileUrl, data)
+    console.log('save transcription file')
+    const data = mediaStore.exportTrack()
+    await createTranscriptionFile(mediaStore.selectedTranscriptionFileUrl, data)
 }
-
 </script>
 
 <style scoped>
@@ -126,15 +121,5 @@ async function handleSaveTranscription() {
     header {
         grid-area: header;
         padding: 10px;
-    }
-
-    ul {
-        grid-area: center;
-        list-style: none;
-        padding: 10px;
-        margin: 0;
-        /* background-color: aquamarine; */
-        /* height: 77vh; */
-        overflow-y: auto;
     }
 </style>

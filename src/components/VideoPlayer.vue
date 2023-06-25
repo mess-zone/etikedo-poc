@@ -10,9 +10,9 @@
 </template>
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { useVideoStore } from '../stores/video';
+import { useMediaStore } from '../stores/media';
 
-const videoStore = useVideoStore()
+const mediaStore = useMediaStore()
 
 defineProps<{
     fileUrl: string
@@ -21,7 +21,7 @@ defineProps<{
 const media = ref(null)
 
 onMounted(() => {
-    videoStore.setMedia(media.value)
+    mediaStore.setMedia(media.value)
 })
 </script>
 

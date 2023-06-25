@@ -10,26 +10,26 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import Slider from './Slider.vue';
-import { useAudioStore } from '../stores/audio';
+import { useMediaStore } from '../stores/media';
 import { storeToRefs } from 'pinia';
 
-const audioStore = useAudioStore()
-const { isPlaying, currentTime, duration } = storeToRefs(audioStore)
+const mediaStore = useMediaStore()
+const { isPlaying, currentTime, duration } = storeToRefs(mediaStore)
 
 const disabled = ref(false)
 const min = ref(0)
 const max = ref(duration)
 
 function togglePlay() {
-    if(audioStore.media.paused) {
-        audioStore.media.play()
+    if(mediaStore.media.paused) {
+        mediaStore.media.play()
     } else {
-        audioStore.media.pause()
+        mediaStore.media.pause()
     }
 }
 
 function handleChange(value: number) {
-    audioStore.media.currentTime = value
+    mediaStore.media.currentTime = value
 }
 </script>
 <style scoped>

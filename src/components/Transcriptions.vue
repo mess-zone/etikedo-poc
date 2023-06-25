@@ -16,16 +16,15 @@
     <div v-else>loading...</div>
 </template>
 <script setup lang="ts">
-import { useAudioStore } from '../stores/audio';
+import { useMediaStore } from '../stores/media';
 import { storeToRefs } from 'pinia';
 import { ref, watch } from 'vue';
-
 import Speaker from './Speaker.vue'
 
-const audioStore = useAudioStore()
-const { selectedTranscriptionFileUrl, loadedTrack } = storeToRefs(audioStore)
+const mediaStore = useMediaStore()
+const { selectedTranscriptionFileUrl, loadedTrack } = storeToRefs(mediaStore)
 
-const { isLoadedMetadata } = storeToRefs(audioStore)
+const { isLoadedMetadata } = storeToRefs(mediaStore)
 
 const isLoading = ref(true)
 
@@ -36,7 +35,7 @@ watch(isLoadedMetadata, () => {
 })
 
 function handleClickAdd() {
-    audioStore.addCue('', audioStore.getCurrentTime(), audioStore.getCurrentTime() + 2.5)
+    mediaStore.addCue('', mediaStore.getCurrentTime(), mediaStore.getCurrentTime() + 2.5)
 }
 
 // @ts-ignore
@@ -64,7 +63,7 @@ async function handleImportTrackFile() {
     const paths = await openFileDialog()
     if(paths) {
         selectedTranscriptionFileUrl.value = paths[0]
-        audioStore.importTextTrack('transcription', selectedTranscriptionFileUrl.value)
+        mediaStore.importTextTrack('transcription', selectedTranscriptionFileUrl.value)
         isTranscritionTrackLoaded.value = true
     } else {
         console.log('dialogo cancelado')
@@ -91,7 +90,7 @@ async function handleNewTrackFile() {
     const path = await openSaveDialog()
     if(path) {
         selectedTranscriptionFileUrl.value = path
-        audioStore.createEmptyTrack()
+        mediaStore.createEmptyTrack()
         isTranscritionTrackLoaded.value = true
     } else {
         console.log('dialogo cancelado')
@@ -104,8 +103,8 @@ async function createTranscriptionFile(path: string, data: any) {
 
 async function handleSaveTranscription() {
     console.log('save transcription file')
-    const data = audioStore.exportTrack()
-    await createTranscriptionFile(audioStore.selectedTranscriptionFileUrl, data)
+    const data = mediaStore.exportTrack()
+    await createTranscriptionFile(mediaStore.selectedTranscriptionFileUrl, data)
 }
 
 </script>

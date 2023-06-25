@@ -104,6 +104,10 @@ export function useTrack(trackId: string) {
         return posts.reverse();
     })
 
+    function reset() {
+        utterances.value.length = 0
+    }
+
     function addUtterance(item: MaybeRefOrGetter<UtteranceData>) {
         const { text, start, end, speaker, layout } = toValue(item)
 
@@ -230,6 +234,7 @@ export function useTrack(trackId: string) {
         id,
         sortedUtterances,
         diarizedUtterances,
+        reset,
         importCue,
         addUtterance,
         removeUtterance,

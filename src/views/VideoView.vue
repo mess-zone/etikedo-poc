@@ -28,20 +28,13 @@ import { onMounted, onUnmounted } from 'vue';
 import VideoPlayer from '../components/VideoPlayer.vue'
 import VideoBottomControls from '../components/VideoBottomControls.vue'
 import Captions from '../components/Captions.vue'
-import { useVideoStore } from '../stores/video';
+import { useMediaStore } from '../stores/media';
 import { storeToRefs } from 'pinia';
 import WaveSurfer from 'wavesurfer.js'
 import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions'
 
-const videoStore = useVideoStore()
-const { selectedFileUrl, wafesurferRegions } = storeToRefs(videoStore)
-
-// watch(isLoadedMetadata, () => {
-//     if(isLoadedMetadata.value == true) {
-//         videoStore.importTextTrack('transcription', trackUrl.value)
-//     }
-// })
-
+const mediaStore = useMediaStore()
+const { selectedFileUrl, wavesurferRegions } = storeToRefs(mediaStore)
 
 onMounted(() => {
 
@@ -59,38 +52,17 @@ onMounted(() => {
     })
 
     // Create a Regions plugin instance
-    ws.registerPlugin(wafesurferRegions.value as RegionsPlugin)
+    ws.registerPlugin(wavesurferRegions.value as RegionsPlugin)
 
     ws.on('ready', () => {
         console.log('wavesurfer ready')
     })
 
-    // Create some regions at specific time ranges
-    // ws.on('decode', () => {
-    // wsRegions.addRegion({
-    //     start: 4.4,
-    //     end: 7,
-    //     content: 'Blue',
-    // })
-
-    // wsRegions.addRegion({
-    //     id: 'region-green',
-    //     start: 10,
-    //     end: 12,
-    //     content: 'Green',
-    // })
-
-    // wsRegions.addRegion({
-    //     start: 19,
-    //     content: 'Marker',
-    // })
-    // })
-
 })
 
 onUnmounted(() => {
     // console.log('video unmonted')
-    videoStore.$reset()
+    mediaStore.$reset()
 })
 
 </script>
@@ -99,11 +71,9 @@ onUnmounted(() => {
 
 .main {
     position: absolute;
-    /* background-color: aquamarine; */
     inset: 0;
     overflow: hidden;
     display: grid;
-    /* grid-template-rows: [header-start] 70px [main-start] 1fr [bottom-start] 90px [bottom-end]; */
     grid-template-rows: [header-start] 70px [main-start] minmax(100px, 1fr) [bottom-start] 90px [bottom-end];
     grid-template-columns: auto;
     grid-template-areas: 
@@ -123,7 +93,6 @@ onUnmounted(() => {
 }
 
 header {
-    /* background-color: burlywood; */
     display: flex;
     align-items: center;
     gap: 10px;
@@ -140,18 +109,7 @@ header h2 {
 
 .c-container {
     grid-area: center;
-    /* border: 2px solid red; */
     display: flex;
-    /* grid-template-columns: [col1-start] 2fr [col2-start] 1fr [col2-end]; */
-    /* grid-template-columns: 3fr minmax(100px, 1fr);
-    grid-template-rows: auto;
-    grid-template-areas: 
-        "col1 col2"; */
-    /* display: flex;
-    align-items: stretch;
-    justify-content: space-between; */
-    /* height: 90vh; */
-    /* flex-basis: 100%; */
 }
 
 .col1 {
@@ -166,21 +124,15 @@ header h2 {
 }
 
 .col2 {
-    /* grid-area: col2; */
-    /* width: 150px; */
     width: 30%;
 }
 
 .wave-container {
-    /* background-color: olivedrab; */
-    /* width: 100px; */
     overflow: hidden;
     grid-area: wave-preview;
 }
 
 .video-container {
-    /* background-color: rgb(67, 35, 142); */
-    /* width: 100px; */
     overflow: hidden;
     grid-area: video-preview;
 }

@@ -28,9 +28,9 @@ import { MaybeRefOrGetter, Ref, computed, inject, ref, toRefs, watch } from 'vue
 import contenteditable from 'vue-contenteditable'
 import { TranscriptionCue } from '../composables/track';
 import TimestampSelector from '../components/TimestampSelector.vue';
-import { useAudioStore } from '../stores/audio';
+import { useMediaStore } from '../stores/media';
 
-const audioStore = useAudioStore()
+const mediaStore = useMediaStore()
 
 const props = defineProps<{
     phrase: TranscriptionCue,
@@ -116,16 +116,16 @@ function handleEditClick() {
 }
 
 function handleDeleteClick() {
-    audioStore.removeCue(props.phrase)
+    mediaStore.removeCue(props.phrase)
     updateSpeakerMode('PREVIEW')
 }
 
 function exitEditingMode(){
-    audioStore.updateText(props.phrase, editText)
-    audioStore.updateStartTime(props.phrase, editStart)
-    audioStore.updateEndTime(props.phrase, editEnd)
-    audioStore.updateLayout(props.phrase, editLayout)
-    audioStore.updateSpeaker(props.phrase, editSpeaker)
+    mediaStore.updateText(props.phrase, editText)
+    mediaStore.updateStartTime(props.phrase, editStart)
+    mediaStore.updateEndTime(props.phrase, editEnd)
+    mediaStore.updateLayout(props.phrase, editLayout)
+    mediaStore.updateSpeaker(props.phrase, editSpeaker)
     updateSpeakerMode('PREVIEW')
 }
 
@@ -136,7 +136,7 @@ function enterEditMode() {
 
 function handleUtteranceClick() {
     console.log('utterance click')
-    audioStore.goToTime(phrase.value.data.start)
+    mediaStore.goToTime(phrase.value.data.start)
 }
 
 </script>
