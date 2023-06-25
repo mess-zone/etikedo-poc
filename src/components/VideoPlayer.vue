@@ -2,7 +2,7 @@
     <div class="video-container">
         <video
             controls 
-            :src="fileUrl"
+            :src="selectedFileUrl"
             ref="media"
         >
         </video>
@@ -11,12 +11,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { useMediaStore } from '../stores/media';
+import { storeToRefs } from 'pinia';
 
 const mediaStore = useMediaStore()
-
-defineProps<{
-    fileUrl: string // TODO não tem necessidade de receber uma prop, pois pode acessar esse valor através da store
-}>()
+const { selectedFileUrl } = storeToRefs(mediaStore)
 
 const media = ref(null)
 

@@ -13,7 +13,6 @@
             <div class="col1">
                 <VideoPlayer 
                     class="video-container"
-                    :file-url="selectedFileUrl"
                 />
              
                 <div class="wave-container">
@@ -73,30 +72,6 @@ async function openConfigFile(fullPath: string) {
 
 const mediaStore = useMediaStore()
 const { selectedFileUrl, wavesurferRegions, isLoadedMetadata } = storeToRefs(mediaStore)
-
-// watch(isLoadedMetadata, () => {
-//     console.log('is loaded metadata', isLoadedMetadata)
-//     // TODO move wave surfer to a component
-//     // Initialize wavesurfer.js
-//     const ws = WaveSurfer.create({
-//         container: document.querySelector('#audio-wave-container') as HTMLElement,
-//         waveColor: 'rgb(200, 0, 200)',
-//         progressColor: 'rgb(100, 0, 100)',
-//         // Pass the video element in the `media` param
-//         media: document.querySelector('video'),
-//         fillParent: false,
-//         hideScrollbar: false,
-//         minPxPerSec: 30,
-//         barHeight: 1.8,
-//     })
-
-//     // Create a Regions plugin instance
-//     ws.registerPlugin(wavesurferRegions.value as RegionsPlugin)
-
-//     ws.on('ready', () => {
-//         console.log('wavesurfer ready')
-//     })
-// })
 
 onMounted(async () => {
     const path = route.query.path.toString()
