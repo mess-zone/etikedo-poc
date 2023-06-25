@@ -15,7 +15,7 @@ import { useMediaStore } from '../stores/media';
 const mediaStore = useMediaStore()
 
 defineProps<{
-    fileUrl: string
+    fileUrl: string // TODO não tem necessidade de receber uma prop, pois pode acessar esse valor através da store
 }>()
 
 const media = ref(null)

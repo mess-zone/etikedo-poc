@@ -17,7 +17,7 @@
                 />
              
                 <div class="wave-container">
-                    <div id="audio-wave-container"></div>
+                    <AudioWave/>
                 </div>
              
             </div>
@@ -29,13 +29,12 @@
 </template>
 <script setup lang="ts">
 import VideoPlayer from '../components/VideoPlayer.vue'
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useMediaStore } from '../stores/media';
 import { storeToRefs } from 'pinia';
-import WaveSurfer from 'wavesurfer.js'
-import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions'
 import VideoBottomControls from '../components/VideoBottomControls.vue'
+import AudioWave from '../components/AudioWave.vue'
 
 interface ProjectConfig {
     project: string,
@@ -51,6 +50,7 @@ interface ProjectConfig {
 
 const route = useRoute()
 
+// @ts-ignore
 const electronAPI = window.electronAPI
 
 const configuration = ref<ProjectConfig>({
@@ -74,29 +74,29 @@ async function openConfigFile(fullPath: string) {
 const mediaStore = useMediaStore()
 const { selectedFileUrl, wavesurferRegions, isLoadedMetadata } = storeToRefs(mediaStore)
 
-watch(isLoadedMetadata, () => {
-    console.log('is loaded metadata', isLoadedMetadata)
-    // TODO move wave surfer to a component
-    // Initialize wavesurfer.js
-    const ws = WaveSurfer.create({
-        container: document.querySelector('#audio-wave-container') as HTMLElement,
-        waveColor: 'rgb(200, 0, 200)',
-        progressColor: 'rgb(100, 0, 100)',
-        // Pass the video element in the `media` param
-        media: document.querySelector('video'),
-        fillParent: false,
-        hideScrollbar: false,
-        minPxPerSec: 30,
-        barHeight: 1.8,
-    })
+// watch(isLoadedMetadata, () => {
+//     console.log('is loaded metadata', isLoadedMetadata)
+//     // TODO move wave surfer to a component
+//     // Initialize wavesurfer.js
+//     const ws = WaveSurfer.create({
+//         container: document.querySelector('#audio-wave-container') as HTMLElement,
+//         waveColor: 'rgb(200, 0, 200)',
+//         progressColor: 'rgb(100, 0, 100)',
+//         // Pass the video element in the `media` param
+//         media: document.querySelector('video'),
+//         fillParent: false,
+//         hideScrollbar: false,
+//         minPxPerSec: 30,
+//         barHeight: 1.8,
+//     })
 
-    // Create a Regions plugin instance
-    ws.registerPlugin(wavesurferRegions.value as RegionsPlugin)
+//     // Create a Regions plugin instance
+//     ws.registerPlugin(wavesurferRegions.value as RegionsPlugin)
 
-    ws.on('ready', () => {
-        console.log('wavesurfer ready')
-    })
-})
+//     ws.on('ready', () => {
+//         console.log('wavesurfer ready')
+//     })
+// })
 
 onMounted(async () => {
     const path = route.query.path.toString()
