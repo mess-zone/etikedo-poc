@@ -13,6 +13,7 @@ export interface IElectronAPI {
     getRootPath: () => Promise<string>,
     getBackPath: (path: string) => Promise<string>,
     getFiles: (path: string) => Promise<FileInfo[]>,
+    readFile: (path: string) => Promise<string>,
     createFile: (path: string, data: any) => Promise<void>,
     createSubtitleFile: (path: string, data: any) => Promise<void>,
     openFileDialog: (config: any) => Promise<string[]>,

@@ -119,6 +119,15 @@ function createSubtitleFile(path: string, data: any) {
 
     saveFile(path, content)
 }
+
+function readFileContent(filePath: string): string {
+    try {
+      const data = fs.readFileSync(filePath, 'utf8');
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
   
 
 // This method will be called when Electron has finished
@@ -135,6 +144,8 @@ app.whenReady().then(() => {
     ipcMain.handle('get-files', (event, path) => getFiles(path))
     ipcMain.handle('create-subtitle-file', (event, path, data) => createSubtitleFile(path, data))
     ipcMain.handle('create-file', (event, path, data) => saveFile(path, data))
+
+    ipcMain.handle('read-file', (event, path) => readFileContent(path))
 
     ipcMain.handle('file-dialog', (event, params) => {     
        return dialog.showOpenDialogSync(params);

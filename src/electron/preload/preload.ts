@@ -22,6 +22,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getBackPath: (path: string) => ipcRenderer.invoke('get-back-path', path),
   getFiles: (path: string) => ipcRenderer.invoke('get-files', path),
   
+  readFile: (path: string) => ipcRenderer.invoke('read-file', path),
   createFile: (path: string, data: any) => ipcRenderer.invoke('create-file', path, data),
   createSubtitleFile: (path: string, data: any) => ipcRenderer.invoke('create-subtitle-file', path, data),
   openFileDialog: (config: any) => ipcRenderer.invoke('file-dialog', config),

@@ -1,7 +1,7 @@
 {
     "project": "some test project",
     "createdAt": "2023-06-25",
-    "version": 0,
+    "version": "0",
     "type": "video",
     "resource": "../videos/filetest.mov",
     "transcription": {
