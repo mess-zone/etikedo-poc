@@ -9,7 +9,7 @@
             <router-link to="/">fechar</router-link> 
         </header>
         
-        <!-- <div class="c-container">
+        <div class="c-container">
             <div class="col1">
                 <VideoPlayer 
                     class="video-container"
@@ -21,15 +21,21 @@
                 </div>
              
             </div>
-            <Captions class="col2" />
+            <!-- <Captions class="col2" /> -->
           
         </div>
-        <VideoBottomControls class="c-bottom-controls"></VideoBottomControls> -->
+        <VideoBottomControls class="c-bottom-controls"></VideoBottomControls>
     </div>
 </template>
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import VideoPlayer from '../components/VideoPlayer.vue'
+import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { useMediaStore } from '../stores/media';
+import { storeToRefs } from 'pinia';
+import WaveSurfer from 'wavesurfer.js'
+import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions'
+import VideoBottomControls from '../components/VideoBottomControls.vue'
 
 interface ProjectConfig {
     project: string,
@@ -55,15 +61,48 @@ const configuration = ref<ProjectConfig>({
     resource: '',
 })
 
+const folderPath = ref('')
+
 async function openConfigFile(fullPath: string) {
+
     console.log('OPEN CONFIG FILE', fullPath)
+    // TODO readCOnfigFile should return a json with absolute paths configured
     const content = await electronAPI.readFile(fullPath)
     configuration.value = JSON.parse(content)
 }
 
+const mediaStore = useMediaStore()
+const { selectedFileUrl, wavesurferRegions, isLoadedMetadata } = storeToRefs(mediaStore)
+
+watch(isLoadedMetadata, () => {
+    console.log('is loaded metadata', isLoadedMetadata)
+    // TODO move wave surfer to a component
+    // Initialize wavesurfer.js
+    const ws = WaveSurfer.create({
+        container: document.querySelector('#audio-wave-container') as HTMLElement,
+        waveColor: 'rgb(200, 0, 200)',
+        progressColor: 'rgb(100, 0, 100)',
+        // Pass the video element in the `media` param
+        media: document.querySelector('video'),
+        fillParent: false,
+        hideScrollbar: false,
+        minPxPerSec: 30,
+        barHeight: 1.8,
+    })
+
+    // Create a Regions plugin instance
+    ws.registerPlugin(wavesurferRegions.value as RegionsPlugin)
+
+    ws.on('ready', () => {
+        console.log('wavesurfer ready')
+    })
+})
+
 onMounted(async () => {
     const path = route.query.path.toString()
     await openConfigFile(path)
+    folderPath.value = path.replace('config.etikedo.json', '')
+    mediaStore.selectedFileUrl = folderPath.value + configuration.value.resource
 })
 </script>
 
