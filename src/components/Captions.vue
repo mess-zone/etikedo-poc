@@ -122,4 +122,12 @@ async function handleSaveTranscription() {
         grid-area: header;
         padding: 10px;
     }
+
+    section {
+        /* display: flex; */
+        grid-area: center;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 20px 0;
+    }
 </style>
