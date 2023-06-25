@@ -4,12 +4,18 @@ import About from "../components/About.vue";
 import FileExplorerView from "../views/FileExplorerView.vue";
 import VideoView from "../views/VideoView.vue";
 import AudioView from "../views/AudioView.vue";
+import ProjectView from "../views/ProjectView.vue";
 
 const routes = [
     {
         path: "/",
         name: "FileExplorer",
         component: FileExplorerView,
+    },
+    {
+        path: "/project",
+        name: "Project",
+        component: ProjectView,
     },
     {
         path: "/video",

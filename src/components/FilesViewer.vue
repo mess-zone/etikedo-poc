@@ -11,7 +11,7 @@
             <tr
                 v-for="item in files"
                 :key="item.name"
-                :class="{ clickable: item.directory || item.path.endsWith('.mp4') || item.path.endsWith('.mkv') || item.path.endsWith('.mp3') || item.path.endsWith('.wav') }"
+                :class="{ clickable: item.directory || item.path.endsWith('.etikedo.json') || item.path.endsWith('.mp4') || item.path.endsWith('.mkv') || item.path.endsWith('.mp3') || item.path.endsWith('.wav') }"
                 @click="onFileClick(item)"
                 >
                 <td class="icon-cell">
@@ -50,6 +50,9 @@ function onFileClick(file: FileInfo) {
         } else if(file.path.endsWith('.mp3') || file.path.endsWith('.wav')) {
             mediaStore.selectedFileUrl = file.path
             router.push({ name: 'Audio' })
+        } else if(file.path.endsWith('.etikedo.json')) {
+            mediaStore.selectedFileUrl = file.path
+            router.push({ name: 'Project', query: { path: file.path } })
         }
     }
 }
