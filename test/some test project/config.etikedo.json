@@ -2,7 +2,7 @@
     "project": "some test project",
     "createdAt": "2023-06-25",
     "version": "0",
-    "type": "video",
+    "type": "VideoLayout",
     "resource": "../videos/filetest.mov",
     "transcription": {
         "json": "./transcription.json",

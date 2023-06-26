@@ -1,49 +1,42 @@
 <template>
-    <component :is="projectLayoutComponent[currentLayout]"></component>
+    <div class="main">
+        <header class="c-header">
+            <div>
+                <h1>{{ configuration.project }}</h1>
+                <h2>{{ configuration.createdAt }}</h2>
+            </div>
+
+            <router-link to="/">fechar</router-link> 
+        </header>
+        
+        <div class="c-container">
+            <div class="col1">
+                <VideoPlayer 
+                    class="video-container"
+                />
+                
+                <div class="wave-container">
+                    <AudioWave/>
+                </div>
+                
+            </div>
+            <SidebarTranscription class="col2" />
+            
+        </div>
+        <VideoBottomControls class="c-bottom-controls"></VideoBottomControls>
+    </div>
 </template>
 <script setup lang="ts">
 import VideoPlayer from '../components/VideoPlayer.vue'
-import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
-import { useMediaStore } from '../stores/media';
 import { storeToRefs } from 'pinia';
-import VideoLayout from '../components/VideoLayout.vue'
 import VideoBottomControls from '../components/VideoBottomControls.vue'
 import AudioWave from '../components/AudioWave.vue'
 import SidebarTranscription from '../components/SidebarTranscription.vue'
 import { useProjectConfig } from '../stores/projectConfig';
 
-const route = useRoute()
-
-// @ts-ignore
-const electronAPI = window.electronAPI
-
 const projectConfig = useProjectConfig()
 const { configuration } = storeToRefs(projectConfig)
 
-const projectLayoutComponent = {
-    VideoLayout
-}
-
-type LayoutType = 'VideoLayout' | 'AudioLayout'
-
-const currentLayout = ref<LayoutType>('VideoLayout')
-
-async function openConfigFile(fullPath: string) {
-    console.log('OPEN CONFIG FILE', fullPath)
-    // TODO readConfigFile should return a json with absolute paths configured
-    const content = await electronAPI.readFile(fullPath)
-    projectConfig.setConfig(fullPath, JSON.parse(content))
-    currentLayout.value = configuration.value.type as LayoutType
-}
-
-const mediaStore = useMediaStore()
-
-onMounted(async () => {
-    const path = route.query.path.toString()
-    await openConfigFile(path)
-    mediaStore.selectedFileUrl = configuration.value.resource
-})
 </script>
 
 <style scoped>
