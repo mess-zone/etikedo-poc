@@ -186,12 +186,51 @@ export const useMediaStore = defineStore('media', () => {
 
     }
 
+    function exportTrackToJson() {
+        return loadedTrack.value.exportToJson()
+    }
+
     function getCurrentTime() {
         return media.value.currentTime
     }
 
     function goToTime(seconds: number) {
         media.value.currentTime = seconds
+    }
+
+    function importCue(id: string, text: string, start: number, end: number, speaker: number) {
+       const utterance: TranscriptionCue =  loadedTrack.value.addUtterance({
+            id,
+            text,
+            start,
+            end,
+            speaker,
+            layout: 'INLINE',
+        })
+
+        const track = getHTMLTextTracksElements()[0]
+        track.addCue(utterance.cue);
+
+        const waveRegion = wavesurferRegions.value.addRegion({
+            id: utterance.id,
+            start: start,
+            end: end,
+            // content: subtitleItem.value.cue.text,
+        })
+
+        waveRegion.on('update', () => {
+            // console.log('region updated', waveRegion.id, waveRegion.start, waveRegion.end)
+            loadedTrack.value.updateUtteranceStart(waveRegion.id, waveRegion.start)
+            // utterance.data.start = waveRegion.start
+            utterance.cue.startTime = waveRegion.start
+
+            loadedTrack.value.updateUtteranceEnd(waveRegion.id, waveRegion.end)
+            // utterance.data.end = waveRegion.end
+            utterance.cue.endTime = waveRegion.end
+
+            // precision adjust to region always be active
+            goToTime(waveRegion.start + 0.1)
+        })
     }
 
     function addCue(text: string, start: number, end: number) {
@@ -286,6 +325,7 @@ export const useMediaStore = defineStore('media', () => {
         exportTrack,
         goToTime,
         getCurrentTime,
+        importCue,
         addCue,
         removeCue,
         updateText,
@@ -297,6 +337,7 @@ export const useMediaStore = defineStore('media', () => {
         isPlaying,
         currentTime,
         duration,
+        exportTrackToJson,
     }
     
 })

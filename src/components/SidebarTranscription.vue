@@ -40,7 +40,7 @@ watch(isLoadedMetadata, async () => {
             // console.log(transcriptionConfig)
             mediaStore.createEmptyTrack()
             for(const word of transcriptionConfig.words) {
-                mediaStore.addCue(word.punctuated_word, word.start, word.end)
+                mediaStore.importCue(word.id, word.text, word.start, word.end, word.speaker)
             }
             isTranscritionTrackLoaded.value = true
         } else {
@@ -128,9 +128,11 @@ async function createTranscriptionFile(path: string, data: any) {
 
 async function handleSaveTranscription() {
     console.log('save transcription file')
-    const data = mediaStore.exportTrack()
-    console.log(data)
-    // await createTranscriptionFile(mediaStore.selectedTranscriptionFileUrl, data)
+    const data = mediaStore.exportTrackToJson()
+    const fileContent = {
+        words: data,
+    }
+    await createTranscriptionFile(configuration.value.transcription.json, JSON.stringify(fileContent))
 }
 
 </script>

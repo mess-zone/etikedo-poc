@@ -10,6 +10,9 @@ export interface UtteranceData {
     start: number,
     end: number,
     speaker?: number,
+    /**
+     * @deprecated
+     */
     layout?: LayoutType,
 }
 
@@ -230,6 +233,16 @@ export function useTrack(trackId: string) {
         // TODO
     }
 
+    function exportToJson() {
+        return sortedUtterances.value.map(utterance => ({
+            id: utterance.id,
+            text: utterance.data.text,
+            start: utterance.data.start,
+            end: utterance.data.end,
+            speaker: utterance.data.speaker,
+        }))
+    }
+
     return ref({
         id,
         sortedUtterances,
@@ -244,5 +257,6 @@ export function useTrack(trackId: string) {
         updateUtteranceEnd,
         updateUtteranceLayout,
         updateUtteranceSpeaker,
+        exportToJson,
     })
 }
