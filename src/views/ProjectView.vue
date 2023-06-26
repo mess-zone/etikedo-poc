@@ -20,7 +20,7 @@
                 </div>
              
             </div>
-            <!-- <Captions class="col2" /> -->
+            <SidebarTranscription class="col2" />
           
         </div>
         <VideoBottomControls class="c-bottom-controls"></VideoBottomControls>
@@ -34,50 +34,30 @@ import { useMediaStore } from '../stores/media';
 import { storeToRefs } from 'pinia';
 import VideoBottomControls from '../components/VideoBottomControls.vue'
 import AudioWave from '../components/AudioWave.vue'
-
-interface ProjectConfig {
-    project: string,
-    createdAt: Date,
-    version: string,
-    type: string,
-    resource: string,
-    transcription?: {
-        json?: string,
-        vtt?: string,
-    }
-}
+import SidebarTranscription from '../components/SidebarTranscription.vue'
+import { useProjectConfig } from '../stores/projectConfig';
 
 const route = useRoute()
 
 // @ts-ignore
 const electronAPI = window.electronAPI
 
-const configuration = ref<ProjectConfig>({
-    project: '',
-    createdAt: null,
-    version: '',
-    type: '',
-    resource: '',
-})
-
-const folderPath = ref('')
+const projectConfig = useProjectConfig()
+const { configuration } = storeToRefs(projectConfig)
 
 async function openConfigFile(fullPath: string) {
-
     console.log('OPEN CONFIG FILE', fullPath)
-    // TODO readCOnfigFile should return a json with absolute paths configured
+    // TODO readConfigFile should return a json with absolute paths configured
     const content = await electronAPI.readFile(fullPath)
-    configuration.value = JSON.parse(content)
+    projectConfig.setConfig(fullPath, JSON.parse(content))
 }
 
 const mediaStore = useMediaStore()
-const { selectedFileUrl, wavesurferRegions, isLoadedMetadata } = storeToRefs(mediaStore)
 
 onMounted(async () => {
     const path = route.query.path.toString()
     await openConfigFile(path)
-    folderPath.value = path.replace('config.etikedo.json', '')
-    mediaStore.selectedFileUrl = folderPath.value + configuration.value.resource
+    mediaStore.selectedFileUrl = configuration.value.resource
 })
 </script>
 

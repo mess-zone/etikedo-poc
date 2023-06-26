@@ -37,4 +37,6 @@ watch(isLoadedMetadata, () => {
         })
     }
 })
+
+// TODO destroy wavesurfer.js on onUnmounted hook
 </script>
