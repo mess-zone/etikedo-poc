@@ -20,6 +20,10 @@ import { useMediaStore } from '../stores/media';
 import { storeToRefs } from 'pinia';
 import { ref, watch } from 'vue';
 import Speaker from './Speaker.vue'
+import { useProjectConfig } from '../stores/projectConfig';
+
+const projectConfig = useProjectConfig()
+const { configuration } = storeToRefs(projectConfig)
 
 const mediaStore = useMediaStore()
 const { selectedTranscriptionFileUrl, loadedTrack } = storeToRefs(mediaStore)
@@ -31,6 +35,15 @@ const isLoading = ref(true)
 watch(isLoadedMetadata, () => {
     if(isLoadedMetadata.value == true) {
         isLoading.value = false
+        const path = configuration.value.transcription?.vtt
+        console.log('transcription path', path)
+        if(path) {
+            selectedTranscriptionFileUrl.value = path
+            mediaStore.importTextTrack('transcription', selectedTranscriptionFileUrl.value)
+            isTranscritionTrackLoaded.value = true
+        } else {
+            console.warn('Nenhuma transcrição encontrada')
+        }
     }
 })
 
@@ -59,6 +72,7 @@ async function openFileDialog() {
 
 }
 
+// TODO should copy vtt file to project folder, and update config file vtt path
 async function handleImportTrackFile() {
     const paths = await openFileDialog()
     if(paths) {

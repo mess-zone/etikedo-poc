@@ -1,0 +1,11 @@
+{
+    "project": "some video test project",
+    "createdAt": "2023-06-25",
+    "version": "0",
+    "type": "VideoLayout",
+    "resource": "../videos/filetest.mov",
+    "transcription": {
+        "json": "./transcription.json",
+        "vtt": "./transcription-diarized.vtt" 
+    }
+}

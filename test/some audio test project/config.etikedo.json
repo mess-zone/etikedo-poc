@@ -1,9 +1,9 @@
 {
-    "project": "some test project",
+    "project": "some audio test project",
     "createdAt": "2023-06-25",
     "version": "0",
-    "type": "VideoLayout",
-    "resource": "../videos/filetest.mov",
+    "type": "AudioLayout",
+    "resource": "../videos/filetest.mp3",
     "transcription": {
         "json": "./transcription.json",
         "vtt": "./transcription-diarized.vtt" 
