@@ -9,7 +9,8 @@
         </header>
         
         <div class="c-container">
-            <Transcriptions class="transcription-container"/>
+            <SidebarTranscription class="col2" />
+            <!-- <Transcriptions class="transcription-container"/> -->
 
             <AudioPlayer 
                 class="video-container"
@@ -25,10 +26,10 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useProjectConfig } from '../stores/projectConfig';
-import Transcriptions from '../components/Transcriptions.vue'
 import AudioPlayer from '../components/AudioPlayer.vue'
 import AudioWave from '../components/AudioWave.vue'
 import AudioBottomControls from '../components/AudioBottomControls.vue'
+import SidebarTranscription from '../components/SidebarTranscription.vue'
 
 
 const projectConfig = useProjectConfig()
