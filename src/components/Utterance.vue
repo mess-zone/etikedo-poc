@@ -171,7 +171,11 @@ function handleUtteranceClick() {
 
 .utterance.INLINE {
     display: inline;
-    margin-right: 0.25em;
+    /* margin-right: 0.25em; */
+}
+
+.utterance.INLINE::after {
+    content: ' ';
 }
 
 .utterance.BLOCK {

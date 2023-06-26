@@ -30,18 +30,23 @@ const { isLoadedMetadata } = storeToRefs(mediaStore)
 
 const isLoading = ref(true)
 
-watch(isLoadedMetadata, () => {
+watch(isLoadedMetadata, async () => {
     if(isLoadedMetadata.value == true) {
-        isLoading.value = false
-        const path = configuration.value.transcription?.vtt
-        console.log('transcription path', path)
-        if(path) {
-            selectedTranscriptionFileUrl.value = path
-            mediaStore.importTextTrack('transcription', selectedTranscriptionFileUrl.value)
+
+        const pathJson = configuration.value.transcription?.json
+        if(pathJson) {
+            console.log('configuração da transcrição', pathJson)
+            const transcriptionConfig = await openTranscriptionConfigFile(pathJson)
+            // console.log(transcriptionConfig)
+            mediaStore.createEmptyTrack()
+            for(const word of transcriptionConfig.words) {
+                mediaStore.addCue(word.punctuated_word, word.start, word.end)
+            }
             isTranscritionTrackLoaded.value = true
         } else {
             console.warn('Nenhuma transcrição encontrada')
         }
+        isLoading.value = false
     }
 })
 
@@ -53,6 +58,12 @@ function handleClickAdd() {
 const electronAPI = window.electronAPI
 
 const isTranscritionTrackLoaded = ref(false)
+
+async function openTranscriptionConfigFile(fullPath: string) {
+    console.log('OPEN TRANSLATION CONFIG FILE', fullPath)
+    const content = await electronAPI.readFile(fullPath)
+    return JSON.parse(content)
+}
 
 async function openFileDialog() {
     const dialogConfig = {
@@ -70,7 +81,7 @@ async function openFileDialog() {
 
 }
 
-// TODO should copy vtt file to project folder, and update config file vtt path
+// TODO should transform vtt file into transcription config json
 async function handleImportTrackFile() {
     const paths = await openFileDialog()
     if(paths) {
@@ -99,6 +110,7 @@ async function openSaveDialog() {
 
 }
 
+// TODO should create a new transcription config json
 async function handleNewTrackFile() {
     const path = await openSaveDialog()
     if(path) {
@@ -117,7 +129,8 @@ async function createTranscriptionFile(path: string, data: any) {
 async function handleSaveTranscription() {
     console.log('save transcription file')
     const data = mediaStore.exportTrack()
-    await createTranscriptionFile(mediaStore.selectedTranscriptionFileUrl, data)
+    console.log(data)
+    // await createTranscriptionFile(mediaStore.selectedTranscriptionFileUrl, data)
 }
 
 </script>
