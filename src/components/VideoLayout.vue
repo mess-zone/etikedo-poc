@@ -20,7 +20,7 @@
                 </div>
                 
             </div>
-            <SidebarTranscription class="col2" />
+            <Transcription class="col2" />
             
         </div>
         <VideoBottomControls class="c-bottom-controls"></VideoBottomControls>
@@ -31,7 +31,7 @@ import VideoPlayer from '../components/VideoPlayer.vue'
 import { storeToRefs } from 'pinia';
 import VideoBottomControls from '../components/VideoBottomControls.vue'
 import AudioWave from '../components/AudioWave.vue'
-import SidebarTranscription from '../components/SidebarTranscription.vue'
+import Transcription from '../components/Transcription.vue'
 import { useProjectConfig } from '../stores/projectConfig';
 
 const projectConfig = useProjectConfig()

@@ -9,8 +9,7 @@
         </header>
         
         <div class="c-container">
-            <SidebarTranscription class="col2" />
-            <!-- <Transcriptions class="transcription-container"/> -->
+            <Transcription class="col2" />
 
             <AudioPlayer 
                 class="video-container"
@@ -29,7 +28,7 @@ import { useProjectConfig } from '../stores/projectConfig';
 import AudioPlayer from '../components/AudioPlayer.vue'
 import AudioWave from '../components/AudioWave.vue'
 import AudioBottomControls from '../components/AudioBottomControls.vue'
-import SidebarTranscription from '../components/SidebarTranscription.vue'
+import Transcription from '../components/Transcription.vue'
 
 
 const projectConfig = useProjectConfig()
