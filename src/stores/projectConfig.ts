@@ -46,8 +46,8 @@ export const useProjectConfig = defineStore('projectConfig', () => {
             type: config.type,
             resource: folderPath.value + config.resource,
             transcription: {
-                json: folderPath.value + config.transcription.json,
-                vtt: folderPath.value + config.transcription.vtt,
+                json: config.transcription.json ? folderPath.value + config.transcription.json : undefined,
+                vtt: config.transcription.vtt ? folderPath.value + config.transcription.vtt : undefined,
             }
         }
     }

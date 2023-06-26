@@ -34,12 +34,13 @@ watch(isLoadedMetadata, () => {
     if(isLoadedMetadata.value == true) {
         isLoading.value = false
         const path = configuration.value.transcription?.vtt
+        console.log('transcription path', path)
         if(path) {
             selectedTranscriptionFileUrl.value = path
             mediaStore.importTextTrack('transcription', selectedTranscriptionFileUrl.value)
             isTranscritionTrackLoaded.value = true
         } else {
-            console.warn('Nenhuma trasncrição encontrada')
+            console.warn('Nenhuma transcrição encontrada')
         }
     }
 })
@@ -69,6 +70,7 @@ async function openFileDialog() {
 
 }
 
+// TODO should copy vtt file to project folder, and update config file vtt path
 async function handleImportTrackFile() {
     const paths = await openFileDialog()
     if(paths) {
