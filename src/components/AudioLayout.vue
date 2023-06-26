@@ -5,7 +5,7 @@
                 <h1>{{ configuration.project }}</h1>
                 <h2>{{ configuration.createdAt }}</h2>
             </div>
-            <router-link to="/">fechar</router-link> 
+            <button @click="() => { $router.go(-1) }">fechar</button>
         </header>
         
         <div class="c-container">

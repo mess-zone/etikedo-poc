@@ -1,6 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router";
 import FileExplorerView from "../views/FileExplorerView.vue";
-import ProjectView from "../views/ProjectView.vue";
+import TranscriptionEditorView from "../views/TranscriptionEditorView.vue";
+import ResourceView from "../views/ResourceView.vue";
 
 const routes = [
     {
@@ -9,9 +10,14 @@ const routes = [
         component: FileExplorerView,
     },
     {
-        path: "/project",
-        name: "Project",
-        component: ProjectView,
+        path: "/transcription-editor",
+        name: "TranscriptionEditor",
+        component: TranscriptionEditorView,
+    },
+    {
+        path: "/resource",
+        name: "Resource",
+        component: ResourceView,
     },
 ];
 
