@@ -9,7 +9,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { useMediaStore } from '@/stores/media';
+import { useMediaStore } from '@/shared/media/stores/media';
 import { storeToRefs } from 'pinia';
 
 import { useProjectConfig } from '@/stores/projectConfig';

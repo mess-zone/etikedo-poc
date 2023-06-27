@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import Slider from '@/transcription-editor/components/Slider.vue';
-import { useMediaStore } from '@/stores/media';
+import { useMediaStore } from '@/shared/media/stores/media';
 import { storeToRefs } from 'pinia';
 
 const mediaStore = useMediaStore()

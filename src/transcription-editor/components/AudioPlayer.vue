@@ -13,7 +13,7 @@
 </template>
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { useMediaStore } from '@/stores/media';
+import { useMediaStore } from '@/shared/media/stores/media';
 import { storeToRefs } from 'pinia';
 
 const mediaStore = useMediaStore()

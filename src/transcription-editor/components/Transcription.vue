@@ -14,7 +14,7 @@
     <div v-else>loading...</div>
 </template>
 <script setup lang="ts">
-import { useMediaStore } from '@/stores/media';
+import { useMediaStore } from '@/shared/media/stores/media';
 import { storeToRefs } from 'pinia';
 import { ref, watch } from 'vue';
 import Speaker from '@/transcription-editor/components/Speaker.vue'
