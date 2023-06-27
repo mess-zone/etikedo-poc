@@ -1,8 +1,7 @@
 import { defineStore } from 'pinia'
 import { MaybeRefOrGetter, ref, shallowRef, toValue } from 'vue'
-import { LayoutType, useTrack } from '../composables/track';
+import { LayoutType, useTrack, TranscriptionCue } from '@/transcription-editor/composables/track';
 import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions'
-import { TranscriptionCue } from '../composables/track'
 
 const selectedFileUrl = ref('')
 const selectedTranscriptionFileUrl = ref('')
