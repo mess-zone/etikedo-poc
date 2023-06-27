@@ -25,9 +25,9 @@
     </table>
 </template>
 <script setup lang="ts">
-import { FileInfo } from '../renderer';
+import { FileInfo } from '@/renderer';
 import { useRouter } from 'vue-router'
-import { useMediaStore } from '../stores/media';
+import { useMediaStore } from '@/stores/media';
 
 const emit = defineEmits(['folderclick', 'back'])
 defineProps<{

@@ -4,12 +4,12 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { useMediaStore } from '../stores/media';
+import { useMediaStore } from '@/stores/media';
 import { storeToRefs } from 'pinia';
-import VideoLayout from '../components/VideoLayout.vue'
-import AudioLayout from '../components/AudioLayout.vue'
+import VideoLayout from '@/transcription-editor/components/VideoLayout.vue'
+import AudioLayout from '@/transcription-editor/components/AudioLayout.vue'
 
-import { useProjectConfig } from '../stores/projectConfig';
+import { useProjectConfig } from '@/stores/projectConfig';
 
 const route = useRoute()
 

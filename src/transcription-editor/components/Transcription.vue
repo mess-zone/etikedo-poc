@@ -14,11 +14,11 @@
     <div v-else>loading...</div>
 </template>
 <script setup lang="ts">
-import { useMediaStore } from '../stores/media';
+import { useMediaStore } from '@/stores/media';
 import { storeToRefs } from 'pinia';
 import { ref, watch } from 'vue';
-import Speaker from './Speaker.vue'
-import { useProjectConfig } from '../stores/projectConfig';
+import Speaker from '@/transcription-editor/components/Speaker.vue'
+import { useProjectConfig } from '@/stores/projectConfig';
 
 const projectConfig = useProjectConfig()
 const { configuration } = storeToRefs(projectConfig)

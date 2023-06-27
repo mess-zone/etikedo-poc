@@ -2,7 +2,7 @@
     <div id="audio-wave-container"></div>
 </template>
 <script setup lang="ts">
-import { useMediaStore } from '../stores/media';
+import { useMediaStore } from '@/stores/media';
 import { storeToRefs } from 'pinia';
 import { shallowRef, watch } from 'vue';
 import WaveSurfer from 'wavesurfer.js'

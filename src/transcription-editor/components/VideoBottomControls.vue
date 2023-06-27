@@ -9,8 +9,8 @@
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
-import Slider from './Slider.vue';
-import { useMediaStore } from '../stores/media';
+import Slider from '@/transcription-editor/components/Slider.vue';
+import { useMediaStore } from '@/stores/media';
 import { storeToRefs } from 'pinia';
 
 const mediaStore = useMediaStore()

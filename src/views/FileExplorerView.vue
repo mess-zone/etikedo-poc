@@ -16,9 +16,9 @@
     </div>
 </template>
 <script setup lang="ts">
-import FilesViewer from "../components/FilesViewer.vue";
+import FilesViewer from "@/transcription-editor/components/FilesViewer.vue";
 import { computed, onMounted, ref } from "vue";
-import { FileInfo } from "../renderer";
+import { FileInfo } from "@/renderer";
 
 const path = ref('')
 const files = ref<FileInfo[]>([])

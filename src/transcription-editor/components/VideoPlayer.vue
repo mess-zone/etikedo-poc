@@ -1,8 +1,5 @@
 <template>
     <div class="video-container">
-        <!--
-            // TODO replace video tab by audio tag?
-        -->
         <video
             controls 
             :src="selectedFileUrl"
@@ -13,7 +10,7 @@
 </template>
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { useMediaStore } from '../stores/media';
+import { useMediaStore } from '@/stores/media';
 import { storeToRefs } from 'pinia';
 
 const mediaStore = useMediaStore()
