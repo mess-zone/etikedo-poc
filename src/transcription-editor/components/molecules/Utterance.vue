@@ -1,33 +1,14 @@
 <template>
     <span class="utterance" :class="[ mode, phrase.data.layout, phrase.isActive ? 'is-active' : '' ]" @click="handleUtteranceClick">
         <contenteditable class="editable" tag="span" :contenteditable="mode == 'EDIT'" v-model="editText" :no-nl="true" :no-html="true" @returned="keyEnterPressed" />
-        <div class="popover">
-            <div class="popover-box">
-                <button v-if="mode == 'EDIT'" @click="handleExitClick">salvar</button>
-                <button v-else @click="handleEditClick">edit</button>
-                <input type="number" v-model="editSpeaker" :disabled="mode != 'EDIT'" /> 
-                ({{ props.phrase.data.start }} / {{ props.phrase.data.end }})
-                <div class="time-widget" v-if="mode == 'EDIT'">
-                    <TimestampSelector v-model="editStart" :min="0" :step="timeStep"/>
-                    <TimestampSelector v-model="editEnd" :min="editStart" :step="timeStep"/>
-                </div>
-                <div v-else>
-                    {{ formatedStart }} - {{ formatedEnd }}
-                </div>
-                <select v-model="editLayout" :disabled="mode !== 'EDIT'">
-                    <option>INLINE</option>
-                    <option>BLOCK</option>
-                </select>
-                <button v-if="mode == 'EDIT'" @click="handleDeleteClick">delete</button>
-            </div>
-        </div>
+        <UtterancePopover :mode="mode" :phrase="phrase" @enter-edit-mode="enterEditMode" @exit-edit-mode="exitEditingMode" @deleted-cue="handleDeleteClick" />
     </span>
 </template>
 <script setup lang="ts">
 import { MaybeRefOrGetter, Ref, computed, inject, ref, toRefs, watch } from 'vue';
 import contenteditable from 'vue-contenteditable'
-import { TranscriptionCue } from '@/shared/media/composables/track';
-import TimestampSelector from '@/transcription-editor/components/atoms/TimestampSelector.vue';
+import { TranscriptionCue, UtteranceData } from '@/shared/media/composables/track';
+import UtterancePopover from '@/transcription-editor/components/molecules/UtterancePopover.vue';
 import { useMediaStore } from '@/shared/media/stores/media';
 
 const mediaStore = useMediaStore()
@@ -53,8 +34,6 @@ watch(props.phrase, (value) => {
     editSpeaker.value = phrase.value.data.speaker
 })
 
-const timeStep = 0.5
-
 
 // TODO usar props e emit para comunicação entre Speaker e Utterance
 const { speakerMode, updateSpeakerMode } = inject<{ 
@@ -77,42 +56,14 @@ watch(editStart, (newValue, oldValue) => {
     editEnd.value = editEnd.value + newValue - oldValue
 })
 
-const formatedStart = computed(() => {
-    return formatDuration(editStart.value)
-})
-
-const formatedEnd = computed(() => {
-    return formatDuration(editEnd.value)
-})
-
-function formatDuration(durationInSeconds: number): string {
-    const hours = Math.floor(durationInSeconds / 3600);
-    const minutes = Math.floor((durationInSeconds % 3600) / 60);
-    const seconds = Math.floor(durationInSeconds % 60);
-    const milliseconds = Math.floor((durationInSeconds % 1) * 1000);
-  
-    const formattedHours = hours.toString().padStart(2, '0');
-    const formattedMinutes = minutes.toString().padStart(2, '0');
-    const formattedSeconds = seconds.toString().padStart(2, '0');
-    const formattedMilliseconds = milliseconds.toString().padStart(3, '0');
-  
-    return `${formattedHours}:${formattedMinutes}:${formattedSeconds}.${formattedMilliseconds}`;
-}
 
 export type ModeType = 'PREVIEW' | 'EDIT' | 'DISABLED'
 
 const mode = ref<ModeType>('PREVIEW') 
 
 function keyEnterPressed() {
-    exitEditingMode()
-}
-
-function handleExitClick() {
-    exitEditingMode()
-}
-
-function handleEditClick() {
-    enterEditMode()
+    mediaStore.updateText(props.phrase, editText)
+    updateSpeakerMode('PREVIEW')
 }
 
 function handleDeleteClick() {
@@ -120,16 +71,18 @@ function handleDeleteClick() {
     updateSpeakerMode('PREVIEW')
 }
 
-function exitEditingMode(){
-    mediaStore.updateText(props.phrase, editText)
-    mediaStore.updateStartTime(props.phrase, editStart)
-    mediaStore.updateEndTime(props.phrase, editEnd)
-    mediaStore.updateLayout(props.phrase, editLayout)
-    mediaStore.updateSpeaker(props.phrase, editSpeaker)
+function exitEditingMode(e: UtteranceData){
+    console.log('EXIT EDIT MODE', e)
+    mediaStore.updateText(props.phrase, e.text)
+    mediaStore.updateStartTime(props.phrase, e.start)
+    mediaStore.updateEndTime(props.phrase, e.end)
+    mediaStore.updateLayout(props.phrase, e.layout)
+    mediaStore.updateSpeaker(props.phrase, e.speaker)
     updateSpeakerMode('PREVIEW')
 }
 
 function enterEditMode() {
+    console.log('entrou no mode de edição')
     mode.value = 'EDIT'
     updateSpeakerMode('EDIT')
 }
@@ -211,32 +164,6 @@ function handleUtteranceClick() {
 .utterance .editable:empty:before {
     content: '[empty]';
     opacity: .4;
-}
-
-.popover {
-    position: absolute;
-    bottom: 100%;
-    left: 0;
-    z-index: 1;
-    padding-bottom: 0.4em;
-    display: none;
-    min-width: max-content;
-    color: white;
-    user-select: none;
-    font-size: 1rem;
-}
-
-.popover-box {
-    background-color: rgb(137, 43, 226);
-    padding: 10px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-.utterance.EDIT .popover,
-.utterance:hover .popover {
-    display: block;
 }
 
 </style>
