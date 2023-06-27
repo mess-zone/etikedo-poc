@@ -1,7 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router";
 import FileExplorerView from "@/file-explorer/views/FileExplorerView.vue";
 import TranscriptionEditorView from "@/transcription-editor/views/TranscriptionEditorView.vue";
-import ResourceView from "@/views/ResourceView.vue";
+import ResourceView from "@/resource/views/ResourceView.vue";
 
 const routes = [
     {
