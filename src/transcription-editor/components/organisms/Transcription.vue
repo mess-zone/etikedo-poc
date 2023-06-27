@@ -17,7 +17,7 @@
 import { useMediaStore } from '@/shared/media/stores/media';
 import { storeToRefs } from 'pinia';
 import { ref, watch } from 'vue';
-import Speaker from '@/transcription-editor/components/Speaker.vue'
+import Speaker from '@/transcription-editor/components/molecules/Speaker.vue'
 import { useProjectConfig } from '@/stores/projectConfig';
 
 const projectConfig = useProjectConfig()

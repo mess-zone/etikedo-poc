@@ -10,8 +10,8 @@
 </template>
 <script setup lang="ts">
 import { computed, provide, ref } from 'vue';
-import { TranscriptionCue } from '@/composables/track';
-import Utterance from '@/transcription-editor/components/Utterance.vue';
+import { TranscriptionCue } from '@/shared/media/composables/track';
+import Utterance from '@/transcription-editor/components/molecules/Utterance.vue';
 
 const props = defineProps<{
     phrases: TranscriptionCue[]

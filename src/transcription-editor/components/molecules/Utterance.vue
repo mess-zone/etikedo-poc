@@ -26,8 +26,8 @@
 <script setup lang="ts">
 import { MaybeRefOrGetter, Ref, computed, inject, ref, toRefs, watch } from 'vue';
 import contenteditable from 'vue-contenteditable'
-import { TranscriptionCue } from '@/composables/track';
-import TimestampSelector from '@/transcription-editor/components/TimestampSelector.vue';
+import { TranscriptionCue } from '@/shared/media/composables/track';
+import TimestampSelector from '@/transcription-editor/components/atoms/TimestampSelector.vue';
 import { useMediaStore } from '@/shared/media/stores/media';
 
 const mediaStore = useMediaStore()

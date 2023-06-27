@@ -18,7 +18,7 @@ watch(isLoadedMetadata, () => {
         console.log('is loaded metadata', isLoadedMetadata)
         // Initialize wavesurfer.js
         ws.value = WaveSurfer.create({
-            container: document.querySelector('#audio-wave-container') as HTMLElement, // TODO hardcoded reference?
+            container: document.querySelector('#audio-wave-container') as HTMLElement, // TODO hardcoded reference? id should be a prop to permit multiple instances of this component
             waveColor: 'rgb(200, 0, 200)',
             progressColor: 'rgb(100, 0, 100)',
             // Pass the video element in the `media` param

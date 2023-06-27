@@ -5,34 +5,31 @@
                 <h1>{{ configuration.project }}</h1>
                 <h2>{{ configuration.createdAt }}</h2>
             </div>
-
             <button @click="() => { $router.go(-1) }">fechar</button>
         </header>
         
         <div class="c-container">
-            <div class="col1">
-                <VideoPlayer 
-                    class="video-container"
-                />
-                
-                <div class="wave-container">
-                    <AudioWave/>
-                </div>
-                
-            </div>
             <Transcription class="col2" />
+
+            <AudioPlayer 
+                class="video-container"
+            />
             
+            <div class="wave-container">
+                    <AudioWave/>
+            </div>
         </div>
-        <VideoBottomControls class="c-bottom-controls"></VideoBottomControls>
+        <AudioBottomControls class="c-bottom-controls"></AudioBottomControls>
     </div>
 </template>
 <script setup lang="ts">
-import VideoPlayer from '@/shared/media/components/VideoPlayer.vue'
 import { storeToRefs } from 'pinia';
-import VideoBottomControls from '@/transcription-editor/components/VideoBottomControls.vue'
-import AudioWave from '@/transcription-editor/components/AudioWave.vue'
-import Transcription from '@/transcription-editor/components/Transcription.vue'
 import { useProjectConfig } from '@/stores/projectConfig';
+import AudioPlayer from '@/shared/media/components/AudioPlayer.vue'
+import AudioWave from '@/transcription-editor/components/molecules/AudioWave.vue'
+import AudioBottomControls from '@/transcription-editor/components/organisms/AudioBottomControls.vue'
+import Transcription from '@/transcription-editor/components/organisms/Transcription.vue'
+
 
 const projectConfig = useProjectConfig()
 const { configuration } = storeToRefs(projectConfig)
@@ -82,25 +79,15 @@ header h2 {
     font-size: 1em;
     margin: 0;
 }
-
 .c-container {
     grid-area: center;
-    display: flex;
-}
-
-.col1 {
-    background-color: #ebe7e7;
     display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 3fr 145px;
+    grid-template-columns: auto;
+    grid-template-rows: 1fr 54px 145px;
     grid-template-areas: 
-        "video-preview"
+        "transcription"
+        "audio-preview"
         "wave-preview";
-    width: 70%;
-}
-
-.col2 {
-    width: 30%;
 }
 
 .wave-container {
@@ -110,6 +97,11 @@ header h2 {
 
 .video-container {
     overflow: hidden;
-    grid-area: video-preview;
+    grid-area: audio-preview;
+}
+
+.transcription-container {
+    grid-area: transcription;
+    overflow: auto;
 }
 </style>

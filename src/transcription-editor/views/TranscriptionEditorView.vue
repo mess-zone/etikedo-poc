@@ -6,8 +6,8 @@ import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useMediaStore } from '@/shared/media/stores/media';
 import { storeToRefs } from 'pinia';
-import VideoLayout from '@/transcription-editor/components/VideoLayout.vue'
-import AudioLayout from '@/transcription-editor/components/AudioLayout.vue'
+import VideoLayout from '@/transcription-editor/components/templates/VideoLayout.vue'
+import AudioLayout from '@/transcription-editor/components/templates/AudioLayout.vue'
 
 import { useProjectConfig } from '@/stores/projectConfig';
 
