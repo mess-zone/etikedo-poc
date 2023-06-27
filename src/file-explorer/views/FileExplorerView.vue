@@ -16,7 +16,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import FilesViewer from "@/transcription-editor/components/FilesViewer.vue";
+import FilesViewer from "@/file-explorer/components/FilesViewer.vue";
 import { computed, onMounted, ref } from "vue";
 import { FileInfo } from "@/renderer";
 
