@@ -27,7 +27,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import VideoPlayer from '@/transcription-editor/components/VideoPlayer.vue'
+import VideoPlayer from '@/shared/media/components/VideoPlayer.vue'
 import { storeToRefs } from 'pinia';
 import VideoBottomControls from '@/transcription-editor/components/VideoBottomControls.vue'
 import AudioWave from '@/transcription-editor/components/AudioWave.vue'

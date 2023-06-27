@@ -25,7 +25,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useProjectConfig } from '@/stores/projectConfig';
-import AudioPlayer from '@/transcription-editor/components/AudioPlayer.vue'
+import AudioPlayer from '@/shared/media/components/AudioPlayer.vue'
 import AudioWave from '@/transcription-editor/components/AudioWave.vue'
 import AudioBottomControls from '@/transcription-editor/components/AudioBottomControls.vue'
 import Transcription from '@/transcription-editor/components/Transcription.vue'
