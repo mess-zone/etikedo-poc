@@ -10,6 +10,7 @@
         <section v-if="loadedTrack && loadedTrack.sortedUtterances">
             <Speaker v-for="speaker in loadedTrack.diarizedUtterances" :key="speaker[0].id" :phrases="speaker"></Speaker>
         </section>
+        <UtterancePopover />
     </div>
     <div v-else>loading...</div>
 </template>
@@ -19,6 +20,7 @@ import { storeToRefs } from 'pinia';
 import { ref, watch } from 'vue';
 import Speaker from '@/transcription-editor/components/molecules/Speaker.vue'
 import { useProjectConfig } from '@/stores/projectConfig';
+import UtterancePopover from '@/transcription-editor/components/molecules/UtterancePopover.vue';
 
 const projectConfig = useProjectConfig()
 const { configuration } = storeToRefs(projectConfig)

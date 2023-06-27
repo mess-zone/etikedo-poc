@@ -1,10 +1,10 @@
 <template>
-    <div class="popover">
+    <div class="popover" v-if="phrase">
         <div class="popover-box">
+            {{ mode }}
             <button v-if="mode == 'EDIT'" @click="handleExitClick">salvar</button>
             <button v-else @click="handleEditClick">edit</button>
             <input type="number" v-model="editSpeaker" :disabled="mode != 'EDIT'" /> 
-            ({{ props.phrase.data.start }} / {{ props.phrase.data.end }})
             <div class="time-widget" v-if="mode == 'EDIT'">
                 <TimestampSelector v-model="editStart" :min="0" :step="timeStep"/>
                 <TimestampSelector v-model="editEnd" :min="editStart" :step="timeStep"/>
@@ -17,37 +17,46 @@
                 <option>BLOCK</option>
             </select>
             <button v-if="mode == 'EDIT'" @click="handleDeleteClick">delete</button>
+            <button @click="handleCancelClick">x</button>
         </div>
     </div>
 </template>
 <script setup lang="ts">
-import { computed, ref, toRefs, watch } from 'vue';
-import { TranscriptionCue } from '@/shared/media/composables/track';
+import { computed, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import TimestampSelector from '@/transcription-editor/components/atoms/TimestampSelector.vue';
+import { useMediaStore } from '@/shared/media/stores/media';
+import { useSelectedUtteranceStore } from '@/transcription-editor/stores/selectedUtterance';
+import { LayoutType } from '@/shared/media/composables/track';
 
+const mediaStore = useMediaStore()
 
-const emit = defineEmits(['enter-edit-mode', 'exit-edit-mode', 'deleted-cue'])
+const selectedUtteranceStore = useSelectedUtteranceStore()
+const { editMode: mode, selectedUtteranceCue: phrase } = storeToRefs(selectedUtteranceStore)
 
-const props = defineProps<{
-    phrase: TranscriptionCue,
-    mode: ModeType,
-}>()
+// const emit = defineEmits(['enter-edit-mode', 'exit-edit-mode', 'deleted-cue'])
 
-const { phrase } = toRefs(props) // ref is synced with 'props'
+const editText = ref('')
+const editStart = ref(0)
+const editEnd = ref(0)
+const editLayout = ref('INLINE')
+const editSpeaker = ref(-1)
 
-const editText = ref(phrase.value.data.text)
-const editStart = ref(phrase.value.data.start)
-const editEnd = ref(phrase.value.data.end)
-const editLayout = ref(phrase.value.data.layout)
-const editSpeaker = ref(phrase.value.data.speaker)
-
-watch(props.phrase, () => {
+watch(phrase, () => {
     // console.log('a phrase foi alterada?', value)
-    editText.value = phrase.value.data.text
-    editStart.value = phrase.value.data.start
-    editEnd.value = phrase.value.data.end
-    editLayout.value = phrase.value.data.layout
-    editSpeaker.value = phrase.value.data.speaker
+    if(phrase.value) {
+        editText.value = phrase.value.data.text
+        editStart.value = phrase.value.data.start
+        editEnd.value = phrase.value.data.end
+        editLayout.value = phrase.value.data.layout
+        editSpeaker.value = phrase.value.data.speaker
+    } else {
+        editText.value = ''
+        editStart.value = 0
+        editEnd.value = 0
+        editLayout.value = 'INLINE'
+        editSpeaker.value = -1
+    }
 })
 
 const timeStep = 0.5
@@ -78,7 +87,9 @@ function formatDuration(durationInSeconds: number): string {
     return `${formattedHours}:${formattedMinutes}:${formattedSeconds}.${formattedMilliseconds}`;
 }
 
-export type ModeType = 'PREVIEW' | 'EDIT' | 'DISABLED'
+function handleCancelClick() {
+    cancel()
+}
 
 function handleExitClick() {
     exitEditingMode()
@@ -89,22 +100,27 @@ function handleEditClick() {
 }
 
 function handleDeleteClick() {
-    emit('deleted-cue', props.phrase)
+    mediaStore.removeCue(phrase.value)
+    // emit('deleted-cue', phrase.value)
+    selectedUtteranceStore.unselect()
+}
+
+function cancel() {
+    selectedUtteranceStore.unselect()
 }
 
 function exitEditingMode(){
-    emit('exit-edit-mode', {
-        id: props.phrase.id,
-        text: editText.value,
-        start: editStart.value,
-        end: editEnd.value,
-        layout: editLayout.value,
-        speaker: editSpeaker.value,
-    })
+    mediaStore.updateText(phrase.value, editText)
+    mediaStore.updateStartTime(phrase.value, editStart)
+    mediaStore.updateEndTime(phrase.value, editEnd)
+    mediaStore.updateLayout(phrase.value, editLayout.value as LayoutType)
+    mediaStore.updateSpeaker(phrase.value, editSpeaker)
+
+    selectedUtteranceStore.setEditMode('PREVIEW')
 }
 
 function enterEditMode() {
-    emit('enter-edit-mode')
+    selectedUtteranceStore.setEditMode('EDIT')
 }
 
 </script>
@@ -112,12 +128,14 @@ function enterEditMode() {
 <style scoped>
 
 .popover {
-    position: absolute;
-    bottom: 100%;
+    position: fixed;
+    top: 300px;
+    /* position: absolute;
+    bottom: 100%; */
     left: 0;
     z-index: 1;
     padding-bottom: 0.4em;
-    display: none;
+    display: block;
     min-width: max-content;
     color: white;
     user-select: none;
@@ -132,9 +150,9 @@ function enterEditMode() {
     align-items: center;
 }
 
-.utterance.EDIT .popover,
+/* .utterance.EDIT .popover,
 .utterance:hover .popover {
     display: block;
-}
+} */
 
 </style>

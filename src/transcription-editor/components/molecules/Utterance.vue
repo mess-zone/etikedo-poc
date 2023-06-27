@@ -1,37 +1,40 @@
 <template>
-    <span class="utterance" :class="[ mode, phrase.data.layout, phrase.isActive ? 'is-active' : '' ]" @click="handleUtteranceClick">
+    <span ref="utteranceRef" class="utterance" :class="[ mode, phrase.data.layout, phrase.isActive ? 'is-active' : '' ]" @click="handleUtteranceClick">
         <contenteditable class="editable" tag="span" :contenteditable="mode == 'EDIT'" v-model="editText" :no-nl="true" :no-html="true" @returned="keyEnterPressed" />
-        <UtterancePopover :mode="mode" :phrase="phrase" @enter-edit-mode="enterEditMode" @exit-edit-mode="exitEditingMode" @deleted-cue="handleDeleteClick" />
     </span>
 </template>
 <script setup lang="ts">
 import { MaybeRefOrGetter, Ref, computed, inject, ref, toRefs, watch } from 'vue';
 import contenteditable from 'vue-contenteditable'
 import { TranscriptionCue, UtteranceData } from '@/shared/media/composables/track';
-import UtterancePopover from '@/transcription-editor/components/molecules/UtterancePopover.vue';
 import { useMediaStore } from '@/shared/media/stores/media';
+import { useSelectedUtteranceStore } from '@/transcription-editor/stores/selectedUtterance';
 
 const mediaStore = useMediaStore()
+
+const selectedUtteranceStore = useSelectedUtteranceStore()
 
 const props = defineProps<{
     phrase: TranscriptionCue,
 }>()
 
+const utteranceRef = ref(null)
+
 const { phrase } = toRefs(props) // ref 'text' is synced with 'props'
 
 const editText = ref(phrase.value.data.text)
-const editStart = ref(phrase.value.data.start)
-const editEnd = ref(phrase.value.data.end)
-const editLayout = ref(phrase.value.data.layout)
-const editSpeaker = ref(phrase.value.data.speaker)
+// const editStart = ref(phrase.value.data.start)
+// const editEnd = ref(phrase.value.data.end)
+// const editLayout = ref(phrase.value.data.layout)
+// const editSpeaker = ref(phrase.value.data.speaker)
 
 watch(props.phrase, (value) => {
     // console.log('a phrase foi alterada?', value)
     editText.value = phrase.value.data.text
-    editStart.value = phrase.value.data.start
-    editEnd.value = phrase.value.data.end
-    editLayout.value = phrase.value.data.layout
-    editSpeaker.value = phrase.value.data.speaker
+    // editStart.value = phrase.value.data.start
+    // editEnd.value = phrase.value.data.end
+    // editLayout.value = phrase.value.data.layout
+    // editSpeaker.value = phrase.value.data.speaker
 })
 
 
@@ -52,9 +55,9 @@ watch(speakerMode, () => {
     }
 })
 
-watch(editStart, (newValue, oldValue) => {
-    editEnd.value = editEnd.value + newValue - oldValue
-})
+// watch(editStart, (newValue, oldValue) => {
+//     editEnd.value = editEnd.value + newValue - oldValue
+// })
 
 
 export type ModeType = 'PREVIEW' | 'EDIT' | 'DISABLED'
@@ -88,7 +91,8 @@ function enterEditMode() {
 }
 
 function handleUtteranceClick() {
-    console.log('utterance click')
+    selectedUtteranceStore.select(phrase, utteranceRef)
+    console.log('utterance click', utteranceRef.value.getBoundingClientRect())
     mediaStore.goToTime(phrase.value.data.start)
 }
 
