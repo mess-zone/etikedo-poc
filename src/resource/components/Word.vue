@@ -21,6 +21,7 @@ const { word } = toRefs(props)
 } 
 
 .word:hover {
-    background-color: aquamarine;
+    background-color: rgba(127, 255, 212, 0.5);
+    border-radius: .25em;
 }
 </style>
