@@ -1,22 +1,32 @@
 import { TranscriptionCue } from "@/shared/media/composables/track";
 import { defineStore } from "pinia";
-import { MaybeRefOrGetter, ref, toRef, toValue } from "vue";
+import { MaybeRefOrGetter, computed, ref, toRef, toValue } from "vue";
 
 export type ModeType = 'PREVIEW' | 'EDIT' | 'DISABLED'
 
-const editMode = ref('PREVIEW')
-const selectedUtterance = ref<HTMLElement>(null)
-const selectedUtteranceCue = ref<TranscriptionCue>(null)
 
 export const useSelectedUtteranceStore = defineStore('selectedUtterance', () => {
 
-    function select(cue: MaybeRefOrGetter<TranscriptionCue> ,el: MaybeRefOrGetter<HTMLElement>) {
-        selectedUtterance.value = toValue(el)
+    const editMode = ref('PREVIEW')
+    const selectedUtteranceEl = ref<HTMLElement>(null)
+    const selectedUtteranceCue = ref<TranscriptionCue>(null)
+
+    const top = computed(() => {
+        return (selectedUtteranceEl.value?.offsetTop || 0)
+        // return (selectedUtteranceEl.value?.getBoundingClientRect().top || 0)
+    })
+    
+    const left = computed(() => {
+        return (selectedUtteranceEl.value?.getBoundingClientRect().left || 0)
+    })
+    
+    function select(cue: MaybeRefOrGetter<TranscriptionCue>, el: MaybeRefOrGetter<HTMLElement>) {
+        selectedUtteranceEl.value = toValue(el)
         selectedUtteranceCue.value = toValue(cue)
     }
 
     function unselect() {
-        selectedUtterance.value = null
+        selectedUtteranceEl.value = null
         selectedUtteranceCue.value = null
         setEditMode('PREVIEW')
     }
@@ -28,8 +38,10 @@ export const useSelectedUtteranceStore = defineStore('selectedUtterance', () => 
     return {
         editMode,
         setEditMode,
-        selectedUtterance,
+        selectedUtteranceEl,
         selectedUtteranceCue,
+        top,
+        left,
         select,
         unselect,
     }

@@ -9,8 +9,8 @@
         </header>
         <section v-if="loadedTrack && loadedTrack.sortedUtterances">
             <Speaker v-for="speaker in loadedTrack.diarizedUtterances" :key="speaker[0].id" :phrases="speaker"></Speaker>
+            <UtterancePopover />
         </section>
-        <UtterancePopover />
     </div>
     <div v-else>loading...</div>
 </template>
@@ -161,5 +161,9 @@ async function handleSaveTranscription() {
         overflow-y: auto;
         overflow-x: hidden;
         padding: 20px 0;
+        /**
+        position relative needed to align UtterancePopover to top-left of selected Utterance 
+        */
+        position: relative;
     }
 </style>

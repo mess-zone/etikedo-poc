@@ -1,7 +1,6 @@
 <template>
-    <div class="popover" v-if="phrase">
+    <div class="popover" v-if="phrase" :style="popupPosition">
         <div class="popover-box">
-            {{ mode }}
             <button v-if="mode == 'EDIT'" @click="handleExitClick">salvar</button>
             <button v-else @click="handleEditClick">edit</button>
             <input type="number" v-model="editSpeaker" :disabled="mode != 'EDIT'" /> 
@@ -32,7 +31,7 @@ import { LayoutType } from '@/shared/media/composables/track';
 const mediaStore = useMediaStore()
 
 const selectedUtteranceStore = useSelectedUtteranceStore()
-const { editMode: mode, selectedUtteranceCue: phrase } = storeToRefs(selectedUtteranceStore)
+const { editMode: mode, selectedUtteranceCue: phrase, top, left } = storeToRefs(selectedUtteranceStore)
 
 const editText = ref('')
 const editStart = ref(0)
@@ -85,6 +84,12 @@ function formatDuration(durationInSeconds: number): string {
     return `${formattedHours}:${formattedMinutes}:${formattedSeconds}.${formattedMilliseconds}`;
 }
 
+const popupPosition = computed(() => ({
+    top: top.value + 'px',
+    left: left.value + 'px',
+}))
+
+
 function handleCancelClick() {
     cancel()
 }
@@ -114,7 +119,8 @@ function exitEditingMode(){
     mediaStore.updateLayout(phrase.value, editLayout.value as LayoutType)
     mediaStore.updateSpeaker(phrase.value, editSpeaker)
 
-    selectedUtteranceStore.setEditMode('PREVIEW')
+    // selectedUtteranceStore.setEditMode('PREVIEW')
+    selectedUtteranceStore.unselect()
 }
 
 function enterEditMode() {
@@ -126,11 +132,7 @@ function enterEditMode() {
 <style scoped>
 
 .popover {
-    position: fixed;
-    top: 300px;
-    /* position: absolute;
-    bottom: 100%; */
-    left: 0;
+    position: absolute;
     z-index: 1;
     padding-bottom: 0.4em;
     display: block;
@@ -138,6 +140,7 @@ function enterEditMode() {
     color: white;
     user-select: none;
     font-size: 1rem;
+    transform: translateY(-100%);
 }
 
 .popover-box {
