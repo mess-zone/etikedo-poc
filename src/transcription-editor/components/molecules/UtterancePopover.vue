@@ -34,8 +34,6 @@ const mediaStore = useMediaStore()
 const selectedUtteranceStore = useSelectedUtteranceStore()
 const { editMode: mode, selectedUtteranceCue: phrase } = storeToRefs(selectedUtteranceStore)
 
-// const emit = defineEmits(['enter-edit-mode', 'exit-edit-mode', 'deleted-cue'])
-
 const editText = ref('')
 const editStart = ref(0)
 const editEnd = ref(0)

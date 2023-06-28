@@ -3,31 +3,19 @@
         <div class="actor">
             <div class="avatar" :style="avatarStyle">{{ phrases[0].data.speaker }}</div>
         </div>
-        <div class="container-utterances" :class="[speakerMode]">
+        <div class="container-utterances">
             <Utterance v-for="phrase in phrases" :key="phrase.id" :phrase="phrase"></Utterance>
         </div>
     </div>
 </template>
 <script setup lang="ts">
-import { computed, provide, ref } from 'vue';
+import { computed } from 'vue';
 import { TranscriptionCue } from '@/shared/media/composables/track';
 import Utterance from '@/transcription-editor/components/molecules/Utterance.vue';
 
 const props = defineProps<{
     phrases: TranscriptionCue[]
 }>()
-
-const speakerMode = ref<"PREVIEW" | "EDIT">('PREVIEW')
-
-
-function updateSpeakerMode(mode: "PREVIEW" | "EDIT") {
-    speakerMode.value = mode
-}
-
-provide('speaker', {
-    speakerMode,
-    updateSpeakerMode,
-})
 
 const avatarStyle = computed(() => {
     return {
@@ -90,13 +78,6 @@ function stringToHexColor(str: string): string {
         /* background-color: bisque; */
 
         margin-top: 0.25em;
-    }
-
-    .container-utterance.PREVIEW {
-        /* background-color: yellow; */
-    }
-    .container-utterance.EDIT {
-        /* background-color: rgb(255, 0, 43); */
     }
 
     .container-utterance :first-child {

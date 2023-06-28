@@ -4,15 +4,17 @@
     </span>
 </template>
 <script setup lang="ts">
-import { MaybeRefOrGetter, Ref, computed, inject, ref, toRefs, watch } from 'vue';
+import { ref, toRefs, watch } from 'vue';
 import contenteditable from 'vue-contenteditable'
-import { TranscriptionCue, UtteranceData } from '@/shared/media/composables/track';
+import { TranscriptionCue } from '@/shared/media/composables/track';
 import { useMediaStore } from '@/shared/media/stores/media';
-import { useSelectedUtteranceStore } from '@/transcription-editor/stores/selectedUtterance';
+import { ModeType, useSelectedUtteranceStore } from '@/transcription-editor/stores/selectedUtterance';
+import { storeToRefs } from 'pinia';
 
 const mediaStore = useMediaStore()
 
 const selectedUtteranceStore = useSelectedUtteranceStore()
+const { editMode, selectedUtteranceCue } = storeToRefs(selectedUtteranceStore)
 
 const props = defineProps<{
     phrase: TranscriptionCue,
@@ -23,31 +25,16 @@ const utteranceRef = ref(null)
 const { phrase } = toRefs(props) // ref 'text' is synced with 'props'
 
 const editText = ref(phrase.value.data.text)
-// const editStart = ref(phrase.value.data.start)
-// const editEnd = ref(phrase.value.data.end)
-// const editLayout = ref(phrase.value.data.layout)
-// const editSpeaker = ref(phrase.value.data.speaker)
 
 watch(props.phrase, (value) => {
-    // console.log('a phrase foi alterada?', value)
     editText.value = phrase.value.data.text
-    // editStart.value = phrase.value.data.start
-    // editEnd.value = phrase.value.data.end
-    // editLayout.value = phrase.value.data.layout
-    // editSpeaker.value = phrase.value.data.speaker
 })
 
-
-// TODO usar props e emit para comunicação entre Speaker e Utterance
-const { speakerMode, updateSpeakerMode } = inject<{ 
-    speakerMode: Ref<"PREVIEW" | "EDIT">, 
-    updateSpeakerMode: (mode: MaybeRefOrGetter<"PREVIEW" | "EDIT">) => void,
- }>('speaker')
-
-
-watch(speakerMode, () => {
-    if(speakerMode.value == 'EDIT') {
-        if(mode.value != 'EDIT') {
+watch(editMode, () => {
+    if(editMode.value == 'EDIT') {
+        if(selectedUtteranceCue.value.id == props.phrase.id) {
+            mode.value = editMode.value as ModeType
+        } else {
             mode.value = 'DISABLED'
         }
     } else {
@@ -55,39 +42,11 @@ watch(speakerMode, () => {
     }
 })
 
-// watch(editStart, (newValue, oldValue) => {
-//     editEnd.value = editEnd.value + newValue - oldValue
-// })
-
-
-export type ModeType = 'PREVIEW' | 'EDIT' | 'DISABLED'
-
 const mode = ref<ModeType>('PREVIEW') 
 
 function keyEnterPressed() {
     mediaStore.updateText(props.phrase, editText)
-    updateSpeakerMode('PREVIEW')
-}
-
-function handleDeleteClick() {
-    mediaStore.removeCue(props.phrase)
-    updateSpeakerMode('PREVIEW')
-}
-
-function exitEditingMode(e: UtteranceData){
-    console.log('EXIT EDIT MODE', e)
-    mediaStore.updateText(props.phrase, e.text)
-    mediaStore.updateStartTime(props.phrase, e.start)
-    mediaStore.updateEndTime(props.phrase, e.end)
-    mediaStore.updateLayout(props.phrase, e.layout)
-    mediaStore.updateSpeaker(props.phrase, e.speaker)
-    updateSpeakerMode('PREVIEW')
-}
-
-function enterEditMode() {
-    console.log('entrou no mode de edição')
-    mode.value = 'EDIT'
-    updateSpeakerMode('EDIT')
+    selectedUtteranceStore.unselect()
 }
 
 function handleUtteranceClick() {
