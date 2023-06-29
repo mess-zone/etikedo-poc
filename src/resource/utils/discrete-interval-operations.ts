@@ -49,6 +49,11 @@ export function difference(intervalA: Interval, intervalB: Interval): Interval[]
 }
 
 
+/**
+ * Retona os conjuntos A-B, A^B, B-A
+ * @param intervalA 
+ * @param intervalB 
+ */
 export function split(intervalA: Interval, intervalB: Interval): Interval[] {
     return [
         ...difference(intervalA, intervalB), 

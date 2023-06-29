@@ -1,4 +1,4 @@
-import { Interval, union, intersection, difference, split } from '../src/resource/utils/interval-operations'
+import { Interval, union, intersection, difference, split } from '../src/resource/utils/discrete-interval-operations'
 
 describe('union', () => {
   // Caso 1: Intervalos não se sobrepõem
