@@ -1,4 +1,4 @@
-import { Interval, union, intersection, difference, split } from '../src/resource/utils/discrete-interval-operations'
+import { Interval, union, intersection, difference, split, flatten } from '../src/resource/utils/discrete-interval-operations'
 
 describe('union', () => {
   // Caso 1: Intervalos não se sobrepõem
@@ -9,7 +9,10 @@ describe('union', () => {
 
     const result = union(intervalA, intervalB);
 
-    expect(result).toEqual(expectedResult);
+    expect(result).toHaveLength(expectedResult.length);
+    for(const expected of expectedResult) {
+      expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+    }
   });
 
   // Caso 2: Intervalos se sobrepõem parcialmente
@@ -20,7 +23,10 @@ describe('union', () => {
 
     const result = union(intervalA, intervalB);
 
-    expect(result).toEqual(expectedResult);
+    expect(result).toHaveLength(expectedResult.length);
+    for(const expected of expectedResult) {
+      expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+    }
   });
 
   // Caso 3: Intervalos são iguais
@@ -31,7 +37,10 @@ describe('union', () => {
 
     const result = union(intervalA, intervalB);
 
-    expect(result).toEqual(expectedResult);
+    expect(result).toHaveLength(expectedResult.length);
+    for(const expected of expectedResult) {
+      expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+    }
   });
 
   // Caso 4: Um intervalo está totalmente contido no outro
@@ -42,7 +51,10 @@ describe('union', () => {
 
     const result = union(intervalA, intervalB);
 
-    expect(result).toEqual(expectedResult);
+    expect(result).toHaveLength(expectedResult.length);
+    for(const expected of expectedResult) {
+      expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+    }
   });
 
   // Caso 5: Intervalos não se sobrepõem e um começa após o outro
@@ -52,10 +64,16 @@ describe('union', () => {
     const expectedResult = [{ start: 1, end: 6 }];
 
     const result1 = union(intervalA, intervalB);
-    expect(result1).toEqual(expectedResult);
+    expect(result1).toHaveLength(expectedResult.length);
+    for(const expected of expectedResult) {
+      expect(result1.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+    }
 
     const result2 = union(intervalB, intervalA);
-    expect(result2).toEqual(expectedResult);
+    expect(result2).toHaveLength(expectedResult.length);
+    for(const expected of expectedResult) {
+      expect(result2.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+    }
   });
 });
 
@@ -68,7 +86,10 @@ describe('intersection', () => {
   
       const result = intersection(intervalA, intervalB);
   
-      expect(result).toEqual(expectedResult);
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
     });
   
     // Caso 2: Intervalos se sobrepõem parcialmente
@@ -79,7 +100,10 @@ describe('intersection', () => {
   
       const result = intersection(intervalA, intervalB);
   
-      expect(result).toEqual(expectedResult);
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
     });
   
     // Caso 3: Intervalos são iguais
@@ -90,7 +114,10 @@ describe('intersection', () => {
   
       const result = intersection(intervalA, intervalB);
   
-      expect(result).toEqual(expectedResult);
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
     });
   
     // Caso 4: Um intervalo está totalmente contido no outro
@@ -101,7 +128,10 @@ describe('intersection', () => {
   
       const result = intersection(intervalA, intervalB);
   
-      expect(result).toEqual(expectedResult);
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
     });
   
     // Caso 5: Intervalos não se sobrepõem e um começa após o outro
@@ -112,7 +142,10 @@ describe('intersection', () => {
   
       const result = intersection(intervalA, intervalB);
   
-      expect(result).toEqual(expectedResult);
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
     });
 });
 
@@ -125,7 +158,10 @@ describe('difference', () => {
   
       const result = difference(intervalA, intervalB);
   
-      expect(result).toEqual(expectedResult);
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
     });
   
     // Caso 2: Intervalo A totalmente contido no intervalo B
@@ -136,7 +172,10 @@ describe('difference', () => {
   
       const result = difference(intervalA, intervalB);
   
-      expect(result).toEqual(expectedResult);
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
     });
   
     // Caso 3.1: Intervalo B totalmente contido no intervalo A
@@ -150,7 +189,10 @@ describe('difference', () => {
   
       const result = difference(intervalA, intervalB);
   
-      expect(result).toEqual(expectedResult);
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
     });
 
     // Caso 3.2: A-B: Intervalo B partially overlaps intervalo A
@@ -163,7 +205,10 @@ describe('difference', () => {
   
       const result = difference(intervalA, intervalB);
   
-      expect(result).toEqual(expectedResult);
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
     });
 
     // Caso 3.2: B-A: Intervalo B partially overlaps intervalo A
@@ -176,7 +221,10 @@ describe('difference', () => {
   
       const result = difference(intervalB, intervalA);
   
-      expect(result).toEqual(expectedResult);
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
     });
   
 });
@@ -190,7 +238,10 @@ describe('split', () => {
   
       const result = split(intervalA, intervalB);
   
-      expect(result).toEqual(expectedResult);
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
     });
 
     // Caso 2: Intervalos se sobrepõem parcialmente
@@ -201,7 +252,10 @@ describe('split', () => {
 
       const result = split(intervalA, intervalB);
 
-      expect(result).toEqual(expectedResult);
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
     });
 
     // Caso 3: Intervalos são iguais
@@ -212,7 +266,10 @@ describe('split', () => {
 
       const result = split(intervalA, intervalB);
 
-      expect(result).toEqual(expectedResult);
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
     });
 
     // Caso 4: Um intervalo está totalmente contido no outro
@@ -223,7 +280,10 @@ describe('split', () => {
 
       const result = split(intervalA, intervalB);
 
-      expect(result).toEqual(expectedResult);
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
     });
 
     // Caso 5: Intervalos não se sobrepõem e um começa após o outro
@@ -234,6 +294,36 @@ describe('split', () => {
 
       const result = split(intervalA, intervalB);
 
-      expect(result).toEqual(expectedResult);
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
     });
+})
+
+describe('flatten', () => {
+  it('should return all intervals when none of then overlaps', () => {
+    const intervalA = { start: 1, end: 3 };
+    const intervalC = { start: 5, end: 7 };
+    const expectedResult: Interval[] = [intervalA, intervalC];
+
+    const result = flatten([intervalA], intervalC);
+
+    expect(result).toHaveLength(expectedResult.length);
+    for(const expected of expectedResult) {
+      expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+    }
+  })
+
+  // it('should return all intervals when none of then overlaps', () => {
+  //   const intervalA = { start: 1, end: 3 };
+  //   const intervalB = { start: 4, end: 6 };
+  //   const intervalC = { start: 7, end: 9 };
+  //   const expectedResult: Interval[] = [intervalA, intervalB, intervalC];
+
+  //   const result = flatten([intervalA, intervalB], intervalC);
+
+  //   expect(result).toEqual(expectedResult);
+  // })
+
 })

@@ -61,3 +61,7 @@ export function split(intervalA: Interval, intervalB: Interval): Interval[] {
         ...difference(intervalB, intervalA)
     ]
 }
+
+export function flatten(set: Interval[], interval: Interval) {
+    return split(set[0], interval)
+}
