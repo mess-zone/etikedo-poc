@@ -426,4 +426,46 @@ describe('flatten', () => {
 
   })
 
+  describe('C starts inside A', () => {
+    it('C ends inside A (C is subset of A)', () => {
+      const intervalC = { start: 4, end: 7 };
+      const intervalA = { start: 2, end: 9 };
+      const expectedResult: Interval[] = [{ start: 2, end: 4 }, { start: 4, end: 7 }, { start: 7, end: 9 }];
+  
+      const result = flatten([intervalA], intervalC);
+  
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
+    })
+
+    it('C end equal A end (C is subset of A)', () => {
+      const intervalC = { start: 4, end: 9 };
+      const intervalA = { start: 2, end: 9 };
+      const expectedResult: Interval[] = [{ start: 2, end: 4 }, { start: 4, end: 9 }];
+  
+      const result = flatten([intervalA], intervalC);
+  
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
+    })
+
+    it('C end after A end (overlapping)', () => {
+      const intervalC = { start: 4, end: 9 };
+      const intervalA = { start: 2, end: 7 };
+      const expectedResult: Interval[] = [{ start: 2, end: 4 }, { start: 4, end: 7 }, { start: 7, end: 9 }];
+  
+      const result = flatten([intervalA], intervalC);
+  
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
+    })
+
+  })
+
 })
