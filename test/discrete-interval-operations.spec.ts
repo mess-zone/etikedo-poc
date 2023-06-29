@@ -468,4 +468,32 @@ describe('flatten', () => {
 
   })
 
+  describe('C start equal A end', () => {
+    it('C end equal A end (C inside A)', () => {
+      const intervalC = { start: 4, end: 6 };
+      const intervalA = { start: 2, end: 6 };
+      const expectedResult: Interval[] = [{ start: 2, end: 4 }, { start: 4, end: 6 }];
+  
+      const result = flatten([intervalA], intervalC);
+  
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
+    })
+
+    it('C end after A (small overlapping)', () => {
+      const intervalC = { start: 4, end: 8 };
+      const intervalA = { start: 2, end: 5 };
+      const expectedResult: Interval[] = [{ start: 2, end: 4 }, { start: 4, end: 5 }, { start: 5, end: 8 }];
+  
+      const result = flatten([intervalA], intervalC);
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
+    })
+
+  })
+
 })

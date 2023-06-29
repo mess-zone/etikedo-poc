@@ -109,6 +109,15 @@ export function flatten(flattenedSet: Interval[], interval: Interval): Interval[
                 results.push({ start: c.start, end: subset.end}) 
                 results.push({ start: subset.end, end: c.end}) 
             }
+        } else if(c.start == subset.end - 1) {
+            if(c.end <= subset.end) {
+                results.push({ start: subset.start, end: c.start})
+                results.push({ start: c.start, end: subset.end}) 
+            } else if(c.end > subset.end) {
+                results.push({ start: subset.start, end: c.start})
+                results.push({ start: c.start, end: subset.end}) 
+                results.push({ start: subset.end, end: c.end}) 
+            }
         }
 
         
