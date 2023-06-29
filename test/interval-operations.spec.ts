@@ -215,9 +215,9 @@ describe('split', () => {
 
     // Caso 4: Um intervalo está totalmente contido no outro
     it('should return 2 intervals (A-B, B) when one interval is completely contained within the other', () => {
-      const intervalA = { start: 2, end: 5 };
-      const intervalB = { start: 3, end: 8 };
-      const expectedResult = [{ start: 2, end: 2 }, { start: 3, end: 5 }, { start: 6, end: 8 }];
+      const intervalA = { start: 2, end: 8 };
+      const intervalB = { start: 3, end: 6 };
+      const expectedResult = [{ start: 2, end: 2 }, { start: 7, end: 8 }, { start: 3, end: 6 }];
 
       const result = split(intervalA, intervalB);
 

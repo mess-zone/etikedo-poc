@@ -50,9 +50,9 @@ export function difference(intervalA: Interval, intervalB: Interval): Interval[]
 
 
 export function split(intervalA: Interval, intervalB: Interval): Interval[] {
-    const intersec = intersection(intervalA, intervalB)
-    const AminusB = difference(intervalA, intervalB)
-    const BminusA = difference(intervalB, intervalA)
-
-    return [...AminusB, ...intersec, ...BminusA]
+    return [
+        ...difference(intervalA, intervalB), 
+        ...intersection(intervalA, intervalB), 
+        ...difference(intervalB, intervalA)
+    ]
 }
