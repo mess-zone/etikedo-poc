@@ -6,7 +6,7 @@ export interface Interval {
 export function union(intervalA: Interval, intervalB: Interval): Interval[] {
     const result: Interval[] = [];
 
-    if (intervalA.end < intervalB.start || intervalB.end < intervalA.start) {
+    if (intervalA.end < (intervalB.start - 1) || intervalB.end < (intervalA.start - 1)) {
         result.push(intervalA, intervalB); // Os intervalos não se sobrepõem
     } else {
         const start = Math.min(intervalA.start, intervalB.start);

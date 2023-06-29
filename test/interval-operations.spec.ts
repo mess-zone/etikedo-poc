@@ -46,14 +46,16 @@ describe('union', () => {
   });
 
   // Caso 5: Intervalos não se sobrepõem e um começa após o outro
-  it('should return both intervals when they do not overlap and one starts after the other', () => {
+  it('should return one intervals when they do not overlap and one starts after the other', () => {
     const intervalA = { start: 1, end: 3 };
     const intervalB = { start: 4, end: 6 };
-    const expectedResult = [intervalA, intervalB];
+    const expectedResult = [{ start: 1, end: 6 }];
 
-    const result = union(intervalA, intervalB);
+    const result1 = union(intervalA, intervalB);
+    expect(result1).toEqual(expectedResult);
 
-    expect(result).toEqual(expectedResult);
+    const result2 = union(intervalB, intervalA);
+    expect(result2).toEqual(expectedResult);
   });
 });
 
