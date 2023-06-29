@@ -63,7 +63,7 @@ describe('intersection', () => {
     it('should return null when the intervals do not overlap', () => {
       const interval1 = { start: 1, end: 3 };
       const interval2 = { start: 5, end: 7 };
-      const expectedResult: Interval = null;
+      const expectedResult: Interval[] = [];
   
       const result = intersection(interval1, interval2);
   
@@ -74,7 +74,7 @@ describe('intersection', () => {
     it('should return the intersection interval when the intervals partially overlap', () => {
       const interval3 = { start: 1, end: 5 };
       const interval4 = { start: 3, end: 7 };
-      const expectedResult = { start: 3, end: 5 };
+      const expectedResult = [{ start: 3, end: 5 }];
   
       const result = intersection(interval3, interval4);
   
@@ -85,7 +85,7 @@ describe('intersection', () => {
     it('should return the interval itself when the intervals are equal', () => {
       const interval5 = { start: 0, end: 10 };
       const interval6 = { start: 0, end: 10 };
-      const expectedResult = { start: 0, end: 10 };
+      const expectedResult = [{ start: 0, end: 10 }];
   
       const result = intersection(interval5, interval6);
   
@@ -96,7 +96,7 @@ describe('intersection', () => {
     it('should return the smaller interval when one interval is completely contained within the other', () => {
       const interval7 = { start: 2, end: 8 };
       const interval8 = { start: 3, end: 7 };
-      const expectedResult = { start: 3, end: 7 };
+      const expectedResult = [{ start: 3, end: 7 }];
   
       const result = intersection(interval7, interval8);
   
@@ -107,7 +107,7 @@ describe('intersection', () => {
     it('should return null when the intervals do not overlap and one starts after the other', () => {
       const interval9 = { start: 1, end: 3 };
       const interval10 = { start: 4, end: 6 };
-      const expectedResult: Interval = null;
+      const expectedResult: Interval[] = [];
   
       const result = intersection(interval9, interval10);
   
@@ -128,7 +128,7 @@ describe('difference', () => {
     });
   
     // Caso 2: Intervalo A totalmente contido no intervalo B
-    it('should return intervalA when intervalA is fully contained within intervalB', () => {
+    it('should return null when intervalA is fully contained within intervalB', () => {
       const interval3 = { start: 1, end: 5 };
       const interval4 = { start: 0, end: 10 };
       const expectedResult: Interval[] = [];

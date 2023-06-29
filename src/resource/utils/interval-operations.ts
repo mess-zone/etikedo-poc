@@ -17,15 +17,15 @@ export function union(intervalA: Interval, intervalB: Interval): Interval[] {
     return result;
 }
 
-export function intersection(intervalA: Interval, intervalB: Interval): Interval | null {
+export function intersection(intervalA: Interval, intervalB: Interval): Interval[] {
     const start = Math.max(intervalA.start, intervalB.start);
     const end = Math.min(intervalA.end, intervalB.end);
 
     if (start <= end) {
-        return { start, end };
+        return [{ start, end }];
     }
 
-    return null;
+    return [];
 }
 
 export function difference(intervalA: Interval, intervalB: Interval): Interval[] {
