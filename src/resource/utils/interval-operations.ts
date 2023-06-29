@@ -35,15 +35,28 @@ export function difference(intervalA: Interval, intervalB: Interval): Interval[]
         result.push(intervalA); // Não há sobreposição, intervalA é totalmente mantido
     } else if (intervalA.start < intervalB.start && intervalA.end > intervalB.end) {
         // intervalB está completamente contido em intervalA, divide intervalA em duas partes
-        result.push({ start: intervalA.start, end: intervalB.start });
-        result.push({ start: intervalB.end, end: intervalA.end });
+        result.push({ start: intervalA.start, end: intervalB.start - 1 });
+        result.push({ start: intervalB.end + 1, end: intervalA.end });
     } else if (intervalA.start < intervalB.start) {
         // intervalA começa antes de intervalB e se sobrepõe parcialmente, adiciona parte anterior a intervalB
-        result.push({ start: intervalA.start, end: intervalB.start });
+        result.push({ start: intervalA.start, end: intervalB.start - 1 });
     } else if (intervalA.end > intervalB.end) {
         // intervalA termina depois de intervalB e se sobrepõe parcialmente, adiciona parte posterior a intervalB
-        result.push({ start: intervalB.end, end: intervalA.end });
+        result.push({ start: intervalB.end + 1, end: intervalA.end });
     }
 
     return result;
+}
+
+
+export function split(intervalA: Interval, intervalB: Interval): Interval[] {
+    const intersec = intersection(intervalA, intervalB)
+    const AminusB = difference(intervalA, intervalB)
+    const BminusA = difference(intervalB, intervalA)
+
+    if(intersec.length == 0) {
+        return [intervalA, intervalB]
+    } else {
+        return [...AminusB, ...intersec, ...BminusA]
+    }
 }
