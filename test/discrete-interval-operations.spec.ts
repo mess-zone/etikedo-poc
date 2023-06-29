@@ -318,10 +318,10 @@ describe('flatten', () => {
       }
     })
 
-    it('C end equal to A start (small overlaping)', () => {
+    it('C end equal to A start (no overlaping)', () => {
       const intervalC = { start: 1, end: 4 };
       const intervalA = { start: 4, end: 7 };
-      const expectedResult: Interval[] = [{ start: 1, end: 3 }, { start: 4, end: 4 }, { start: 5, end: 7 }];
+      const expectedResult: Interval[] = [{ start: 1, end: 4 }, { start: 4, end: 7 }];
   
       const result = flatten([intervalA], intervalC);
   
@@ -334,7 +334,7 @@ describe('flatten', () => {
     it('C ends inside A (partial overlaping)', () => {
       const intervalC = { start: 1, end: 5 };
       const intervalA = { start: 3, end: 7 };
-      const expectedResult: Interval[] = [{ start: 1, end: 2 }, { start: 3, end: 5 }, { start: 6, end: 7 }];
+      const expectedResult: Interval[] = [{ start: 1, end: 3 }, { start: 3, end: 5 }, { start: 5, end: 7 }];
   
       const result = flatten([intervalA], intervalC);
   
@@ -347,7 +347,7 @@ describe('flatten', () => {
     it('C end equal to A end (A inside C)', () => {
       const intervalC = { start: 1, end: 7 };
       const intervalA = { start: 3, end: 7 };
-      const expectedResult: Interval[] = [{ start: 1, end: 2 }, { start: 3, end: 6 }, { start: 7, end: 7 }];
+      const expectedResult: Interval[] = [{ start: 1, end: 3 }, { start: 3, end: 7 }];
   
       const result = flatten([intervalA], intervalC);
   
@@ -360,7 +360,7 @@ describe('flatten', () => {
     it('C ends after A (A in the middle of C)', () => {
       const intervalC = { start: 1, end: 7 };
       const intervalA = { start: 3, end: 5 };
-      const expectedResult: Interval[] = [{ start: 1, end: 2 }, { start: 3, end: 5 }, { start: 6, end: 7 }];
+      const expectedResult: Interval[] = [{ start: 1, end: 3 }, { start: 3, end: 5 }, { start: 5, end: 7 }];
   
       const result = flatten([intervalA], intervalC);
   
