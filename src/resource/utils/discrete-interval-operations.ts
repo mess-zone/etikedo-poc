@@ -64,65 +64,76 @@ export function split(intervalA: Interval, intervalB: Interval): Interval[] {
 
 export function flatten(flattenedSet: Interval[], interval: Interval): Interval[] {
     const results: Interval[] = []
-    const c = interval
+    let c = { start: interval.start, end: interval.end}
 
     for(const subset of flattenedSet) {
         if(c.start < subset.start) {
             if(c.end <= subset.start) {
-                results.push({ start: c.start, end: c.end})
+                // results.push({ start: c.start, end: c.end})
                 results.push(subset)
             } else if(c.end > subset.start && c.end < subset.end) {
-                results.push({ start: c.start, end: subset.start})
+                // results.push({ start: c.start, end: subset.start})
                 results.push({ start: subset.start, end: c.end})
                 results.push({ start: c.end, end: subset.end})
+                c.end = subset.start
             } else if(c.end == subset.end) {
-                results.push({ start: c.start, end: subset.start})
                 results.push({ start: subset.start, end: subset.end})
+                // results.push({ start: c.start, end: subset.start})
+                c.end = subset.start
             } else { // c.end > subset.end
-                results.push({ start: c.start, end: subset.start})
                 results.push({ start: subset.start, end: subset.end})
                 results.push({ start: subset.end, end: c.end})
+                // results.push({ start: c.start, end: subset.start})
+                c.end = subset.start
             }
         } else if(c.start == subset.start) {
             if(c.end - 1 <= subset.start) {
-                results.push({ start: c.start, end: c.end})
+                // results.push({ start: c.start, end: c.end})
                 results.push({ start: c.end, end: subset.end})
             } else if(c.end - 1 > subset.start && c.end < subset.end) {
-                results.push({ start: c.start, end: c.end})
                 results.push({ start: c.end, end: subset.end})
+                // results.push({ start: c.start, end: c.end})
             } else if(c.end == subset.end) {
-                results.push({ start: c.start, end: c.end})
+                // results.push({ start: c.start, end: c.end})
             } else if(c.end > subset.end) { // c.end > subset.end
-                results.push({ start: c.start, end: subset.end})
                 results.push({ start: subset.end, end: c.end})
+                // results.push({ start: c.start, end: subset.end})
+                c.end = subset.end
             }
         } else if(c.start > subset.start && c.start < subset.end - 1) {
             if(c.end < subset.end) {
                 results.push({ start: subset.start, end: c.start})
-                results.push({ start: c.start, end: c.end})
                 results.push({ start: c.end, end: subset.end})
+                // results.push({ start: c.start, end: c.end})
             } else if(c.end == subset.end) {
                 results.push({ start: subset.start, end: c.start})
-                results.push({ start: c.start, end: c.end})  
+                // results.push({ start: c.start, end: c.end})  
             } else { // c.end > subset.end
                 results.push({ start: subset.start, end: c.start})
-                results.push({ start: c.start, end: subset.end}) 
                 results.push({ start: subset.end, end: c.end}) 
+                // results.push({ start: c.start, end: subset.end}) 
+                c.end = subset.end
             }
         } else if(c.start == subset.end - 1) {
             if(c.end <= subset.end) {
                 results.push({ start: subset.start, end: c.start})
-                results.push({ start: c.start, end: subset.end}) 
+                // results.push({ start: c.start, end: subset.end}) 
+                c.end = subset.end
             } else if(c.end > subset.end) {
                 results.push({ start: subset.start, end: c.start})
+                // results.push({ start: subset.end, end: c.end}) 
                 results.push({ start: c.start, end: subset.end}) 
-                results.push({ start: subset.end, end: c.end}) 
+                c.start = subset.end
             }
         } else if(c.start > subset.end - 1) {
             results.push({ start: subset.start, end: subset.end}) 
-            results.push({ start: c.start, end: c.end}) 
+            // results.push({ start: c.start, end: c.end}) 
         }
  
+    }
+
+    if(c) {
+        results.push(c)
     }
 
     return results

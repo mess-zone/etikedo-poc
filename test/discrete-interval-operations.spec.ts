@@ -318,10 +318,10 @@ describe('flatten', () => {
       }
     })
 
-    it('C end equal to A start (no overlaping)', () => {
-      const intervalC = { start: 1, end: 4 };
+    it('C end equal to A start (small overlaping)', () => {
+      const intervalC = { start: 1, end: 5 };
       const intervalA = { start: 4, end: 7 };
-      const expectedResult: Interval[] = [{ start: 1, end: 4 }, { start: 4, end: 7 }];
+      const expectedResult: Interval[] = [{ start: 1, end: 4 }, { start: 4, end: 5 }, { start: 5, end: 7 }];
   
       const result = flatten([intervalA], intervalC);
   
