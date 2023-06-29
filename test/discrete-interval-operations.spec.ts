@@ -372,4 +372,58 @@ describe('flatten', () => {
 
   })
 
+  describe('C start equal A start', () => {
+    it('C ends equal A start (small overlaping)', () => {
+      const intervalC = { start: 1, end: 2 };
+      const intervalA = { start: 1, end: 7 };
+      const expectedResult: Interval[] = [{ start: 1, end: 2 }, { start: 2, end: 7 }];
+  
+      const result = flatten([intervalA], intervalC);
+  
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
+    })
+
+    it('C ends inside A (C inside A)', () => {
+      const intervalC = { start: 1, end: 4 };
+      const intervalA = { start: 1, end: 7 };
+      const expectedResult: Interval[] = [{ start: 1, end: 4 }, { start: 4, end: 7 }];
+  
+      const result = flatten([intervalA], intervalC);
+  
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
+    })
+
+    it('C end equal A end (both are equal)', () => {
+      const intervalC = { start: 1, end: 7 };
+      const intervalA = { start: 1, end: 7 };
+      const expectedResult: Interval[] = [{ start: 1, end: 7 }];
+  
+      const result = flatten([intervalA], intervalC);
+  
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
+    })
+
+    it('C end after A end (overlapping)', () => {
+      const intervalC = { start: 1, end: 7 };
+      const intervalA = { start: 1, end: 4 };
+      const expectedResult: Interval[] = [{ start: 1, end: 4 }, { start: 4, end: 7 }];
+  
+      const result = flatten([intervalA], intervalC);
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
+    })
+
+  })
+
 })

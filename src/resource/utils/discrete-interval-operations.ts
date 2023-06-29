@@ -67,7 +67,7 @@ export function flatten(flattenedSet: Interval[], interval: Interval): Interval[
     const c = interval
 
     for(const subset of flattenedSet) {
-        if(c.start < subset.start) { // C starts before S
+        if(c.start < subset.start) {
             if(c.end <= subset.start) {
                 results.push({ start: c.start, end: c.end})
                 results.push(subset)
@@ -81,6 +81,19 @@ export function flatten(flattenedSet: Interval[], interval: Interval): Interval[
             } else { // c.end > subset.end
                 results.push({ start: c.start, end: subset.start})
                 results.push({ start: subset.start, end: subset.end})
+                results.push({ start: subset.end, end: c.end})
+            }
+        } else if(c.start == subset.start) {
+            if(c.end - 1 <= subset.start) {
+                results.push({ start: c.start, end: c.end})
+                results.push({ start: c.end, end: subset.end})
+            } else if(c.end - 1 > subset.start && c.end < subset.end) {
+                results.push({ start: c.start, end: c.end})
+                results.push({ start: c.end, end: subset.end})
+            } else if(c.end == subset.end) {
+                results.push({ start: c.start, end: c.end})
+            } else if(c.end > subset.end) {
+                results.push({ start: c.start, end: subset.end})
                 results.push({ start: subset.end, end: c.end})
             }
         }
