@@ -496,4 +496,19 @@ describe('flatten', () => {
 
   })
 
+  describe('C starts after A', () => {
+    it('C end after A end (no overlapping)', () => {
+      const intervalC = { start: 8, end: 10 };
+      const intervalA = { start: 2, end: 5 };
+      const expectedResult: Interval[] = [{ start: 2, end: 5 }, { start: 8, end: 10 }];
+  
+      const result = flatten([intervalA], intervalC);
+  
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
+    })
+  })
+
 })
