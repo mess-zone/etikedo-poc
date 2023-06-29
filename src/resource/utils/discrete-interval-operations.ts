@@ -62,6 +62,49 @@ export function split(intervalA: Interval, intervalB: Interval): Interval[] {
     ]
 }
 
-export function flatten(set: Interval[], interval: Interval) {
-    return split(set[0], interval)
+export function flatten(flattenedSet: Interval[], interval: Interval): Interval[] {
+    const results: Interval[] = []
+    const c = interval
+
+    for(const subset of flattenedSet) {
+        if(c.start < subset.start) { // C starts before S
+            if(c.end < subset.start) {
+                results.push({ start: c.start, end: c.end})
+                results.push(subset)
+            } else if(c.end == subset.start) {
+                results.push({ start: c.start, end: subset.start - 1})
+                results.push({ start: subset.start, end: c.end})
+                results.push({ start: c.end + 1, end: subset.end})
+            } else if(c.end > subset.start && c.end < subset.end) {
+                results.push({ start: c.start, end: subset.start - 1})
+                results.push({ start: subset.start, end: c.end})
+                results.push({ start: c.end + 1, end: subset.end})
+            } else if(c.end == subset.end) {
+                results.push({ start: c.start, end: subset.start - 1})
+                // as duas linhas abaixo são diferentes das anteriores
+                results.push({ start: subset.start, end: subset.end - 1})
+                results.push({ start: c.end, end: subset.end})
+            } else { // c.end > subset.end
+                results.push({ start: c.start, end: subset.start - 1})
+                // as duas linhas abaixo são diferentes das anteriores
+                results.push({ start: subset.start, end: subset.end})
+                results.push({ start: subset.end + 1, end: c.end})
+            }
+            
+        }
+        // else if (subset.start < c.start && subset.end > c.end) {
+        //     // c está completamente contido em subset, divide subset em duas partes
+        //     results.push({ start: subset.start, end: c.start - 1 });
+        //     results.push({ start: c.end + 1, end: subset.end });
+        // } else if (subset.start < c.start) {
+        //     // subset começa antes de c e se sobrepõe parcialmente, adiciona parte anterior a c
+        //     results.push({ start: subset.start, end: c.start - 1 });
+        // } else if (subset.end > c.end) {
+        //     // subset termina depois de c e se sobrepõe parcialmente, adiciona parte posterior a c
+        //     results.push({ start: c.end + 1, end: subset.end });
+        // }
+        
+    }
+
+    return results
 }

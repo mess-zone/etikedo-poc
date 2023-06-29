@@ -302,28 +302,74 @@ describe('split', () => {
 })
 
 describe('flatten', () => {
-  it('should return all intervals when none of then overlaps', () => {
-    const intervalA = { start: 1, end: 3 };
-    const intervalC = { start: 5, end: 7 };
-    const expectedResult: Interval[] = [intervalA, intervalC];
 
-    const result = flatten([intervalA], intervalC);
+  describe('C starts before A',() => {
 
-    expect(result).toHaveLength(expectedResult.length);
-    for(const expected of expectedResult) {
-      expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
-    }
+    it('C ends before A (no overlaping)', () => {
+      const intervalC = { start: 1, end: 3 };
+      const intervalA = { start: 4, end: 7 };
+      const expectedResult: Interval[] = [{ start: 1, end: 3 }, { start: 4, end: 7 }];
+  
+      const result = flatten([intervalA], intervalC);
+  
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
+    })
+
+    it('C end equal to A start (small overlaping)', () => {
+      const intervalC = { start: 1, end: 4 };
+      const intervalA = { start: 4, end: 7 };
+      const expectedResult: Interval[] = [{ start: 1, end: 3 }, { start: 4, end: 4 }, { start: 5, end: 7 }];
+  
+      const result = flatten([intervalA], intervalC);
+  
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
+    })
+
+    it('C ends inside A (partial overlaping)', () => {
+      const intervalC = { start: 1, end: 5 };
+      const intervalA = { start: 3, end: 7 };
+      const expectedResult: Interval[] = [{ start: 1, end: 2 }, { start: 3, end: 5 }, { start: 6, end: 7 }];
+  
+      const result = flatten([intervalA], intervalC);
+  
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
+    })
+
+    it('C end equal to A end (A inside C)', () => {
+      const intervalC = { start: 1, end: 7 };
+      const intervalA = { start: 3, end: 7 };
+      const expectedResult: Interval[] = [{ start: 1, end: 2 }, { start: 3, end: 6 }, { start: 7, end: 7 }];
+  
+      const result = flatten([intervalA], intervalC);
+  
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
+    })
+
+    it('C ends after A (A in the middle of C)', () => {
+      const intervalC = { start: 1, end: 7 };
+      const intervalA = { start: 3, end: 5 };
+      const expectedResult: Interval[] = [{ start: 1, end: 2 }, { start: 3, end: 5 }, { start: 6, end: 7 }];
+  
+      const result = flatten([intervalA], intervalC);
+  
+      expect(result).toHaveLength(expectedResult.length);
+      for(const expected of expectedResult) {
+        expect(result.find(i => i.start == expected.start && i.end == expected.end)).toBeTruthy()
+      }
+    })
+
   })
-
-  // it('should return all intervals when none of then overlaps', () => {
-  //   const intervalA = { start: 1, end: 3 };
-  //   const intervalB = { start: 4, end: 6 };
-  //   const intervalC = { start: 7, end: 9 };
-  //   const expectedResult: Interval[] = [intervalA, intervalB, intervalC];
-
-  //   const result = flatten([intervalA, intervalB], intervalC);
-
-  //   expect(result).toEqual(expectedResult);
-  // })
 
 })
