@@ -1,4 +1,4 @@
-import { Interval, union, intersection } from '../src/resource/utils/interval-operations'
+import { Interval, union, intersection, difference } from '../src/resource/utils/interval-operations'
 
 describe('union', () => {
   // Caso 1: Intervalos não se sobrepõem
@@ -110,6 +110,66 @@ describe('intersection', () => {
       const expectedResult: Interval = null;
   
       const result = intersection(interval9, interval10);
+  
+      expect(result).toEqual(expectedResult);
+    });
+  });
+
+describe('difference', () => {
+    // Caso 1: Intervalos não se sobrepõem
+    it('should return intervalA when the intervals do not overlap', () => {
+      const interval1 = { start: 1, end: 3 };
+      const interval2 = { start: 5, end: 7 };
+      const expectedResult = [interval1];
+  
+      const result = difference(interval1, interval2);
+  
+      expect(result).toEqual(expectedResult);
+    });
+  
+    // Caso 2: Intervalo A totalmente contido no intervalo B
+    it('should return intervalA when intervalA is fully contained within intervalB', () => {
+      const interval3 = { start: 1, end: 5 };
+      const interval4 = { start: 0, end: 10 };
+      const expectedResult: Interval[] = [];
+  
+      const result = difference(interval3, interval4);
+  
+      expect(result).toEqual(expectedResult);
+    });
+  
+    // Caso 3: Intervalo B totalmente contido no intervalo A
+    it('should return two intervals when intervalB is fully contained within intervalA', () => {
+      const interval5 = { start: 0, end: 10 };
+      const interval6 = { start: 2, end: 8 };
+      const expectedResult = [
+        { start: 0, end: 2 },
+        { start: 8, end: 10 }
+      ];
+  
+      const result = difference(interval5, interval6);
+  
+      expect(result).toEqual(expectedResult);
+    });
+  
+    // Caso 4: Intervalo B à esquerda do intervalo A
+    it('should return intervalA when intervalB is to the left of intervalA', () => {
+      const interval7 = { start: 5, end: 10 };
+      const interval8 = { start: 2, end: 4 };
+      const expectedResult = [interval7];
+  
+      const result = difference(interval7, interval8);
+  
+      expect(result).toEqual(expectedResult);
+    });
+  
+    // Caso 5: Intervalo B à direita do intervalo A
+    it('should return intervalA when intervalB is to the right of intervalA', () => {
+      const interval9 = { start: 5, end: 10 };
+      const interval10 = { start: 12, end: 15 };
+      const expectedResult = [interval9];
+  
+      const result = difference(interval9, interval10);
   
       expect(result).toEqual(expectedResult);
     });

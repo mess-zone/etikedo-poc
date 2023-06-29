@@ -20,10 +20,30 @@ export function union(intervalA: Interval, intervalB: Interval): Interval[] {
 export function intersection(intervalA: Interval, intervalB: Interval): Interval | null {
     const start = Math.max(intervalA.start, intervalB.start);
     const end = Math.min(intervalA.end, intervalB.end);
-  
+
     if (start <= end) {
-      return { start, end };
+        return { start, end };
     }
-  
+
     return null;
-  }
+}
+
+export function difference(intervalA: Interval, intervalB: Interval): Interval[] {
+    const result: Interval[] = [];
+
+    if (intervalA.start >= intervalB.end || intervalA.end <= intervalB.start) {
+        result.push(intervalA); // Não há sobreposição, intervalA é totalmente mantido
+    } else if (intervalA.start < intervalB.start && intervalA.end > intervalB.end) {
+        // intervalB está completamente contido em intervalA, divide intervalA em duas partes
+        result.push({ start: intervalA.start, end: intervalB.start });
+        result.push({ start: intervalB.end, end: intervalA.end });
+    } else if (intervalA.start < intervalB.start) {
+        // intervalA começa antes de intervalB e se sobrepõe parcialmente, adiciona parte anterior a intervalB
+        result.push({ start: intervalA.start, end: intervalB.start });
+    } else if (intervalA.end > intervalB.end) {
+        // intervalA termina depois de intervalB e se sobrepõe parcialmente, adiciona parte posterior a intervalB
+        result.push({ start: intervalB.end, end: intervalA.end });
+    }
+
+    return result;
+}
