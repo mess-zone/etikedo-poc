@@ -54,9 +54,5 @@ export function split(intervalA: Interval, intervalB: Interval): Interval[] {
     const AminusB = difference(intervalA, intervalB)
     const BminusA = difference(intervalB, intervalA)
 
-    if(intersec.length == 0) {
-        return [intervalA, intervalB]
-    } else {
-        return [...AminusB, ...intersec, ...BminusA]
-    }
+    return [...AminusB, ...intersec, ...BminusA]
 }

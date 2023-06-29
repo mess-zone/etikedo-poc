@@ -179,7 +179,7 @@ describe('difference', () => {
   
 });
 
-describe.skip('split', () => {
+describe('split', () => {
     // Caso 1: Intervalos não se sobrepõem
     it('should return both intervals when they do not overlap', () => {
       const intervalA = { start: 1, end: 3 };
@@ -196,6 +196,39 @@ describe.skip('split', () => {
       const intervalA = { start: 1, end: 5 };
       const intervalB = { start: 3, end: 7 };
       const expectedResult = [{ start: 1, end: 2 }, { start: 3, end: 5 }, { start: 6, end: 7 }];
+
+      const result = split(intervalA, intervalB);
+
+      expect(result).toEqual(expectedResult);
+    });
+
+    // Caso 3: Intervalos são iguais
+    it('should return one interval when the intervals are equal', () => {
+      const intervalA = { start: 0, end: 10 };
+      const intervalB = { start: 0, end: 10 };
+      const expectedResult = [intervalA];
+
+      const result = split(intervalA, intervalB);
+
+      expect(result).toEqual(expectedResult);
+    });
+
+    // Caso 4: Um intervalo está totalmente contido no outro
+    it('should return 2 intervals (A-B, B) when one interval is completely contained within the other', () => {
+      const intervalA = { start: 2, end: 5 };
+      const intervalB = { start: 3, end: 8 };
+      const expectedResult = [{ start: 2, end: 2 }, { start: 3, end: 5 }, { start: 6, end: 8 }];
+
+      const result = split(intervalA, intervalB);
+
+      expect(result).toEqual(expectedResult);
+    });
+
+    // Caso 5: Intervalos não se sobrepõem e um começa após o outro
+    it('should return both intervals when they do not overlap and one starts after the other', () => {
+      const intervalA = { start: 1, end: 3 };
+      const intervalB = { start: 4, end: 6 };
+      const expectedResult = [intervalA, intervalB];
 
       const result = split(intervalA, intervalB);
 
