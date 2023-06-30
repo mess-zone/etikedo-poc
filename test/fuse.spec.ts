@@ -77,5 +77,17 @@ describe('Fuse intervals', () => {
             expect(result[1]).toEqual({ start: 5, end: 7, isHigh: false })
             expect(C).toEqual({ start: -1, end: -1, isHigh: true })
         })
+
+        test('C starts and ends inside B', () => {
+            const C: Interval = { start: 4, end: 7, isHigh: true }
+            const B: Interval = { start: 2, end: 9, isHigh: false }
+            const result = fuse(C, B)
+        
+            expect(result.length).toBe(3)
+            expect(result[0]).toEqual({ start: 2, end: 4, isHigh: false })
+            expect(result[1]).toEqual({ start: 4, end: 7, isHigh: true })
+            expect(result[2]).toEqual({ start: 7, end: 9, isHigh: false })
+            expect(C).toEqual({ start: -1, end: -1, isHigh: true })
+        })
     })
 })

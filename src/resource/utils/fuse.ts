@@ -19,7 +19,7 @@ export function fuse(c: Interval, b: Interval): Interval[] {
     const cOriginalStart = c.start
     const cOriginalEnd = c.end
 
-    // (c - b) substitui c pelo remanescente que não se sobrepões com b
+    // (c - b) substitui c pelo remanescente que não se sobrepõe com b
     if(b.end < c.end) {
         c.start = b.end
     } else {
@@ -37,12 +37,20 @@ export function fuse(c: Interval, b: Interval): Interval[] {
     /**
      * partial overlapping: ((B intersecção C) union (B minus C)) == B
      */
+    if(cOriginalStart > b.start && cOriginalEnd < b.end) { // c starts and ends inside b
+        return [
+            { start: b.start, end: cOriginalStart, isHigh: b.isHigh },
+            { start: cOriginalStart, end: cOriginalEnd, isHigh: c.isHigh },
+            { start: cOriginalEnd, end: b.end, isHigh: b.isHigh },
+        ]
+    }
     if(cOriginalStart > b.start) { // c starts inside b
         return [
             { start: b.start, end: cOriginalStart, isHigh: b.isHigh },
             { start: cOriginalStart, end: b.end, isHigh: c.isHigh },
         ]
-    } else { //c.end < b.end (c ends inside b)
+    }
+    if(cOriginalEnd < b.end) { // c ends inside b
         return [
             { start: b.start, end: cOriginalEnd, isHigh: c.isHigh },
             { start: cOriginalEnd, end: b.end, isHigh: b.isHigh },
