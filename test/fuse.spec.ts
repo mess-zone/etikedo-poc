@@ -53,7 +53,7 @@ describe('Fuse intervals', () => {
             const result = fuse(C, B)
         
             expect(result.length).toBe(2)
-            expect(result[0]).toEqual({ start: 2, end: 5, isHigh: true })
+            expect(result[0]).toEqual({ start: 2, end: 5, isHigh: false })
             expect(result[1]).toEqual({ start: 5, end: 7, isHigh: true })
             expect(C).toEqual({ start: -1, end: -1, isHigh: true })
         })
@@ -63,7 +63,7 @@ describe('Fuse intervals', () => {
             const result = fuse(C, B)
         
             expect(result.length).toBe(2)
-            expect(result[0]).toEqual({ start: 2, end: 5, isHigh: true })
+            expect(result[0]).toEqual({ start: 2, end: 5, isHigh: false })
             expect(result[1]).toEqual({ start: 5, end: 7, isHigh: true })
             expect(C).toEqual({ start: 7, end: 9, isHigh: true })
         })
@@ -74,7 +74,7 @@ describe('Fuse intervals', () => {
         
             expect(result.length).toBe(2)
             expect(result[0]).toEqual({ start: 2, end: 5, isHigh: true })
-            expect(result[1]).toEqual({ start: 5, end: 7, isHigh: true })
+            expect(result[1]).toEqual({ start: 5, end: 7, isHigh: false })
             expect(C).toEqual({ start: -1, end: -1, isHigh: true })
         })
     })

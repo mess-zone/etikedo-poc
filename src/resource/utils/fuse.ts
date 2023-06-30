@@ -31,7 +31,7 @@ export function fuse(c: Interval, b: Interval): Interval[] {
      * total overlapping: (B intersecção C) == B
      */
     if(cOriginalStart == b.start && cOriginalEnd >= b.end) { // c end is equal or greater than b end
-        return [{ start: b.start, end: b.end, isHigh: true }]
+        return [{ start: b.start, end: b.end, isHigh: c.isHigh }]
     }
 
     /**
@@ -39,13 +39,13 @@ export function fuse(c: Interval, b: Interval): Interval[] {
      */
     if(cOriginalStart > b.start) { // c starts inside b
         return [
-            { start: b.start, end: cOriginalStart, isHigh: true },
-            { start: cOriginalStart, end: b.end, isHigh: true },
+            { start: b.start, end: cOriginalStart, isHigh: b.isHigh },
+            { start: cOriginalStart, end: b.end, isHigh: c.isHigh },
         ]
     } else { //c.end < b.end (c ends inside b)
         return [
-            { start: b.start, end: cOriginalEnd, isHigh: true },
-            { start: cOriginalEnd, end: b.end, isHigh: true },
+            { start: b.start, end: cOriginalEnd, isHigh: c.isHigh },
+            { start: cOriginalEnd, end: b.end, isHigh: b.isHigh },
         ]
     }
 }
